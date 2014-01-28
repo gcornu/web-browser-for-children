@@ -1,8 +1,8 @@
 $(function(){
 	$("#browse").click(function(){
-		self.port.emit("answer","browse");
+		self.port.emit("browse");
 	});
 	$("#settings").click(function(){
-		self.port.emit("answer","settings");
+		self.port.emit("settings");
 	});
 });
