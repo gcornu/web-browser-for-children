@@ -21,5 +21,5 @@ self.port.on("show", function onShow(){
 	});
 	
 self.port.on("auth_fail", function (){
-	$("#input").after("<br/><div class=\"alert alert-danger\"><small>Sorry, the password is wrong</small></div>");
+	$("#pass").after("<div style=\"margin:5px 0px\" class=\"alert alert-danger\"><small>Sorry, the password is wrong</small></div>");
 	});
