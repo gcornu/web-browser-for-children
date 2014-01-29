@@ -3,7 +3,7 @@ $(function(){
   * Nav bar management
 */
 	$("#gen").click(function(){
-		self.port.emit("browse");
+		self.port.emit("gen");
 	});
 	$("#pass").click(function(){
 		self.port.emit("pass");
