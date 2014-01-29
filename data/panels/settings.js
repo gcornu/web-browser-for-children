@@ -1,10 +1,24 @@
 $(function(){
+/**
+  * Nav bar management
+*/
 	$("#gen").click(function(){
 		self.port.emit("browse");
 	});
 	$("#pass").click(function(){
 		self.port.emit("pass");
 	});
+
+/**
+  * Password page submit action
+*/
+	$("input.password").keyup(function(event){ 
+	//if user presses enter while in a password field, "click" on the submit button
+    if(event.keyCode == 13){
+        $("#change_pass").click();
+    }
+	});
+	
 	$("#change_pass").click(function(){
 		$(".alert").hide(); //remove any leftover alert
 		var problem = (function(){ //do some validation and generate a message if necessary
@@ -38,10 +52,15 @@ function inform(message,type){ //adds the message to the page in an alert div de
 			alertclass="\"alert alert-success\"";
 		break;
 		}
-	$("#content").append("<div class="+alertclass+">"+message+"</div>");
+	$("#content").append("<div class="+alertclass+"><small>"+message+"</small></div>");
 };
 
 self.port.on("change_pass_result",function(result){
-	if(result) {inform("Password successfully changed","success")}
+	if(result) {inform("Password successfully changed","success"); $("#old_pass").parent().show();}
 	else inform("Password was not changed. Is your old password correct?","error");
+});
+
+self.port.on("set_first_password",function(){
+	$("#old_pass").parent().hide();
+	$("#content").prepend("<h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p>");
 });
