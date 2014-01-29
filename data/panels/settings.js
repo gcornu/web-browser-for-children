@@ -1,13 +1,17 @@
-$(function(){
+$(function () {
 /**
   * Nav bar management
 */
-	$("#gen").click(function(){
+    "use strict";
+    $(".nav li").click(function () {
+        self.port.emit("tab_choice",$(this).attr('id'));
+    });
+	/*$("#gen").click(function(){
 		self.port.emit("gen");
 	});
 	$("#pass").click(function(){
 		self.port.emit("pass");
-	});
+	});*/
 
 /**
   * Password page submit action
@@ -40,6 +44,13 @@ $(function(){
 			//in case there was a message generated, append it to the page.
 	});
 
+    /**
+      *
+    */
+    $("input:radio[name=filteringOptions]").click(function () {
+        var val=$(this).val();
+        self.port.emit("filter",val); //val can be none, wlist or blist
+    });
 });
 
 function inform(message,type){ //adds the message to the page in an alert div depending on type (error or success)
@@ -52,15 +63,21 @@ function inform(message,type){ //adds the message to the page in an alert div de
 			alertclass="\"alert alert-success\"";
 		break;
 		}
-	$("#content").append("<div class="+alertclass+"><small>"+message+"</small></div>");
+	$(".panel").append("<div class="+alertclass+"><small>"+message+"</small></div>");
 };
 
 self.port.on("change_pass_result",function(result){
-	if(result) {inform("Password successfully changed","success"); $("#old_pass").parent().show();}
+	if(result) {inform("Password successfully changed","success"); 
+                $("#nav").hide();
+                $("#inputs").hide();
+                setTimeout(function(){self.port.emit("password_done");},3000);
+                }
 	else inform("Password was not changed. Is your old password correct?","error");
 });
 
 self.port.on("set_first_password",function(){
 	$("#old_pass").parent().hide();
-	$("#content").prepend("<h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p>");
+	$(".panel").prepend("<h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p>");
 });
+
+self.port.on("current_filter",function(value){});

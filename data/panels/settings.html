@@ -1,35 +1,38 @@
 <html>
 <head>
-<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="padding:2%">
-<div id="nav" style="margin-bottom: 10px">
-<ul class="nav nav-pills">
-	<li id="gen" class="active"><a href="#"><span class="glyphicon glyphicon-globe"></span> General</a></li>
-	<li id="pass"><a href="#"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
-	<li id="lists"><a href="#"><span class="glyphicon glyphicon-th-list"></span> List management</a></li>
-	<li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
-</ul>
-<div id="content">
-<div class="radio">
-  <label>
-    <input type="radio" name="filteringOptions" id="filteringOptions1" value="option1"/>
-    No filtering
-  </label>
-</div>
-<div class="radio">
-  <label>
-    <input type="radio" name="filteringOptions" id="filteringOptions2" value="option2"/>
-    Use blacklist
-  </label>
-</div>
-<div class="radio">
-  <label>
-    <input type="radio" name="filteringOptions" id="filteringOptions3" value="option3"/>
-    Use whitelist
-  </label>
-</div>
-</div>
+    <div id="nav" style="margin-bottom: 10px">
+        <ul class="nav nav-pills">
+            <li id="gen" class="active"><a href="#"><span class="glyphicon glyphicon-globe"></span> General</a></li>
+            <li id="pass"><a href="#"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
+            <li id="lists"><a href="#"><span class="glyphicon glyphicon-th-list"></span> List management</a></li>
+            <li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
+        </ul>
+    </div>
+    <div class="panel panel-default" style="padding:2%">
+        <div id="content">
+            <div class="radio">
+              <label>
+                <input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
+                No filtering
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="filteringOptions" id="filteringOptions2" value="blist"/>
+                Use blacklist
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="filteringOptions" id="filteringOptions3" value="wlist"/>
+                Use whitelist
+              </label>
+            
+            </div>
+        </div>
+    </div>
 </body>
 </html>
