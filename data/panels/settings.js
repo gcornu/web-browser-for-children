@@ -1,20 +1,20 @@
 $(function () {
-/**
-  * Nav bar management
-*/
+	/**
+	  * Nav bar management
+	*/
     "use strict";
-    $(".nav li").click(function () {
+    $("#nav li").click(function () {
 		showTab($(this).attr('id'));
     });
 
-/**
-  * Password page submit action
-*/
+	/**
+	  * Password page submit action
+	*/
 	$("input.password").keyup(function(event){ 
-	//if user presses enter while in a password field, "click" on the submit button
-    if(event.keyCode == 13){
-        $("#change_pass").click();
-    }
+		//if user presses enter while in a password field, "click" on the submit button
+		if(event.keyCode == 13){
+			$("#change_pass").click();
+		}
 	});
 	
 	$("#change_pass").click(function(){
@@ -45,9 +45,43 @@ $(function () {
         var val=$(this).val();
         self.port.emit("filter",val); //val can be none, wlist or blist
     });
+	
+	/**
+	 * Init tabs in lists management
+	 */
+	$('#lists-tabs a').click(function(e) {
+		e.preventDefault();
+		$(this).tab('show');
+		self.port.emit('lists_tab_choice', $(this).attr('id'));
+	});
+	$('#default_blacklist').click();
+
+	$('#remove-default-blacklist').click(function() {
+		var checked_elements = [];
+		$('#default-blacklist-inner input:checked').each(function(index, element) {
+			checked_elements.push(element.id);
+			var label = $(element).next()
+			var br = $(element).next().next();
+			$(element).attr('checked', false);
+			$('#removed-default-blacklist-inner').append($(element)).append(label).append(br);
+		});
+		self.port.emit('remove_default_blacklist', checked_elements);
+	});
+
+	$('#add-default-blacklist').click(function() {
+		var checked_elements = [];
+		$('#removed-default-blacklist-inner input:checked').each(function(index, element) {
+			checked_elements.push(element.id);
+			var label = $(element).next()
+			var br = $(element).next().next();
+			$(element).attr('checked', false);
+			$('#default-blacklist-inner').append($(element)).append(label).append(br);
+		});
+		self.port.emit('add_default_blacklist', checked_elements);
+	});
 });
 
-function inform(message,type){ //adds the message to the page in an alert div depending on type (error or success)
+function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
 	var alertclass = "";
 	switch(type){
 		case "error":
@@ -56,39 +90,52 @@ function inform(message,type){ //adds the message to the page in an alert div de
 		case "success":
 			alertclass="\"alert alert-success\"";
 		break;
-		}
+	}
 	$(".panel").append("<div class="+alertclass+"><small>"+message+"</small></div>");
 }
 
 self.port.on("change_pass_result",function(result){
-	if(result) {inform("Password successfully changed","success"); 
-                $("#nav").hide();
-                $(".container").hide();
-                setTimeout(function(){
-					self.port.emit("password_done");
-					$("#nav").show();
-					$("#old_pass").parent().show(); //this was hidden if first password change
-					$("#welcome").hide();
-					$("input[type=password]").val(""); //set all fields to empty
-					showTab("gen")
-					;},3000);
-                }
+	if(result) {
+		inform("Password successfully changed","success"); 
+        $("#nav").hide();
+        $(".container").hide();
+        setTimeout(function(){
+			self.port.emit("password_done");
+			$("#nav").show();
+			$("#old_pass").parent().show(); //this was hidden if first password change
+			$("#welcome").hide();
+			$("input[type=password]").val(""); //set all fields to empty
+			showTab("gen");
+		},3000);
+    }
 	else inform("Password was not changed. Is your old password correct?","error");
 });
 
-self.port.on("set_first_password",function(){
+self.port.on("set_first_password", function(){
 	showTab("pass");
 	$("#old_pass").parent().hide();
 	$(".panel").prepend("<div id=\"welcome\"><h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p></div>");
 });
 
-self.port.on("current_filter",function(value){});
+self.port.on("current_filter", function(value){
+	//$('#gen_tab input:radio[value=' + value + ']').prop('selected', 'selected');
+});
+
+// Add elements in lists when initialization is done
+self.port.on('blacklist_initialized', function(defaultBlacklist, removedDefaultBlacklistElements) {
+	defaultBlacklist.forEach(function(elem) {
+		$('#default-blacklist-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+	});
+	removedDefaultBlacklistElements.forEach(function() {
+		$('#removed-default-blacklist-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+	});
+});
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
 	self.port.emit("tab_choice",tab_choice);
 	$(".container").hide();
 	$(".alert").hide(); //remove leftover alerts
 	$("#"+tab_choice+"_tab").show();
-	$(".active").removeClass("active");
+	$("#nav .active").removeClass("active");
 	$("#"+tab_choice).addClass("active");
 }
