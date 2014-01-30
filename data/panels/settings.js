@@ -80,4 +80,9 @@ self.port.on("set_first_password",function(){
 	$(".panel").prepend("<h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p>");
 });
 
-self.port.on("current_filter",function(value){});
+self.port.on("current_filter", function(value){
+	console.log('event current_filter');
+	console.log($('#filteringOptions1'));
+	$('#filteringOptions1').prop('checked', true);
+	$('input:radio[value=' + value + ']').toggle();
+});

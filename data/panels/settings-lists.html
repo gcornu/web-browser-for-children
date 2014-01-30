@@ -1,6 +1,8 @@
 <html>
 <head>
 <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<script src="../jquery-2.0.3.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
 
 </head>
 <body style="padding:2%">
@@ -13,6 +15,35 @@
 </ul>
 </div>
 <div class="panel panel-default" style="padding:2%">
+	<ul id="lists-tab" class="nav nav-tabs">
+		<li class="active"><a data-toggle="tab" href="#default-blacklist">Default Blacklist</a></li>
+		<li><a data-toggle="tab" href="#default-whitelist">Default Whitelist</a></li>
+		<li><a data-toggle="tab" href="#custom-blacklist">Custom Blacklist</a></li>
+		<li><a data-toggle="tab" href="#custom-whitelist">Custom Whitelist</a></li>
+	</ul>
+	<div id="lists-tab-content" class="tab-content">
+		<div id="default-blacklist" class="tab-pane active" style="max-height: 200px; overflow-y: auto;">
+			Test<br/>
+			Test<br/>
+			Test<br/>
+			Test<br/>
+			Test<br/>
+		</div>
+		<div id="default-whitelist" class="tab-pane" style="max-height: 200px; overflow-y: auto;">
+			Test<br/>
+			Test<br/>
+			Test<br/>
+			Test<br/>
+		</div>
+	</div>
 </div>
+	<script>
+		$(function() {
+			$('#lists-tab a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
 </body>
 </html>
