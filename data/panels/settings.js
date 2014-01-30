@@ -4,14 +4,8 @@ $(function () {
 */
     "use strict";
     $(".nav li").click(function () {
-        self.port.emit("tab_choice",$(this).attr('id'));
+		showTab($(this).attr('id'));
     });
-	/*$("#gen").click(function(){
-		self.port.emit("gen");
-	});
-	$("#pass").click(function(){
-		self.port.emit("pass");
-	});*/
 
 /**
   * Password page submit action
@@ -34,8 +28,8 @@ $(function () {
 			}
 			else { return "";}
 			})();
-		if(problem==""){ //if there was no validation error, send old and new passwords
-			var pwords = new Object();
+		if(problem===""){ //if there was no validation error, send old and new passwords
+			var pwords = {};
 			pwords.oldpass=$("#old_pass").val();
 			pwords.newpass=$("#new_pass1").val();
 			self.port.emit("update_pass",pwords);
@@ -64,25 +58,37 @@ function inform(message,type){ //adds the message to the page in an alert div de
 		break;
 		}
 	$(".panel").append("<div class="+alertclass+"><small>"+message+"</small></div>");
-};
+}
 
 self.port.on("change_pass_result",function(result){
 	if(result) {inform("Password successfully changed","success"); 
                 $("#nav").hide();
-                $("#inputs").hide();
-                setTimeout(function(){self.port.emit("password_done");},3000);
+                $(".container").hide();
+                setTimeout(function(){
+					self.port.emit("password_done");
+					$("#nav").show();
+					$("#old_pass").parent().show(); //this was hidden if first password change
+					$("#welcome").hide();
+					$("input[type=password]").val(""); //set all fields to empty
+					showTab("gen")
+					;},3000);
                 }
 	else inform("Password was not changed. Is your old password correct?","error");
 });
 
 self.port.on("set_first_password",function(){
+	showTab("pass");
 	$("#old_pass").parent().hide();
-	$(".panel").prepend("<h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p>");
+	$(".panel").prepend("<div id=\"welcome\"><h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p></div>");
 });
 
-self.port.on("current_filter", function(value){
-	console.log('event current_filter');
-	console.log($('#filteringOptions1'));
-	$('#filteringOptions1').prop('checked', true);
-	$('input:radio[value=' + value + ']').toggle();
-});
+self.port.on("current_filter",function(value){});
+
+function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
+	self.port.emit("tab_choice",tab_choice);
+	$(".container").hide();
+	$(".alert").hide(); //remove leftover alerts
+	$("#"+tab_choice+"_tab").show();
+	$(".active").removeClass("active");
+	$("#"+tab_choice).addClass("active");
+}

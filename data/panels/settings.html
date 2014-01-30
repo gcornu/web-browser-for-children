@@ -5,14 +5,14 @@
 <body style="padding:2%">
     <div id="nav" style="margin-bottom: 10px">
         <ul class="nav nav-pills">
-            <li id="gen" class="active"><a href="#"><span class="glyphicon glyphicon-globe"></span> General</a></li>
+            <li id="gen"><a href="#"><span class="glyphicon glyphicon-globe"></span> General</a></li>
             <li id="pass"><a href="#"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
             <li id="lists"><a href="#"><span class="glyphicon glyphicon-th-list"></span> List management</a></li>
             <li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
         </ul>
     </div>
     <div class="panel panel-default" style="padding:2%">
-        <div id="content">
+        <div id="gen_tab" class="container">
             <div class="radio">
               <label>
                 <input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
@@ -33,6 +33,27 @@
             
             </div>
         </div>
+		
+		<div id="pass_tab" class="container">
+			<div class="form-group">
+				<label for="old_pass">Old password:</label>
+				<input type="password" id="old_pass" class="form-control password" ></input>
+			</div>
+			<div class="form-group">
+				<label for="old_pass">New password:</label>
+				<input type="password" id="new_pass1" class="form-control password" ></input>
+			</div>
+			<div class="form-group">
+				<label for="old_pass">Confirm new password:</label>
+				<input type="password" id="new_pass2" class="form-control password" ></input>
+			</div>
+			<div class="form-group">
+				<input type="submit" id="change_pass" class="btn btn-primary" value="Change!"></input>
+			</div>
+		</div>
+		<div id="lists_tab" class="container">
+		</div>
+		<div id="reports_tab" class="container"></div>
     </div>
 </body>
 </html>
