@@ -82,6 +82,17 @@ $(function () {
 	$('#remove-custom-blacklist').click(function() {
 		customListsButtonHandler('blacklist');
 	});
+
+	$('#add-custom-whitelist').click(function() {
+		var uri = window.prompt('Please enter the URL you want to add to the whitelist:');
+		if(uri) {
+			self.port.emit('add_custom_whitelist', uri);
+		}
+	});
+
+	$('#remove-custom-whitelist').click(function() {
+		customListsButtonHandler('whitelist');
+	});
 });
 
 function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
@@ -134,12 +145,26 @@ self.port.on('whitelist_initialized', function(defaultWhitelist, removedDefaultB
 });
 
 self.port.on('blacklist_custom_added', function(host) {
-	if(host) {
-		$('#custom-blacklist-inner').append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
-	} else {
-		inform('Host was not added to the blacklist. Please check your syntax.');
-	}
+	addCustomListListener('blacklist', host);
 });
+
+self.port.on('whitelist_custom_added', function(host) {
+	addCustomListListener('whitelist', host);
+});
+
+/**
+ * Event listener when an entry is added in the custom lists
+ *
+ * @param {blacklist|whitelist} listType
+ * @param {string} host
+ */
+function addCustomListListener(listType, host) {
+	if(host) {
+		$('#custom-' + listType + '-inner').append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+	} else {
+		inform('Host was not added to the ' + listType + '. Please check your syntax.');
+	}
+}
 
 function fillListDivs(defaultList, removedList, name) {
 	var title = $('#default-' + name + '-inner h3');
