@@ -39,7 +39,7 @@ $(function () {
 	});
 
     /**
-      *
+     *
     */
     $("input:radio[name=filteringOptions]").click(function () {
         var val=$(this).val();
@@ -70,6 +70,17 @@ $(function () {
 
 	$('#add-default-whitelist').click(function() {
 		defaultListsButtonHandler('whitelist', 'add');
+	});
+
+	$('#add-custom-blacklist').click(function() {
+		var uri = window.prompt('Please enter the URL you want to add to the blacklist:');
+		if(uri) {
+			self.port.emit('add_custom_blacklist', uri);
+		}
+	});
+
+	$('#remove-custom-blacklist').click(function() {
+		customListsButtonHandler('blacklist');
 	});
 });
 
@@ -122,7 +133,19 @@ self.port.on('whitelist_initialized', function(defaultWhitelist, removedDefaultB
 	fillListDivs(defaultWhitelist, removedDefaultBlacklistElements, 'whitelist');
 });
 
+self.port.on('blacklist_custom_added', function(host) {
+	if(host) {
+		$('#custom-blacklist-inner').append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+	} else {
+		inform('Host was not added to the blacklist. Please check your syntax.');
+	}
+});
+
 function fillListDivs(defaultList, removedList, name) {
+	var title = $('#default-' + name + '-inner h3');
+	var removedTitle = $('#removed-default-' + name + '-inner h3');
+	$('#default-' + name + '-inner').empty().append(title);
+	$('#removed-default-' + name + '-inner').empty().append(removedTitle);
 	defaultList.forEach(function(elem) {
 		$('#default-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 	});
@@ -131,6 +154,12 @@ function fillListDivs(defaultList, removedList, name) {
 	});
 }
 
+/**
+ * Event handler for default lists actions
+ *
+ * @param {blacklist|whitelist} listType
+ * @param {add|remove} eventType
+ */
 function defaultListsButtonHandler(listType, eventType) {
 	var prefixOrigin = eventType === 'add' ? 'removed-' : '';
 	var prefixDest = prefixOrigin === 'removed-' ? '' : 'removed-';
@@ -143,6 +172,23 @@ function defaultListsButtonHandler(listType, eventType) {
 		$('#' + prefixDest + 'default-' + listType + '-inner').append($(element)).append(label).append(br);
 	});
 	self.port.emit(eventType + '_default_' + listType, checked_elements);
+}
+
+/**
+ * Event handler for custom lists remove action
+ *
+ * @param {blacklist|whitelist} listType
+ */
+function customListsButtonHandler(listType) {
+	var checked_elements = [];
+	$('#custom-' + listType + '-inner input:checked').each(function(index, element) {
+		checked_elements.push(element.id);
+		var label = $(element).next()
+		$(element).next().next().remove();
+		label.remove();
+		element.remove();
+	});
+	self.port.emit('remove_custom_' + listType, checked_elements);
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
