@@ -54,14 +54,22 @@ $(function () {
 		$(this).tab('show');
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
-	//$('#default_blacklist').click();
+	$('#default_blacklist').click();
 
 	$('#remove-default-blacklist').click(function() {
-		//defaultListsButtonHandler('blacklist', 'remove');
+		defaultListsButtonHandler('blacklist', 'remove');
 	});
 
 	$('#add-default-blacklist').click(function() {
-		//defaultListsButtonHandler('blacklist', 'add');
+		defaultListsButtonHandler('blacklist', 'add');
+	});
+
+	$('#remove-default-whitelist').click(function() {
+		defaultListsButtonHandler('whitelist', 'remove');
+	});
+
+	$('#add-default-whitelist').click(function() {
+		defaultListsButtonHandler('whitelist', 'add');
 	});
 });
 
@@ -107,34 +115,32 @@ self.port.on("current_filter", function(value){
 
 // Add elements in lists when initialization is done
 self.port.on('blacklist_initialized', function(defaultBlacklist, removedDefaultBlacklistElements) {
-	//fillListDivs(defaultBlacklist, removedDefaultBlacklistElements, 'blacklist');
+	fillListDivs(defaultBlacklist, removedDefaultBlacklistElements, 'blacklist');
 });
 
 self.port.on('whitelist_initialized', function(defaultWhitelist, removedDefaultBlacklistElements) {
-	//fillListDivs(defaultWhitelist, removedDefaultBlacklistElements, 'whitelist');
+	fillListDivs(defaultWhitelist, removedDefaultBlacklistElements, 'whitelist');
 });
 
-/*function fillListDivs(default, removed, name) {
-	default.forEach(function(elem) {
+function fillListDivs(defaultList, removedList, name) {
+	defaultList.forEach(function(elem) {
 		$('#default-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 	});
-	removed.forEach(function(elem) {
+	removedList.forEach(function(elem) {
 		$('#removed-default-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 	});
-}*/
+}
 
 function defaultListsButtonHandler(listType, eventType) {
-	var prefixOrigin;
-	prefixOrigin = eventType === 'add' ? 'removed-' : '';
-	var prefixDest;
-	prefixDest = prefixOrigin === 'removed-' ? '' : 'removed-';
+	var prefixOrigin = eventType === 'add' ? 'removed-' : '';
+	var prefixDest = prefixOrigin === 'removed-' ? '' : 'removed-';
 	var checked_elements = [];
 	$('#' + prefixOrigin + 'default-' + listType + '-inner input:checked').each(function(index, element) {
 		checked_elements.push(element.id);
 		var label = $(element).next()
 		var br = $(element).next().next();
 		$(element).attr('checked', false);
-		$('#' + prefixDest + 'removed-default-' + listType + '-inner').append($(element)).append(label).append(br);
+		$('#' + prefixDest + 'default-' + listType + '-inner').append($(element)).append(label).append(br);
 	});
 	self.port.emit(eventType + '_default_' + listType, checked_elements);
 }
