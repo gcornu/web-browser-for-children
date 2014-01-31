@@ -54,30 +54,14 @@ $(function () {
 		$(this).tab('show');
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
-	$('#default_blacklist').click();
+	//$('#default_blacklist').click();
 
 	$('#remove-default-blacklist').click(function() {
-		var checked_elements = [];
-		$('#default-blacklist-inner input:checked').each(function(index, element) {
-			checked_elements.push(element.id);
-			var label = $(element).next()
-			var br = $(element).next().next();
-			$(element).attr('checked', false);
-			$('#removed-default-blacklist-inner').append($(element)).append(label).append(br);
-		});
-		self.port.emit('remove_default_blacklist', checked_elements);
+		//defaultListsButtonHandler('blacklist', 'remove');
 	});
 
 	$('#add-default-blacklist').click(function() {
-		var checked_elements = [];
-		$('#removed-default-blacklist-inner input:checked').each(function(index, element) {
-			checked_elements.push(element.id);
-			var label = $(element).next()
-			var br = $(element).next().next();
-			$(element).attr('checked', false);
-			$('#default-blacklist-inner').append($(element)).append(label).append(br);
-		});
-		self.port.emit('add_default_blacklist', checked_elements);
+		//defaultListsButtonHandler('blacklist', 'add');
 	});
 });
 
@@ -123,13 +107,37 @@ self.port.on("current_filter", function(value){
 
 // Add elements in lists when initialization is done
 self.port.on('blacklist_initialized', function(defaultBlacklist, removedDefaultBlacklistElements) {
-	defaultBlacklist.forEach(function(elem) {
-		$('#default-blacklist-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
-	});
-	removedDefaultBlacklistElements.forEach(function() {
-		$('#removed-default-blacklist-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
-	});
+	//fillListDivs(defaultBlacklist, removedDefaultBlacklistElements, 'blacklist');
 });
+
+self.port.on('whitelist_initialized', function(defaultWhitelist, removedDefaultBlacklistElements) {
+	//fillListDivs(defaultWhitelist, removedDefaultBlacklistElements, 'whitelist');
+});
+
+/*function fillListDivs(default, removed, name) {
+	default.forEach(function(elem) {
+		$('#default-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+	});
+	removed.forEach(function(elem) {
+		$('#removed-default-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+	});
+}*/
+
+function defaultListsButtonHandler(listType, eventType) {
+	var prefixOrigin;
+	prefixOrigin = eventType === 'add' ? 'removed-' : '';
+	var prefixDest;
+	prefixDest = prefixOrigin === 'removed-' ? '' : 'removed-';
+	var checked_elements = [];
+	$('#' + prefixOrigin + 'default-' + listType + '-inner input:checked').each(function(index, element) {
+		checked_elements.push(element.id);
+		var label = $(element).next()
+		var br = $(element).next().next();
+		$(element).attr('checked', false);
+		$('#' + prefixDest + 'removed-default-' + listType + '-inner').append($(element)).append(label).append(br);
+	});
+	self.port.emit(eventType + '_default_' + listType, checked_elements);
+}
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
 	self.port.emit("tab_choice",tab_choice);
