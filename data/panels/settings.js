@@ -55,6 +55,7 @@ $(function () {
 		$(this).tab('show');
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
+
 	$('#default_blacklist').click();
 
 	var idHandledButtons = '#remove-default-blacklist, ' +
@@ -173,15 +174,20 @@ function addCustomListHandler(listName) {
 /**
  * Event listener when an entry is added in the custom lists
  *
- * @param {blacklist|whitelist} listType
+ * @param {blacklist|whitelist} listName
  * @param {string} host
  * @param {string} category of the added host
  */
-function addCustomListListener(listType, host, category) {
+function addCustomListListener(listName, host, category) {
 	if(host) {
-		$('#custom-' + listType + '-category-' + category).append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+		var divId = 'custom-' + listName + '-category-' + category;
+		if($('#' + divId).length === 0) {
+			var div = $('<div>').attr('id', divId);
+			$('#custom-' + listName + '-inner').append(div);
+		}
+		$('#' + divId).append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
 	} else {
-		inform('Host was not added to the ' + listType + '. Please check your syntax.', 'error');
+		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
 	}
 }
 
@@ -258,38 +264,40 @@ function fillMenu(list, prefix, removedPrefix) {
  * Event handler for lists actions
  * 
  * @param {add|remove} event type
- * @param {blacklist|whitelist} list name
  * @param {default|custom} list type
+ * @param {blacklist|whitelist} list name
  */
 function listsButtonHandler(eventType, listType, listName) {
 	var prefixOrigin = '',
 		prefixDest = '',
 		checked_elements = [],
-		category = '';
+		category = '',
+		label,
+		br;
 
 	if(eventType) {
 		prefixOrigin = eventType === 'add' ? 'removed-' : '';
 		prefixDest = prefixOrigin === 'removed-' ? '' : 'removed-';
-	} else {
-		eventType = 'remove';
 	}
 
+	category = $('#' + listType + '-' + listName + '-categories option:selected').val();
 
 	$('#' + prefixOrigin + listType + '-' + listName + '-inner input:checked').each(function(index, element) {
 		checked_elements.push(element.id);
-		var label = $(element).next();
-		var br = $(element).next().next();
-		if(prefixOrigin || prefixDest) {
+		label = $(element).next();
+		br = $(element).next().next();
+		if(listType === 'default') {
 			$(element).attr('checked', false);
 			$('#' + prefixDest + listType + '-' + listName + '-inner').append($(element)).append(label).append(br);
 		} else {
 			br.remove();
 			label.remove();
 			element.remove();
+			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
+				$('#' + listType + '-' + listName + '-categories option:selected').remove();
+			}
 		}
 	});
-
-	category = $('#' + listType + '-' + listName + '-categories option:selected').val();
 
 	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
 }

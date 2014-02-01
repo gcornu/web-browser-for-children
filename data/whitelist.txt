@@ -1,2 +1,6 @@
+[General]
 www.mozilla.org
 fr.wikipedia.org
+
+[Search engines]
+www.google.fr
