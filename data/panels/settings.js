@@ -70,20 +70,26 @@ $(function () {
 		listsButtonHandler.apply(null, paramArray);
 	});
 
-	$('#add-custom-blacklist').click(function() {
-		var uri = window.prompt('Please enter the URL you want to add to the blacklist:');
-		if(uri) {
-			self.port.emit('add_custom_blacklist', uri);
-		}
+	$('#add-custom-blacklist, #add-custom-whitelist').click(function() {
+		var listName = $(this).attr('id').split('-').pop();
+		addCustomListHandler(listName);
 	});
 
-	$('#add-custom-whitelist').click(function() {
-		var uri = window.prompt('Please enter the URL you want to add to the whitelist:');
-		if(uri) {
-			self.port.emit('add_custom_whitelist', uri);
+	$('#add-custom-blacklist-category, #add-custom-whitelist-category').click(function() {
+		var category = window.prompt('Name of the new category:');
+		if(category) {
+			var id = $(this).attr('id').split('-');
+			id.pop();
+			var listName = id.pop();
+			var select = $('#custom-' + listName + '-categories select')
+			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
+				var option = $('<option>').attr('value', category.replace(' ', '_')).html(category);
+				select.append(option);
+				option.prop('selected', 'selected');
+				select.change();
+			}
 		}
 	});
-	
 });
 
 function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
@@ -143,23 +149,37 @@ self.port.on('custom_whitelist_initialized', function(list) {
 	fillListDivs(list, [], 'whitelist', 'custom');
 });
 
-self.port.on('blacklist_custom_added', function(host) {
-	addCustomListListener('blacklist', host);
+self.port.on('blacklist_custom_added', function(host, category) {
+	addCustomListListener('blacklist', host, category);
 });
 
-self.port.on('whitelist_custom_added', function(host) {
-	addCustomListListener('whitelist', host);
+self.port.on('whitelist_custom_added', function(host, category) {
+	addCustomListListener('whitelist', host, category);
 });
+
+/**
+ * Event handler when the 'add' button is clicked for custom lists
+ *
+ * @param {blacklist|whitelist} name of the list 
+ */
+function addCustomListHandler(listName) {
+	var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
+	if(uri) {
+		var category = $('#custom-' + listName + '-categories select option:selected').val();
+		self.port.emit('add_custom_' + listName, uri, category);
+	}
+}
 
 /**
  * Event listener when an entry is added in the custom lists
  *
  * @param {blacklist|whitelist} listType
  * @param {string} host
+ * @param {string} category of the added host
  */
-function addCustomListListener(listType, host) {
+function addCustomListListener(listType, host, category) {
 	if(host) {
-		$('#custom-' + listType + '-inner').append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+		$('#custom-' + listType + '-category-' + category).append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
 	} else {
 		inform('Host was not added to the ' + listType + '. Please check your syntax.', 'error');
 	}
@@ -220,6 +240,7 @@ function fillMenu(list, prefix, removedPrefix) {
 			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
 			$('#' + prefix + '-categories select').append(option);
 		});
+		$('#' + prefix + '-categories select').first('option').prop('selected', 'selected');
 		$('#' + prefix + '-categories select').change(function() {
 			$('#' + prefix + '-inner div').hide();
 			$('#' + prefix + '-category-' + $(this).val()).show();
@@ -268,7 +289,7 @@ function listsButtonHandler(eventType, listType, listName) {
 		}
 	});
 
-	category = $('#default-blacklist-categories option:selected').val();
+	category = $('#' + listType + '-' + listName + '-categories option:selected').val();
 
 	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
 }
