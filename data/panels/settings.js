@@ -161,7 +161,7 @@ function addCustomListListener(listType, host) {
 	if(host) {
 		$('#custom-' + listType + '-inner').append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
 	} else {
-		inform('Host was not added to the ' + listType + '. Please check your syntax.');
+		inform('Host was not added to the ' + listType + '. Please check your syntax.', 'error');
 	}
 }
 
@@ -174,6 +174,16 @@ function addCustomListListener(listType, host) {
  * @param {default|custom} type of the list
  */
 function fillListDivs(defaultList, removedList, name, type) {
+	if($('#default-blacklist-categories select').is(':empty')) {
+		Object.keys(defaultList).forEach(function(category) {
+			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
+			$('#default-blacklist-categories select').append(option);
+		});
+		$('#default-blacklist-categories select').change(function() {
+			$('#default-blacklist-inner div').hide();
+			$('#default-blacklist-category-' + $(this).val()).show();
+		});
+	}
 	fillListsDivsHelper(defaultList, name, type);
 	if(removedList) {
 		fillListsDivsHelper(removedList, name, 'removed-' + type);
@@ -192,9 +202,14 @@ function fillListsDivsHelper(list, name, type) {
 	var title = $('#' + type + '-' + name + '-inner h3');
 	$('#' + type + '-' + name + '-inner').empty().append(title);
 
-	list.forEach(function(elem) {
-		$('#' + type + '-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+	Object.keys(list).forEach(function(category) {
+		var div = $('<div>').attr('id', type + '-' + name + '-category-' + category);
+		list[category].forEach(function(elem) {
+			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+		});
+		$('#' + type + '-' + name + '-inner').append(div);
 	});
+	$('#default-blacklist-inner div:not(:first)').hide();
 }
 
 /**
@@ -207,7 +222,8 @@ function fillListsDivsHelper(list, name, type) {
 function listsButtonHandler(eventType, listType, listName) {
 	var prefixOrigin = '',
 		prefixDest = '',
-		checked_elements = [];
+		checked_elements = [],
+		category = '';
 
 	if(eventType) {
 		prefixOrigin = eventType === 'add' ? 'removed-' : '';
@@ -231,7 +247,9 @@ function listsButtonHandler(eventType, listType, listName) {
 		}
 	});
 
-	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements);
+	category = $('#default-blacklist-categories option:selected').val();
+
+	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
