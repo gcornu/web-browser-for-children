@@ -51,8 +51,68 @@
 				<input type="submit" id="change_pass" class="btn btn-primary" value="Change!"></input>
 			</div>
 		</div>
+		
 		<div id="lists_tab" class="container">
+			<ul id="lists-tabs" class="nav nav-tabs">
+				<li class="active"><a id="default_blacklist" data-toggle="tab" href="#default-blacklist-pane">Default Blacklist</a></li>
+				<li><a id="default_whitelist" data-toggle="tab" href="#default-whitelist-pane">Default Whitelist</a></li>
+				<li><a id="custom_blacklist" data-toggle="tab" href="#custom-blacklist-pane">Custom Blacklist</a></li>
+				<li><a id="custom_whitelist" data-toggle="tab" href="#custom-whitelist-pane">Custom Whitelist</a></li>
+			</ul>
+			<div id="lists-tab-content" class="tab-content">
+				<div id="default-blacklist-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<div id="default-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
+						<h3>Default blacklist</h3>
+					</div>
+					<div id="default-blacklist-buttons" style="width: 30%; height: 200px; float: left;">
+						<div id="default-blacklist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
+							<button id="remove-default-blacklist" class="btn" style="width: 100%">Remove selected elements<br/>from blacklist <span class="glyphicon glyphicon-chevron-right"></span></button>
+							<button id="add-default-blacklist" class="btn" style="width: 100%; margin-top: 10px;"><span class="glyphicon glyphicon-chevron-left"></span> Add selected elements<br/>to blacklist</button>
+						</div>
+					</div>
+					<div id="removed-default-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
+						<h3>Removed elements</h3>
+					</div>
+				</div>
+				<div id="default-whitelist-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
+					<div id="default-whitelist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
+						<h3>Default whitelist</h3>
+					</div>
+					<div id="default-whitelist-buttons" style="width: 30%; height: 200px; float: left;">
+						<div id="default-whitelist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
+							<button id="remove-default-whitelist" class="btn" style="width: 100%">Remove selected elements<br/>from whitelist <span class="glyphicon glyphicon-chevron-right"></span></button>
+							<button id="add-default-whitelist" class="btn" style="width: 100%; margin-top: 10px;"><span class="glyphicon glyphicon-chevron-left"></span> Add selected elements<br/>to whitelist</button>
+						</div>
+					</div>
+					<div id="removed-default-whitelist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
+						<h3>Removed elements</h3>
+					</div>
+				</div>
+				<div id="custom-blacklist-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
+					<div id="custom-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
+						<h3>Custom blacklist</h3>
+					</div>
+					<div id="custom-blacklist-buttons" style="width: 30%; height: 200px; float: left;">
+						<div id="custom-blacklist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
+							<button id="remove-custom-blacklist" class="btn" style="width: 100%">Delete selected elements<br/>from blacklist</button>
+							<button id="add-custom-blacklist" class="btn" style="width: 100%; margin-top: 10px;"></span>Add element</br>to blacklist</button>
+						</div>
+					</div>
+				</div>
+				<div id="custom-whitelist-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
+					<div id="custom-whitelist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
+						<h3>Custom whitelist</h3>
+					</div>
+					<div id="custom-whitelist-buttons" style="width: 30%; height: 200px; float: left;">
+						<div id="custom-whitelist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
+							<button id="remove-custom-whitelist" class="btn" style="width: 100%">Delete selected elements<br/>from whitelist</button>
+							<button id="add-custom-whitelist" class="btn" style="width: 100%; margin-top: 10px;"></span>Add element</br>to whitelist</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+		
 		<div id="reports_tab" class="container"></div>
     </div>
 </body>
