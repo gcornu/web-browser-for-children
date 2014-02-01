@@ -168,48 +168,69 @@ function addCustomListListener(listType, host) {
 /**
  * This function fills the correct divs when lists are initialized
  *
- * @param {array[string]} defaultList list of default elements
- * @param {array[string]} removedList list of removed elements (may be empty)
+ * @param {object} defaultList list of default elements
+ * @param {object} removedList list of removed elements (may be empty)
  * @param {blacklist|whitelist} name of the list to be filled
  * @param {default|custom} type of the list
  */
 function fillListDivs(defaultList, removedList, name, type) {
-	if($('#default-blacklist-categories select').is(':empty')) {
-		Object.keys(defaultList).forEach(function(category) {
-			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
-			$('#default-blacklist-categories select').append(option);
-		});
-		$('#default-blacklist-categories select').change(function() {
-			$('#default-blacklist-inner div').hide();
-			$('#default-blacklist-category-' + $(this).val()).show();
-		});
-	}
-	fillListsDivsHelper(defaultList, name, type);
+	var prefix = type + '-' + name,
+		removedPrefix = '';
+	fillListsDivsHelper(defaultList, prefix);
 	if(removedList) {
-		fillListsDivsHelper(removedList, name, 'removed-' + type);
+		removedPrefix = 'removed-' + prefix;
+		fillListsDivsHelper(removedList, removedPrefix);
 	}
+
+	fillMenu(defaultList, prefix, removedPrefix);
 }
 
 /**
  * This function is a helper for fillListsDivs function
  * This function shouldn't be used by any other function than fillListsDivs
  *
- * @param {array[string]} list of elements to add
- * @param {blacklist|whitelist} name of the list to be filled
- * @param {default|removed-default|custom} type of the given list
+ * @param {object} list of elements to add
+ * @param {string} prefix of id of elements
  */
-function fillListsDivsHelper(list, name, type) {
-	var title = $('#' + type + '-' + name + '-inner h3');
-	$('#' + type + '-' + name + '-inner').empty().append(title);
+function fillListsDivsHelper(list, prefix) {
+	var title = $('#' + prefix + '-inner h3');
+	$('#' + prefix + '-inner').empty().append(title);
 
 	Object.keys(list).forEach(function(category) {
-		var div = $('<div>').attr('id', type + '-' + name + '-category-' + category);
+		var div = $('<div>').attr('id', prefix + '-category-' + category);
 		list[category].forEach(function(elem) {
 			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 		});
-		$('#' + type + '-' + name + '-inner').append(div);
+		$('#' + prefix + '-inner').append(div);
 	});
-	$('#default-blacklist-inner div:not(:first)').hide();
+	$('#' + prefix + '-inner div:not(:first)').hide();
+}
+
+/**
+ * This function is a helper for fillListsDiv function.
+ * It fills the menu with the categories in the given list and handles category changes
+ *
+ * @param {object} list of added elements
+ * @param {string} prefix of id of elements
+ * @param {string} prefix of the removed elements divs
+ */
+function fillMenu(list, prefix, removedPrefix) {
+	if($('#' + prefix + '-categories select').is(':empty')) {
+		Object.keys(list).forEach(function(category) {
+			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
+			$('#' + prefix + '-categories select').append(option);
+		});
+		$('#' + prefix + '-categories select').change(function() {
+			$('#' + prefix + '-inner div').hide();
+			$('#' + prefix + '-category-' + $(this).val()).show();
+		});
+		if(removedPrefix) {
+			$('#' + prefix + '-categories select').change(function() {
+				$('#' + removedPrefix + '-inner div').hide();
+				$('#' + removedPrefix + '-category-' + $(this).val()).show();
+			});
+		}
+	}
 }
 
 /**
