@@ -55,6 +55,7 @@ $(function () {
 		$(this).tab('show');
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
+
 	$('#default_blacklist').click();
 
 	var idHandledButtons = '#remove-default-blacklist, ' +
@@ -79,13 +80,21 @@ $(function () {
 		}
 	});
 
-	$('#add-custom-whitelist').click(function() {
-		var uri = window.prompt('Please enter the URL you want to add to the whitelist:');
-		if(uri) {
-			self.port.emit('add_custom_whitelist', uri);
+	$('#add-custom-blacklist-category, #add-custom-whitelist-category').click(function() {
+		var category = window.prompt('Name of the new category:');
+		if(category) {
+			var id = $(this).attr('id').split('-');
+			id.pop();
+			var listName = id.pop();
+			var select = $('#custom-' + listName + '-categories select')
+			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
+				var option = $('<option>').attr('value', category.replace(' ', '_')).html(category);
+				select.append(option);
+				option.prop('selected', 'selected');
+				select.change();
+			}
 		}
 	});
-	
 });
 
 function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
@@ -145,95 +154,156 @@ self.port.on('custom_whitelist_initialized', function(list) {
 	fillListDivs(list, [], 'whitelist', 'custom');
 });
 
-self.port.on('blacklist_custom_added', function(host) {
-	addCustomListListener('blacklist', host);
+self.port.on('blacklist_custom_added', function(host, category) {
+	addCustomListListener('blacklist', host, category);
 });
 
-self.port.on('whitelist_custom_added', function(host) {
-	addCustomListListener('whitelist', host);
+self.port.on('whitelist_custom_added', function(host, category) {
+	addCustomListListener('whitelist', host, category);
 });
+
+/**
+ * Event handler when the 'add' button is clicked for custom lists
+ *
+ * @param {blacklist|whitelist} name of the list 
+ */
+function addCustomListHandler(listName) {
+	var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
+	if(uri) {
+		var category = $('#custom-' + listName + '-categories select option:selected').val();
+		self.port.emit('add_custom_' + listName, uri, category);
+	}
+}
 
 /**
  * Event listener when an entry is added in the custom lists
  *
- * @param {blacklist|whitelist} listType
+ * @param {blacklist|whitelist} listName
  * @param {string} host
+ * @param {string} category of the added host
  */
-function addCustomListListener(listType, host) {
+function addCustomListListener(listName, host, category) {
 	if(host) {
-		$('#custom-' + listType + '-inner').append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+		var divId = 'custom-' + listName + '-category-' + category;
+		if($('#' + divId).length === 0) {
+			var div = $('<div>').attr('id', divId);
+			$('#custom-' + listName + '-inner').append(div);
+		}
+		$('#' + divId).append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
 	} else {
-		inform('Host was not added to the ' + listType + '. Please check your syntax.');
+		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
 	}
 }
 
 /**
  * This function fills the correct divs when lists are initialized
  *
- * @param {array[string]} defaultList list of default elements
- * @param {array[string]} removedList list of removed elements (may be empty)
+ * @param {object} defaultList list of default elements
+ * @param {object} removedList list of removed elements (may be empty)
  * @param {blacklist|whitelist} name of the list to be filled
  * @param {default|custom} type of the list
  */
 function fillListDivs(defaultList, removedList, name, type) {
-	fillListsDivsHelper(defaultList, name, type);
+	var prefix = type + '-' + name,
+		removedPrefix = '';
+	fillListsDivsHelper(defaultList, prefix);
 	if(removedList) {
-		fillListsDivsHelper(removedList, name, 'removed-' + type);
+		removedPrefix = 'removed-' + prefix;
+		fillListsDivsHelper(removedList, removedPrefix);
 	}
+
+	fillMenu(defaultList, prefix, removedPrefix);
 }
 
 /**
  * This function is a helper for fillListsDivs function
  * This function shouldn't be used by any other function than fillListsDivs
  *
- * @param {array[string]} list of elements to add
- * @param {blacklist|whitelist} name of the list to be filled
- * @param {default|removed-default|custom} type of the given list
+ * @param {object} list of elements to add
+ * @param {string} prefix of id of elements
  */
-function fillListsDivsHelper(list, name, type) {
-	var title = $('#' + type + '-' + name + '-inner h3');
-	$('#' + type + '-' + name + '-inner').empty().append(title);
+function fillListsDivsHelper(list, prefix) {
+	var title = $('#' + prefix + '-inner h3');
+	$('#' + prefix + '-inner').empty().append(title);
 
-	list.forEach(function(elem) {
-		$('#' + type + '-' + name + '-inner').append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+	Object.keys(list).forEach(function(category) {
+		var div = $('<div>').attr('id', prefix + '-category-' + category);
+		list[category].forEach(function(elem) {
+			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+		});
+		$('#' + prefix + '-inner').append(div);
 	});
+	$('#' + prefix + '-inner div:not(:first)').hide();
+}
+
+/**
+ * This function is a helper for fillListsDiv function.
+ * It fills the menu with the categories in the given list and handles category changes
+ *
+ * @param {object} list of added elements
+ * @param {string} prefix of id of elements
+ * @param {string} prefix of the removed elements divs
+ */
+function fillMenu(list, prefix, removedPrefix) {
+	if($('#' + prefix + '-categories select').is(':empty')) {
+		Object.keys(list).forEach(function(category) {
+			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
+			$('#' + prefix + '-categories select').append(option);
+		});
+		$('#' + prefix + '-categories select').first('option').prop('selected', 'selected');
+		$('#' + prefix + '-categories select').change(function() {
+			$('#' + prefix + '-inner div').hide();
+			$('#' + prefix + '-category-' + $(this).val()).show();
+		});
+		if(removedPrefix) {
+			$('#' + prefix + '-categories select').change(function() {
+				$('#' + removedPrefix + '-inner div').hide();
+				$('#' + removedPrefix + '-category-' + $(this).val()).show();
+			});
+		}
+	}
 }
 
 /**
  * Event handler for lists actions
  * 
  * @param {add|remove} event type
- * @param {blacklist|whitelist} list name
  * @param {default|custom} list type
+ * @param {blacklist|whitelist} list name
  */
 function listsButtonHandler(eventType, listType, listName) {
 	var prefixOrigin = '',
 		prefixDest = '',
-		checked_elements = [];
+		checked_elements = [],
+		category = '',
+		label,
+		br;
 
 	if(eventType) {
 		prefixOrigin = eventType === 'add' ? 'removed-' : '';
 		prefixDest = prefixOrigin === 'removed-' ? '' : 'removed-';
-	} else {
-		eventType = 'remove';
 	}
 
+	category = $('#' + listType + '-' + listName + '-categories option:selected').val();
 
 	$('#' + prefixOrigin + listType + '-' + listName + '-inner input:checked').each(function(index, element) {
 		checked_elements.push(element.id);
-		var label = $(element).next();
-		var br = $(element).next().next();
-		if(prefixOrigin || prefixDest) {
+		label = $(element).next();
+		br = $(element).next().next();
+		if(listType === 'default') {
 			$(element).attr('checked', false);
 			$('#' + prefixDest + listType + '-' + listName + '-inner').append($(element)).append(label).append(br);
 		} else {
 			br.remove();
 			label.remove();
 			element.remove();
+			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
+				$('#' + listType + '-' + listName + '-categories option:selected').remove();
+			}
 		}
 	});
 
-	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements);
+	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
