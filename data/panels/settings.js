@@ -70,10 +70,12 @@ $(function () {
 		listsButtonHandler.apply(null, paramArray);
 	});
 
-	$('#add-custom-blacklist').click(function() {
-		var uri = window.prompt('Please enter the URL you want to add to the blacklist:');
+	$('#add-custom-blacklist, #add-custom-whitelist').click(function() {
+		var listName = $(this).attr('id').split('-').pop();
+		var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
 		if(uri) {
-			self.port.emit('add_custom_blacklist', uri);
+			var category = $('#custom-' + listName + '-categories select option:selected').val();
+			self.port.emit('add_custom_' + listName, uri, category);
 		}
 	});
 
@@ -123,7 +125,7 @@ self.port.on("set_first_password", function(){
 });
 
 self.port.on("current_filter", function(value){
-	//$('#gen_tab input:radio[value=' + value + ']').prop('selected', 'selected');
+	$('#gen_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
 });
 
 // Add elements in lists when initialization is done
