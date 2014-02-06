@@ -122,7 +122,7 @@ exports.ToolbarButton = function ToolbarButton(options) {
     },
     onUntrack: function (window) {}
   };
-  var winUtils = require("window-utils");
+  var winUtils = require("sdk/deprecated/window-utils");
   var tracker = new winUtils.WindowTracker(delegate);
 
   return {
