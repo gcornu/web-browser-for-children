@@ -28,7 +28,7 @@ $(function () {
 				return "New password must be more than 4 characters long";
 			}
 			else { return "";}
-			})();
+		})();
 		if(problem===""){ //if there was no validation error, send old and new passwords
 			var pwords = {};
 			pwords.oldpass=$("#old_pass").val();
@@ -50,13 +50,28 @@ $(function () {
 	/**
 	 * Init tabs in lists management
 	 */
-	$('#lists-tabs a').click(function(e) {
+	$('#lists-tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
-	$('#default_blacklist').click();
+	$('#lists').click(function (e) {
+		$('#default_blacklist').click();
+	});
+
+	/**
+	 * Init tabs in reports panel
+	 */
+	$('#reports-tabs a').click(function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+		self.port.emit('reports_tab_choice', $(this).attr('id'));
+	});
+
+	$('#reports').click(function (e) {
+		$('#login').click();
+	});
 
 	var idHandledButtons = '#remove-default-blacklist, ' +
 						   '#add-default-blacklist, ' +
@@ -138,28 +153,32 @@ self.port.on("current_filter", function(value){
 });
 
 // Add elements in lists when initialization is done
-self.port.on('blacklist_initialized', function(defaultBlacklist, removedDefaultBlacklistElements) {
+self.port.on('blacklist_initialized', function (defaultBlacklist, removedDefaultBlacklistElements) {
 	fillListDivs(defaultBlacklist, removedDefaultBlacklistElements, 'blacklist', 'default');
 });
 
-self.port.on('whitelist_initialized', function(defaultWhitelist, removedDefaultBlacklistElements) {
+self.port.on('whitelist_initialized', function (defaultWhitelist, removedDefaultBlacklistElements) {
 	fillListDivs(defaultWhitelist, removedDefaultBlacklistElements, 'whitelist', 'default');
 });
 
-self.port.on('custom_blacklist_initialized', function(list) {
+self.port.on('custom_blacklist_initialized', function (list) {
 	fillListDivs(list, [], 'blacklist', 'custom');
 });
 
-self.port.on('custom_whitelist_initialized', function(list) {
+self.port.on('custom_whitelist_initialized', function (list) {
 	fillListDivs(list, [], 'whitelist', 'custom');
 });
 
-self.port.on('blacklist_custom_added', function(host, category) {
+self.port.on('blacklist_custom_added', function (host, category) {
 	addCustomListListener('blacklist', host, category);
 });
 
-self.port.on('whitelist_custom_added', function(host, category) {
+self.port.on('whitelist_custom_added', function (host, category) {
 	addCustomListListener('whitelist', host, category);
+});
+
+self.port.on('login_log_read', function (events) {
+	fillLoginReport(events);
 });
 
 /**
@@ -304,6 +323,24 @@ function listsButtonHandler(eventType, listType, listName) {
 	});
 
 	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
+}
+
+/**
+ * Fill login report panel
+ *
+ * @param {string} events of the login report
+ */
+function fillLoginReport(events) {
+	$('#login-pane').empty();
+	events.forEach(function (eventElement) {
+		if(eventElement) {
+			var eventSplit = eventElement.split(' : ');
+			var timestamp = $('<b>').html(eventSplit[0] + ' : ');
+			var br = $('<br>');
+			var line = $('<span>').html(eventSplit[1]).prepend(timestamp).append(br);
+			$('#login-pane').append(line);
+		}
+	});1
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
