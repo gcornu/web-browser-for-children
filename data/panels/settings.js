@@ -180,6 +180,10 @@ self.port.on('login_log_read', function (events) {
 	fillLoginReport(events);
 });
 
+self.port.on('history_log_read', function (visits) {
+	fillHistoryReport(visits);
+});
+
 /**
  * Event handler when the 'add' button is clicked for custom lists
  *
@@ -340,6 +344,24 @@ function fillLoginReport(events) {
 			$('#login-pane').append(line);
 		}
 	});1
+}
+
+/**
+ * Fill history report panel
+ *
+ * @param {string} visites of the login report
+ */
+function fillHistoryReport(visits) {
+	$('#history-pane').empty();
+	visits.forEach(function (visitElement) {
+		if(visitElement) {
+			var visitDatetime = $('<b>').html((new Date(+visitElement.timestamp)).toString() + " : ");
+			var visitTitle = (visitElement.title + ' - ');
+			var br = $('<br>');
+			var line = $('<span>').html(visitTitle+(visitElement.url)).append(br).prepend(visitDatetime);
+			$('#history-pane').append(line);
+		}
+	});
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
