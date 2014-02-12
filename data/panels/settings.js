@@ -23,8 +23,7 @@ $(function () {
 		var problem = (function(){ //do some validation and generate a message if necessary
 			if($("#new_pass1").val()!==$("#new_pass2").val()){
 				return "Passwords must match";
-			}
-			else if($("#new_pass1").val().length<4){
+			} else if($("#new_pass1").val().length<4){
 				return "New password must be more than 4 characters long";
 			}
 			else { return "";}
