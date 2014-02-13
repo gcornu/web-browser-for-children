@@ -343,7 +343,7 @@ function fillLoginReport(events) {
 			var line = $('<span>').html(eventSplit[1]).prepend(timestamp).append(br);
 			$('#login-pane').append(line);
 		}
-	});1
+	});
 }
 
 /**
