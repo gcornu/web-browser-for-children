@@ -5,10 +5,11 @@ exports["test auhentication log"] = function(assert, done) {
 	portStub.emit = function () {};
 	logs.setPort(portStub);
 	logs.setLoginCallback(function (events) {
-		assert.ok(events.length === 1 && events[0].indexOf('success'), 'Success login test');
+		assert.ok(events.length === 2 && events[0].indexOf('success') && events[0].indexOf('fail'), 'Success login test');
 		done();
 	});
 	logs.addToLoginLog(true);
+	logs.addToLoginLog(false);
 	logs.getLoginLog();
 };
 
