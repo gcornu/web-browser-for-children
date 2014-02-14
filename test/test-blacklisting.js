@@ -64,7 +64,6 @@ exports['test custom blacklist errors'] = function (assert) {
 		'Remove element not in the custom blacklist error'
 	);
 	blacklisting.removeElementsFromCustomBlacklist(['*.test.com'], 'Default');
-	console.log(ss.storage.customBlacklist);
 	assert.throws(function () {
 			blacklisting.removeElementsFromCustomBlacklist(['*.anothertest.com'], 'Default');
 		},
@@ -72,7 +71,6 @@ exports['test custom blacklist errors'] = function (assert) {
 		'Remove element from empty category of custom blacklist error'
 	);
 	blacklisting.addElementToCustomBlacklist('www.test.com', 'Default');
-	console.log(ss.storage.customBlacklist);
 	assert.throws(function () {
 			blacklisting.addElementToCustomBlacklist('www.test.com', 'Default');
 		},
