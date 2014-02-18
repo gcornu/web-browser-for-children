@@ -12,7 +12,9 @@ $(function () {
 		var password = "";
 		if ($("#pass").val()) {password = $("#pass").val(); } 
 		if ($("#input").length===1) self.port.emit("answer", password); //do this if safe browsing is off
-		else self.port.emit("answer-unlock", password); //do this if safe browsing is on
+		else if($("#input-lock").length===1) self.port.emit("answer-lock", password)
+		else if($("#input-safe").length===1) self.port.emit("answer-unlock", password); //do this if safe browsing is on
+		else self.port.emit("answer-options", password);
 	});
 });
 
@@ -30,7 +32,16 @@ self.port.on("ison", function () { //change the page when safe browsing is on
 	$("#input").attr("id","input-safe");
 });
 
+self.port.on("isoff", function () { //change the page when safe browsing is on
+	$("#pass").before("<div style=\"margin:5px 0px\" class=\"alert alert-info\"><small>This will enable safe browsing</div>");
+	$("#input").attr("id","input-lock");
+});
+
+self.port.on("options", function () { //change the page when safe browsing is on
+	$("#input").attr("id","input-options");
+});
+
 self.port.on("auth_success", function() {
 	$(".alert").hide(); //hide all the generated alerts
-	$("#input-safe").attr("id","input"); //this is fine in any case (safe browsing on or off)
+	$("#input-safe, #input-lock, #input-options").attr("id","input"); //this is fine in any case (safe browsing on or off)
 });
