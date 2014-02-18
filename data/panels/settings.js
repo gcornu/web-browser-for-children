@@ -100,7 +100,7 @@ $(function () {
 			var id = $(this).attr('id').split('-');
 			id.pop();
 			var listName = id.pop();
-			var select = $('#custom-' + listName + '-categories select')
+			var select = $('#custom-' + listName + '-categories select');
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
 				var option = $('<option>').attr('value', category.replace(' ', '_')).html(category);
 				select.append(option);
@@ -349,17 +349,44 @@ function fillLoginReport(events) {
 /**
  * Fill history report panel
  *
- * @param {string} visites of the login report
+ * @param array visits from the history log
  */
 function fillHistoryReport(visits) {
-	$('#history-pane').empty();
+	$('#history-pane tbody').empty();
+	
+	//will use this to pad date
+	function pad (number) {
+				return ("00" + number).slice (-2);
+			}
+	
+	//for each visit found in the log add a row to the table
 	visits.forEach(function (visitElement) {
 		if(visitElement) {
-			var visitDatetime = $('<b>').html((new Date(+visitElement.timestamp)).toString() + " : ");
-			var visitTitle = (visitElement.title + ' - ');
-			var br = $('<br>');
-			var line = $('<span>').html(visitTitle+(visitElement.url)).append(br).prepend(visitDatetime);
-			$('#history-pane').append(line);
+			//prepare the data for display
+			var visit = {};
+			
+			var visitDate = new Date(+visitElement.timestamp);
+			visit.date = visitDate.getFullYear() + "-"+ 
+						pad((visitDate.getMonth()+1))+ "-" +
+						pad(visitDate.getDate())+" "+
+						pad(visitDate.getHours())+":"+
+						pad(visitDate.getMinutes());
+			visit.title = visitElement.title;
+			visit.url = $('<a>').attr("href",visitElement.url).html(removeUrlPrefix(visitElement.url));
+			visit.url.attr("target","_blank");
+
+			//create a row that will hold the data
+			var line = $('<tr>'); 
+			
+			//for each attribute of the visit, create a table data element and put it in the row
+			for (var name in visit) {
+				if (visit.hasOwnProperty(name)) {
+					line.append($('<td>').html(visit[name]));
+				}
+			}
+			
+			//append the line to the table
+			$('#history-pane tbody').append(line);
 		}
 	});
 }
@@ -371,4 +398,12 @@ function showTab(tab_choice) { //hides other content and shows chosen tab "pass"
 	$("#"+tab_choice+"_tab").show();
 	$("#nav .active").removeClass("active");
 	$("#"+tab_choice).addClass("active");
+}
+
+function removeUrlPrefix(url) {
+	prefix = /(^https?:\/\/|www\.|\/$)/g;
+	// remove any prefix
+    url = url.replace(prefix, "");
+	//url = url.replace(/www\/./, "");
+	return url;
 }
