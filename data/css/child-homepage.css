@@ -1,0 +1,23 @@
+body{
+    background-color:yellow;
+    
+}
+
+.row{
+	margin-bottom: 8px;
+    margin-top:8px;
+
+}
+.container{
+    margin-top:10px;
+    background-color:#00A;
+    text-align:center;
+    border-radius:15px;
+}
+
+.col-md-4 img{
+    border-radius:10px;
+    border:1px solid black;
+    width:100%;
+    
+}
