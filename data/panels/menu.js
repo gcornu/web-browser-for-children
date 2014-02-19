@@ -7,6 +7,6 @@ $(function () {
 	$('#activate, #deactivate').click(function () {
 		var label = $(this).attr('id') == 'activate' ? 'Deactivate' : 'Activate';
 		$(this).attr('id', label.toLowerCase());
-		$(this).html(label + 'FfC');
+		$(this).html(label + ' FfC');
 	});
 });
