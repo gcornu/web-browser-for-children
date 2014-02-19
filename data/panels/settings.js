@@ -174,9 +174,6 @@ $(function () {
 		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
 
 		});
-		
-		$(".tablesorter-filter").addClass("form-control input-md");
-
 });
 
 // --- END OF document.ready function
@@ -461,7 +458,9 @@ function fillHistoryReport(visits) {
 			$('#history-pane tbody').append(line);
 		}
 	});
-	$("#table-history").trigger("update");
+	$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
+	$(".tablesorter-filter").addClass("form-control input-md");
+
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
