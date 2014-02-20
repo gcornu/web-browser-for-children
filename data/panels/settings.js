@@ -1,15 +1,15 @@
 $(function () {
 	/**
-	  * Nav bar management
+	* Nav bar management
 	*/
     "use strict";
     $("#nav li").click(function () {
-    	$('#welcome').remove();
+		$('#welcome').remove();
 		showTab($(this).attr('id'));
     });
 
 	/**
-	  * Password page submit action
+	* Password page submit action
 	*/
 	$("input.password").keyup(function(event){ 
 		//if user presses enter while in a password field, "click" on the submit button
@@ -72,12 +72,12 @@ $(function () {
 		$('#login').click();
 	});
 
-	var idHandledButtons = '#remove-default-blacklist, ' +
-						   '#add-default-blacklist, ' +
-						   '#remove-default-whitelist, ' +
-						   '#add-default-whitelist, ' +
-						   '#remove-custom-blacklist, ' +
-						   '#remove-custom-whitelist';
+	var idHandledButtons =	'#remove-default-blacklist, ' +
+							'#add-default-blacklist, ' +
+							'#remove-default-whitelist, ' +
+							'#add-default-whitelist, ' +
+							'#remove-custom-blacklist, ' +
+							'#remove-custom-whitelist';
 
 	$(idHandledButtons).click(function() {
 		var self = this;
@@ -100,7 +100,7 @@ $(function () {
 			var id = $(this).attr('id').split('-');
 			id.pop();
 			var listName = id.pop();
-			var select = $('#custom-' + listName + '-categories select')
+			var select = $('#custom-' + listName + '-categories select');
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
 				var option = $('<option>').attr('value', category.replace(' ', '_')).html(category);
 				select.append(option);
@@ -109,7 +109,76 @@ $(function () {
 			}
 		}
 	});
+	
+	
+	// ------ jQuery Tablesorter plugin------------
+	$.extend($.tablesorter.themes.bootstrap, {
+		// these classes are added to the table. To see other table classes available,
+		// look here: http://twitter.github.com/bootstrap/base-css.html#tables
+		table      : 'table table-bordered',
+		caption    : 'caption',
+		header     : 'bootstrap-header', // give the header a gradient background
+		footerRow  : '',
+		footerCells: '',
+		icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header
+		sortNone   : 'bootstrap-icon-unsorted',
+		sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
+		sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down', // includes classes for Bootstrap v2 & v3
+		active     : '', // applied when column is sorted
+		hover      : '', // use custom css here - bootstrap class may not override it
+		filterRow  : 'form-control', // filter row class
+		even       : '', // odd row zebra striping
+		odd        : ''  // even row zebra striping
+	});
+	// call the tablesorter plugin and apply the uitheme widget
+	$("#table-history").tablesorter({
+		// this will apply the bootstrap theme if "uitheme" widget is included
+		// the widgetOptions.uitheme is no longer required to be set
+		theme : "bootstrap",
+
+		widthFixed: true,
+
+		headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
+
+		// widget code contained in the jquery.tablesorter.widgets.js file
+		// use the zebra stripe widget if you plan on hiding any rows (filter widget)
+		widgets : [ "uitheme", "filter", "zebra" ],
+
+		widgetOptions : {
+			// using the default zebra striping class name, so it actually isn't included in the theme variable above
+			// this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
+			zebra : ["even", "odd"],
+
+			// reset filters button
+			filter_reset : ".reset"
+
+			// set the uitheme widget to use the bootstrap theme class names
+			// this is no longer required, if theme is set
+			// ,uitheme : "bootstrap"
+		}
+	})
+		.tablesorterPager({
+
+		// target the pager markup - see the HTML block below
+		container: $(".ts-pager"),
+
+		// target the pager page select dropdown - choose a page
+		cssGoto  : ".pagenum",
+
+		// remove rows from the table to speed up the sort of large tables.
+		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+		removeRows: false,
+
+		// output string - default is '{page}/{totalPages}';
+		// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+		});
 });
+
+// --- END OF document.ready function
+
+
 
 function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
 	var alertclass = "";
@@ -349,19 +418,49 @@ function fillLoginReport(events) {
 /**
  * Fill history report panel
  *
- * @param {string} visites of the login report
+ * @param array visits from the history log
  */
 function fillHistoryReport(visits) {
-	$('#history-pane').empty();
+	$('#history-pane tbody').empty();
+	
+	//will use this to pad date
+	function pad (number) {
+				return ("00" + number).slice (-2);
+			}
+	
+	//for each visit found in the log add a row to the table
 	visits.forEach(function (visitElement) {
 		if(visitElement) {
-			var visitDatetime = $('<b>').html((new Date(+visitElement.timestamp)).toString() + " : ");
-			var visitTitle = (visitElement.title + ' - ');
-			var br = $('<br>');
-			var line = $('<span>').html(visitTitle+(visitElement.url)).append(br).prepend(visitDatetime);
-			$('#history-pane').append(line);
+			//prepare the data for display
+			var visit = {};
+			
+			var visitDate = new Date(+visitElement.timestamp);
+			visit.date = visitDate.getFullYear() + "-"+ 
+						pad((visitDate.getMonth()+1))+ "-" +
+						pad(visitDate.getDate())+" "+
+						pad(visitDate.getHours())+":"+
+						pad(visitDate.getMinutes());
+			visit.title = visitElement.title;
+			visit.url = $('<a>').attr("href",visitElement.url).html(removeUrlPrefix(visitElement.url));
+			visit.url.attr("target","_blank");
+
+			//create a row that will hold the data
+			var line = $('<tr>'); 
+			
+			//for each attribute of the visit, create a table data element and put it in the row
+			for (var name in visit) {
+				if (visit.hasOwnProperty(name)) {
+					line.append($('<td>').html(visit[name]));
+				}
+			}
+			
+			//append the line to the table
+			$('#history-pane tbody').append(line);
 		}
 	});
+	$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
+	$(".tablesorter-filter").addClass("form-control input-md");
+
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
@@ -371,4 +470,12 @@ function showTab(tab_choice) { //hides other content and shows chosen tab "pass"
 	$("#"+tab_choice+"_tab").show();
 	$("#nav .active").removeClass("active");
 	$("#"+tab_choice).addClass("active");
+}
+
+function removeUrlPrefix(url) {
+	prefix = /(^https?:\/\/|www\.|\/$)/g;
+	// remove any prefix
+    url = url.replace(prefix, "");
+	//url = url.replace(/www\/./, "");
+	return url;
 }
