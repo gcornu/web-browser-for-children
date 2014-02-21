@@ -1,4 +1,5 @@
 var logs = require("./logs");
+var fileHandler = require('./fileHandler');
 var _ = require("./underscore");
 
 
@@ -19,40 +20,38 @@ exports["test auhentication log"] = function(assert, done) {
 
 
 exports["test history log"] = function(assert,done) { //for now, requires tester to close tab to validate. Change behavior?
+	var tabs = require('sdk/tabs');
+	var pageToVisit = "http://example.com";
+	var url, prefix;
+
+	function removeUrlPrefix(url) {
+		prefix = /(^https?:\/\/|www\.|\/$)/g;
+		// remove any prefix
+		url = url.replace(prefix, "");
+		//url = url.replace(/www\/./, "");
+		return url;
+	}
+
+	logs.setHistoryCallback(function () {
+		//fileHandler.writeJSON({history:[url]},'history.json');
+		fileHandler.readJSON('history.json', function(data) {
+			console.log("history url: "+(_.last(data.history)).url);
+			assert.ok(_.isEqual(removeUrlPrefix((_.last(data.history)).url),removeUrlPrefix(pageToVisit)),"log visited website success");
+			done();
+		});
+	});
+
 	// turn on history logging
 	logs.startHistoryLogging();
 	
 	//navigate to a website
-	var tabs = require('sdk/tabs');
-	var pageToVisit="http://example.com";
+	
 	tabs.open({
 		url: pageToVisit,
-		onClose: callback
+		onReady: logs.historyListener,
+		//onClose: callback
 	});
-	function callback() {
-		require("sdk/timers").setTimeout(verifyLog(pageToVisit),5000);
-	}
-	function verifyLog(url) {
-		//strip url of http prefix, www and trailing slash, as browser may or may not automatically add them
-		function removeUrlPrefix(url) {
-			prefix = /(^https?:\/\/|www\.|\/$)/g;
-			// remove any prefix
-			url = url.replace(prefix, "");
-			//url = url.replace(/www\/./, "");
-			return url;
-		}
-	//check that the website has been logged
-		var fileHandler = require('./fileHandler');
-		//fileHandler.writeJSON({history:[url]},'history.json');
-		fileHandler.readJSON('history.json', function(data) {
-			console.log("history url: "+(_.last(data.history)).url);
-			assert.ok(_.isEqual(removeUrlPrefix((_.last(data.history)).url),removeUrlPrefix(url)),"log visited website success");
-			done();
-		});
-	}
-	
 
-	
 	//turn off history logging
 	logs.stopHistoryLogging();
 	
