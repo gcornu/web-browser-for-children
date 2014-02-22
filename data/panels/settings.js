@@ -184,6 +184,10 @@ self.port.on('history_log_read', function (visits) {
 	fillHistoryReport(visits);
 });
 
+self.port.on('force_update', function () {
+	$('ul.nav-tabs li.active a').click();
+});
+
 /**
  * Event handler when the 'add' button is clicked for custom lists
  *
@@ -259,7 +263,7 @@ function fillListsDivsHelper(list, prefix) {
 }
 
 /**
- * This function is a helper for fillListsDiv function.
+ * This function is a helper for fillListsDivs function.
  * It fills the menu with the categories in the given list and handles category changes
  *
  * @param {object} list of added elements
@@ -349,7 +353,7 @@ function fillLoginReport(events) {
 /**
  * Fill history report panel
  *
- * @param {string} visites of the login report
+ * @param {string} visites of the history report
  */
 function fillHistoryReport(visits) {
 	$('#history-pane').empty();
