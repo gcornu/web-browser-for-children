@@ -9,4 +9,12 @@ $(function () {
 		$(this).attr('id', label.toLowerCase());
 		$(this).html(label + ' FfC');
 	});
+
+	self.port.on('activated', function() {
+		$('#addBlacklist, #addWhitelist').hide();
+	});
+
+	self.port.on('deactivated', function() {
+		$('#addBlacklist, #addWhitelist').show();
+	});
 });
