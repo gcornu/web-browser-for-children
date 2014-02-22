@@ -28,20 +28,27 @@ self.port.on("auth_fail", function () {
 });
 
 self.port.on("ison", function () { //change the page when safe browsing is on
+	clean();
 	$("#pass").before("<div style=\"margin:5px 0px\" class=\"alert alert-warning\"><small>This will disable safe browsing</div>");
 	$("#input").attr("id","input-safe");
 });
 
 self.port.on("isoff", function () { //change the page when safe browsing is on
+	clean();
 	$("#pass").before("<div style=\"margin:5px 0px\" class=\"alert alert-info\"><small>This will enable safe browsing</div>");
 	$("#input").attr("id","input-lock");
 });
 
 self.port.on("options", function () { //change the page when safe browsing is on
+	clean();
 	$("#input").attr("id","input-options");
 });
 
 self.port.on("auth_success", function() {
-	$(".alert").hide(); //hide all the generated alerts
-	$("#input-safe, #input-lock, #input-options").attr("id","input"); //this is fine in any case (safe browsing on or off)
+	clean();
 });
+
+function clean() {
+	$("#input-safe, #input-lock, #input-options").attr("id","input");
+	$('.alert').remove();
+}
