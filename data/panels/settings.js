@@ -72,7 +72,7 @@ $(function () {
 		$('#login').click();
 	});
 
-	var idHandledButtons =	'#remove-default-blacklist, ' +
+	var idHandledButtons =  '#remove-default-blacklist, ' +
 							'#add-default-blacklist, ' +
 							'#remove-default-whitelist, ' +
 							'#add-default-whitelist, ' +

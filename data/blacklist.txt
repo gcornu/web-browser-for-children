@@ -1,5 +1,5 @@
 [General]
-*.mozilla.org
-*.wikipedia.org
+mozilla.org
+wikipedia.org
 [Search engines]
-*.google.fr
+google.fr

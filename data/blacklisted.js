@@ -7,6 +7,7 @@ self.port.on('allow', function () {
 });
 
 self.port.on('deny', function () {
+	window.stop();
 	// replace page content and title
 	document.documentElement.innerHTML = '<h1>This page is blacklisted. Go away!</h1>';
 	document.title = 'Forbidden website';
