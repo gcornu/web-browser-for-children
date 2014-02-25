@@ -55,6 +55,12 @@ $(function () {
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
+	$('#default-blacklist-search-form').submit(function (e) {
+		e.preventDefault();
+		console.log('form submitted');
+		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+	});
+
 	$('#lists').click(function (e) {
 		$('#default_blacklist').click();
 	});
@@ -221,8 +227,12 @@ self.port.on("current_filter", function(value){
 });
 
 // Add elements in lists when initialization is done
-self.port.on('blacklist_initialized', function (defaultBlacklist, removedDefaultBlacklistElements) {
-	fillListDivs(defaultBlacklist, removedDefaultBlacklistElements, 'blacklist', 'default');
+self.port.on('blacklist_initialized', function (removedDefaultBlacklistElements) {
+	fillListDivs([], removedDefaultBlacklistElements, 'blacklist', 'default');
+});
+
+self.port.on('default_blacklist_search_response', function (matches) {
+	fillListDivs(matches, [], 'blacklist', 'default');
 });
 
 self.port.on('whitelist_initialized', function (defaultWhitelist, removedDefaultBlacklistElements) {
@@ -318,8 +328,9 @@ function fillListDivs(defaultList, removedList, name, type) {
  * @param {string} prefix of id of elements
  */
 function fillListsDivsHelper(list, prefix) {
-	var title = $('#' + prefix + '-inner h3');
-	$('#' + prefix + '-inner').empty().append(title);
+	var title = $('#' + prefix + '-inner h3').detach();
+	var form = $('#' + prefix + '-inner form').detach();
+	$('#' + prefix + '-inner').empty().append(title).append(form);
 
 	Object.keys(list).forEach(function(category) {
 		var div = $('<div>').attr('id', prefix + '-category-' + category);
