@@ -335,7 +335,6 @@ function fillListsDivsHelper(list, prefix) {
 	Object.keys(list).forEach(function (category) {
 		var div = $('<div>').attr('id', prefix + '-category-' + category);
 		list[category].forEach(function (elem) {
-			alert(elem);
 			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 		});
 		$('#' + prefix + '-inner').append(div);
