@@ -61,16 +61,22 @@
 			</ul>
 			<div id="lists-tab-content" class="tab-content">
 				<div id="default-blacklist-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<div id="default-blacklist-categories" class="btn-group" style="width: 50%; ">
+						Please select a category:
+						<select class="form-control"></select>
+					</div>
+					<form id="default-blacklist-search-form" class="col-sm-5 pull-right" role="search">
+						<div class="input-group input-group-sm">
+							<input type="search" class="form-control" placeholder="Search" id="default-blacklist-search-term"></input>
+							<span class="input-group-btn">
+								<button id="default-blacklist-search-button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+							</span>
+						</div>
+					</form>
+					<br/>
 					<div id="default-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
 						<h3>Default blacklist</h3>
-						<form id="default-blacklist-search-form" class="col-sm-12 pull-left" role="search">
-							<div class="input-group input-group-sm">
-								<input type="search" class="form-control" placeholder="Search" id="default-blacklist-search-term"></input>
-								<span class="input-group-btn">
-									<button id="default-blacklist-search-button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-								</span>
-							</div>
-						</form>
+						
 					</div>
 					<div id="default-blacklist-buttons" style="width: 30%; height: 200px; float: left;">
 						<div id="default-blacklist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
