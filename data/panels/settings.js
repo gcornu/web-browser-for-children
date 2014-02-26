@@ -332,9 +332,10 @@ function fillListsDivsHelper(list, prefix) {
 	var form = $('#' + prefix + '-inner form').detach();
 	$('#' + prefix + '-inner').empty().append(title).append(form);
 
-	Object.keys(list).forEach(function(category) {
+	Object.keys(list).forEach(function (category) {
 		var div = $('<div>').attr('id', prefix + '-category-' + category);
-		list[category].forEach(function(elem) {
+		list[category].forEach(function (elem) {
+			alert(elem);
 			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 		});
 		$('#' + prefix + '-inner').append(div);
@@ -352,17 +353,17 @@ function fillListsDivsHelper(list, prefix) {
  */
 function fillMenu(list, prefix, removedPrefix) {
 	if($('#' + prefix + '-categories select').is(':empty')) {
-		Object.keys(list).forEach(function(category) {
+		Object.keys(list).forEach(function (category) {
 			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
 			$('#' + prefix + '-categories select').append(option);
 		});
 		$('#' + prefix + '-categories select').first('option').prop('selected', 'selected');
-		$('#' + prefix + '-categories select').change(function() {
+		$('#' + prefix + '-categories select').change(function () {
 			$('#' + prefix + '-inner div').hide();
 			$('#' + prefix + '-category-' + $(this).val()).show();
 		});
 		if(removedPrefix) {
-			$('#' + prefix + '-categories select').change(function() {
+			$('#' + prefix + '-categories select').change(function () {
 				$('#' + removedPrefix + '-inner div').hide();
 				$('#' + removedPrefix + '-category-' + $(this).val()).show();
 			});
