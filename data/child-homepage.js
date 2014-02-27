@@ -1,18 +1,18 @@
 $(function () {
 
 	var homeWebsites=new Array(
-		{'url' : 'http://kidrex.org' ,  'thumb':'kidrex.jpg' },
-		{'url' : 'http://super-kids.com' ,  'thumb': 'super-kids.jpg'},
-		{'url' : 'http://kidtopia.info/' ,  'thumb': 'kidtopia.jpg'},
-		{'url' : 'http://searchypants.com' ,  'thumb': 'searchypants.jpg'},
-		{'url' : 'http://www.kideos.com/' ,  'thumb': 'kideos.jpg'},
-		{'url' : 'http://www.kidsgames.org/' ,  'thumb': 'kidsgames.jpg'},
-		{'url' : 'http://disney.com' ,  'thumb': 'disney.jpg'},
-		{'url' : 'http://www.nick.com/' ,  'thumb': 'nick.jpg'},
-		{'url' : 'http://en.poney-academy.com/index.html' ,  'thumb': 'poney-academy.jpg'}
+		{'url' : "http://kidrex.org" ,  "thumb":"kidrex.jpg" },
+		{"url" : "http://super-kids.com" ,  "thumb": "super-kids.jpg"},
+		{"url" : "http://kidtopia.info/" ,  "thumb": "kidtopia.jpg"},
+		{"url" : "http://searchypants.com" ,  "thumb": "searchypants.jpg"},
+		{"url" : "http://www.kideos.com/" ,  "thumb": "kideos.jpg"},
+		{"url" : "http://www.kidsgames.org/" ,  "thumb": "kidsgames.jpg"},
+		{"url" : "http://disney.com" ,  "thumb": "disney.jpg"},
+		{"url" : "http://www.nick.com/" ,  "thumb": "nick.jpg"},
+		{"url" : "http://en.poney-academy.com/index.html" ,  "thumb": "poney-academy.jpg"}
 		);
 
-
+	//var favorites = jQuery.parseJSON( 'file:child-favorites.json' );
 
 	$('.col-md-4').each(function(index, element){
 		//var link=element.children('a');
