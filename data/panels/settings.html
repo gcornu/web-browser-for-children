@@ -1,6 +1,7 @@
 <html>
 <head>
     <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>Web browser for children options</title>
 </head>
 <body style="padding:2%">
     <div id="nav" style="margin-bottom: 10px">
@@ -11,8 +12,9 @@
             <li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
         </ul>
     </div>
-    <div class="panel panel-default" style="padding:2%">
-        <div id="gen_tab" class="container">
+    <div class="container panel panel-default" style="padding:2%">
+        <div id="gen_tab" class="tab_container">
+        	What kind of filtering would you like to use?
             <div class="radio">
               <label>
                 <input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
@@ -30,11 +32,10 @@
                 <input type="radio" name="filteringOptions" id="filteringOptions3" value="wlist"/>
                 Use whitelist
               </label>
-            
             </div>
         </div>
 		
-		<div id="pass_tab" class="container">
+		<div id="pass_tab" class="tab_container">
 			<div class="form-group">
 				<label for="old_pass">Old password:</label>
 				<input type="password" id="old_pass" class="form-control password" ></input>
@@ -52,7 +53,7 @@
 			</div>
 		</div>
 		
-		<div id="lists_tab" class="container">
+		<div id="lists_tab" class="tab_container">
 			<ul id="lists-tabs" class="nav nav-tabs">
 				<li class="active"><a id="default_blacklist" data-toggle="tab" href="#default-blacklist-pane">Default Blacklist</a></li>
 				<li><a id="default_whitelist" data-toggle="tab" href="#default-whitelist-pane">Default Whitelist</a></li>
@@ -131,7 +132,7 @@
 			</div>
 		</div>
 		
-		<div id="reports_tab" class="container">
+		<div id="reports_tab" class="tab_container">
 			<ul id="reports-tabs" class="nav nav-tabs">
 				<li class="active"><a id="login" data-toggle="tab" href="#login-pane">Login</a></li>
 				<li><a id="history" data-toggle="tab" href="#history-pane">History</a></li>
