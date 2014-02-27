@@ -6,13 +6,13 @@ $(function () {
 
 	self.port.on('activated', function() {
 		$('#addBlacklist, #addWhitelist').hide();
-		$('#activate').attr('id', 'deactivate');
 		$('#activate').html('Deactivate FfC');
+		$('#activate').attr('id', 'deactivate');
 	});
 
 	self.port.on('deactivated', function() {
 		$('#addBlacklist, #addWhitelist').show();
-		$('#deactivate').attr('id', 'activate');
 		$('#deactivate').html('Activate FfC');
+		$('#deactivate').attr('id', 'activate');
 	});
 });
