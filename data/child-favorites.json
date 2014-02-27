@@ -1,5 +1,6 @@
 {
 	"favorites" : [
+		{"index":0 , "title":"truc" , "uri":"http://example.com", "homepage":"false" , "thumb" : "background.jpg"}
 		{"index":1 , "title":"Kidrex" , "uri":"http://kidrex.org", "homepage":"true" , "thumb" : "kidrex.jpg"}
 		{"index":2 , "title":"SuperKids" , "uri":"http://super-kids.com", "homepage":"true" , "thumb" : "super-kids.jpg"}
 		{"index":3 , "title":"Kidtopia" , "uri":"http://kidtopia.info/", "homepage":"true" , "thumb" : "kidtopia.jpg"}
