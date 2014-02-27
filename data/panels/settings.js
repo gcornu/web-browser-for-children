@@ -160,7 +160,7 @@ $(function () {
 		.tablesorterPager({
 
 		// target the pager markup - see the HTML block below
-		container: $(".ts-pager"),
+		container: $("#pager"),
 
 		// target the pager page select dropdown - choose a page
 		cssGoto  : ".pagenum",
