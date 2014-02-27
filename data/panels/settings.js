@@ -1,3 +1,6 @@
+//begin by hiding everything in order to prevent flickering
+$(".tab_container").hide();
+
 $(function () {
 	/**
 	* Nav bar management
@@ -190,12 +193,13 @@ function inform(message,type) { //adds the message to the page in an alert div d
 			alertclass="\"alert alert-success\"";
 		break;
 	}
-	$(".panel").append("<div class="+alertclass+"><small>"+message+"</small></div>");
+	$('.panel #inform').remove();
+	$('.panel').append('<div id="inform" class='+alertclass+'><small>'+message+'</small></div>');
 }
 
-self.port.on("change_pass_result",function(result){
+self.port.on("change_pass_result", function (result) {
 	if(result) {
-		inform("Password successfully changed","success"); 
+		inform("Password successfully changed", "success"); 
         $("#nav").hide();
         $(".tab_container").hide();
         setTimeout(function(){
@@ -216,7 +220,7 @@ self.port.on("set_first_password", function () {
 	$(".panel").prepend("<div id=\"welcome\"><h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p></div>");
 });
 
-self.port.on("current_filter", function (value) {
+self.port.on('current_filter', function (value) {
 	$('#gen_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
 });
 
@@ -253,8 +257,8 @@ self.port.on('history_log_read', function (visits) {
 	fillHistoryReport(visits);
 });
 
-self.port.on('force_update', function () {
-	$('ul.nav-tabs li.active a').click();
+self.port.on('show_gen', function () {
+	$('#gen').click();
 });
 
 /**
@@ -324,7 +328,6 @@ function fillListsDivsHelper(list, prefix) {
 	Object.keys(list).forEach(function (category) {
 		var div = $('<div>').attr('id', prefix + '-category-' + category);
 		list[category].forEach(function (elem) {
-			alert(elem);
 			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
 		});
 		$('#' + prefix + '-inner').append(div);

@@ -15,15 +15,17 @@ $(function () {
 		else if($("#input-lock").length===1) self.port.emit("answer-lock", password)
 		else if($("#input-safe").length===1) self.port.emit("answer-unlock", password); //do this if safe browsing is on
 		else self.port.emit("answer-options", password);
+
+		//remove answer from input field
+		$('#pass').val('');
+		newAttempt();
 	});
 });
 
-self.port.on("show", function onShow() {
-	$("#pass").focus();
-	$("#pass").val("");
-});
+self.port.on("show", newAttempt);
 	
 self.port.on("auth_fail", function () {
+	$('.alert').remove();
 	$("#pass").after("<div style=\"margin:5px 0px\" class=\"alert alert-danger\"><small>Sorry, the password is wrong</small></div>");
 });
 
@@ -48,7 +50,14 @@ self.port.on("auth_success", function() {
 	clean();
 });
 
+//clean everything
 function clean() {
 	$("#input-safe, #input-lock, #input-options").attr("id","input");
 	$('.alert').remove();
+}
+
+//give focus to input field and clean it at new attempt
+function newAttempt() {
+	$('#pass').focus();
+	$('#pass').val('');
 }
