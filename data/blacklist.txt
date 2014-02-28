@@ -1,5 +1,0 @@
-[General]
-*.mozilla.org
-*.wikipedia.org
-[Search engines]
-*.google.fr
