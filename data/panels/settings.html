@@ -1,39 +1,40 @@
 <html>
 <head>
-    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <title>Web browser for children options</title>
+	<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<title>Web browser for children options</title>
 </head>
 <body style="padding:2%">
-    <div id="nav" style="margin-bottom: 10px">
-        <ul class="nav nav-pills">
-            <li id="gen"><a href="#"><span class="glyphicon glyphicon-globe"></span> General</a></li>
-            <li id="pass"><a href="#"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
-            <li id="lists"><a href="#"><span class="glyphicon glyphicon-th-list"></span> List management</a></li>
-            <li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
-        </ul>
-    </div>
-    <div class="container panel panel-default" style="padding:2%">
-        <div id="gen_tab" class="tab_container">
-        	What kind of filtering would you like to use?
-            <div class="radio">
-              <label>
-                <input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
-                No filtering
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="filteringOptions" id="filteringOptions2" value="blist"/>
-                Use blacklist
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="filteringOptions" id="filteringOptions3" value="wlist"/>
-                Use whitelist
-              </label>
-            </div>
-        </div>
+	<div id="nav" style="margin-bottom: 10px">
+		<ul class="nav nav-pills">
+			<li id="gen"><a href="#"><span class="glyphicon glyphicon-globe"></span> General</a></li>
+			<li id="pass"><a href="#"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
+			<li id="lists"><a href="#"><span class="glyphicon glyphicon-th-list"></span> List management</a></li>
+			<li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
+			<li id="limit_time"><a href="#"><span class="glyphicon glyphicon-time"></span> Time limits</a></li>
+		</ul>
+	</div>
+	<div class="container panel panel-default" style="padding:2%">
+		<div id="gen_tab" class="tab_container">
+			What kind of filtering would you like to use?
+			<div class="radio">
+				<label>
+					<input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
+					No filtering
+				</label>
+			</div>
+			<div class="radio">
+				<label>
+					<input type="radio" name="filteringOptions" id="filteringOptions2" value="blist"/>
+					Use blacklist
+				</label>
+			</div>
+			<div class="radio">
+				<label>
+					<input type="radio" name="filteringOptions" id="filteringOptions3" value="wlist"/>
+					Use whitelist
+				</label>
+			</div>
+		</div>
 		
 		<div id="pass_tab" class="tab_container">
 			<div class="form-group">
@@ -167,10 +168,40 @@
 							</select>
 						</form>
 					</div>
-
 				</div>
 			</div>
 		</div>
-    </div>
+
+		<div id="limit_time_tab" class="tab_container">
+			Please select a category:
+			<select class="form-control"></select>
+			<div id="limitTimeOptions">
+				<div class="radio">
+					<label>
+						<input type="radio" name="limitTimeOptions" id="limitTimeOptions15" value="15"/>
+						15mn
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="limitTimeOptions" id="limitTimeOptions30" value="30"/>
+						30mn
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="limitTimeOptions" id="limitTimeOptions60" value="60"/>
+						60mn
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="limitTimeOptions" id="limitTimeOptionsNone" value="0"/>
+						No time limit
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
