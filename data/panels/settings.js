@@ -484,7 +484,8 @@ function fillHistoryReport(visits) {
  *
  * @param {array} categories to be added to the select element
  */
-function fillTimeLimitSelect (categories) {
+function fillTimeLimitSelect (timeLimits) {
+	var categories = Object.keys(timeLimits);
 	if(categories.length === 0) {
 		$('#limitTimeOptions').html('No category defined');
 	} else {
@@ -492,6 +493,13 @@ function fillTimeLimitSelect (categories) {
 			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
 			$('#limit_time_tab select').append(option);
 		});
+
+		$('#limit_time_tab select').change(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
+		});
+		$('#limit_time_tab select').change();
+
 		$('input:radio[name=limitTimeOptions]').click(function () {
 			var category = $('#limit_time_tab select option:selected').val();
 			self.port.emit('limit_time_choice', category, $(this).val());
