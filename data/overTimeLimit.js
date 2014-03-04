@@ -4,7 +4,7 @@ window.stop();
 // replace page content and title
 
 document.documentElement.innerHTML = '<div class="container" style="margin-top:20%"><div class="jumbotron"><h1>&#9785; Sorry, you exceeded your time limit for this category of websites!</h1></div></div>';
-document.title = 'Forbidden website';
+document.title = 'Time limit exceeded';
 
 // set favicon to null
 var link = document.createElement('link');
