@@ -488,8 +488,11 @@ function fillTimeLimitSelect (timeLimits) {
 	var categories = Object.keys(timeLimits);
 	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
-		$('#limitTimeOptions').html('No category defined');
+		$('#limitTimeOptions').hide();
+		$('#limit_time_no_category').show();
 	} else {
+		$('#limit_time_no_category').hide();
+		$('#limitTimeOptions').show();
 		categories.forEach(function (category) {
 			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
 			$('#limit_time_tab select').append(option);
