@@ -3,17 +3,24 @@ $(".tab_container").hide();
 
 $(function () {
 	/**
-	* Nav bar management
-	*/
+	 * Nav bar management
+	 */
     "use strict";
     $("#nav li").click(function () {
 		$('#welcome').remove();
 		showTab($(this).attr('id'));
     });
 
+    /**
+     * Save button management
+     */
+    $('#save').click(function () {
+    	self.port.emit('save_settings');
+    });
+
 	/**
-	* Password page submit action
-	*/
+	 * Password page submit action
+	 */
 	$("input.password").keyup(function (event) { 
 		//if user presses enter while in a password field, "click" on the submit button
 		if(event.keyCode == 13) {
@@ -42,7 +49,7 @@ $(function () {
 	});
 
     /**
-     *
+     * Handle filtering options clicks
      */
     $("input:radio[name=filteringOptions]").click(function () {
         var val = $(this).val();
