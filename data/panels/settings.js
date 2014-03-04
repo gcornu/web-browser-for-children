@@ -214,7 +214,7 @@ self.port.on("change_pass_result", function (result) {
 			$("#welcome").hide();
 			$("input[type=password]").val(""); //set all fields to empty
 			showTab("gen");
-		},3000);
+		}, 3000);
     }
 	else inform("Password was not changed. Is your old password correct?","error");
 });
@@ -486,6 +486,7 @@ function fillHistoryReport(visits) {
  */
 function fillTimeLimitSelect (timeLimits) {
 	var categories = Object.keys(timeLimits);
+	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
 		$('#limitTimeOptions').html('No category defined');
 	} else {
@@ -497,8 +498,7 @@ function fillTimeLimitSelect (timeLimits) {
 		$('#limit_time_tab select').change(function () {
 			var category = $('#limit_time_tab select option:selected').val();
 			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
-		});
-		$('#limit_time_tab select').change();
+		}).change();
 
 		$('input:radio[name=limitTimeOptions]').click(function () {
 			var category = $('#limit_time_tab select option:selected').val();
