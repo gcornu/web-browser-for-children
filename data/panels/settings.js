@@ -418,16 +418,18 @@ function listsButtonHandler(eventType, listType, listName) {
  * @param {string} events of the login report
  */
 function fillLoginReport(events) {
-	$('#login-pane').empty();
-	events.forEach(function (eventElement) {
-		if(eventElement) {
-			var eventSplit = eventElement.split(' : ');
-			var timestamp = $('<b>').html(eventSplit[0] + ' : ');
-			var br = $('<br>');
-			var line = $('<span>').html(eventSplit[1]).prepend(timestamp).append(br);
-			$('#login-pane').append(line);
-		}
-	});
+	if(events.length !== 1 || events[0] !== '') {
+		$('#login-pane').empty();
+		events.forEach(function (eventElement) {
+			if(eventElement) {
+				var eventSplit = eventElement.split(' : ');
+				var timestamp = $('<b>').html(eventSplit[0] + ' : ');
+				var br = $('<br>');
+				var line = $('<span>').html(eventSplit[1]).prepend(timestamp).append(br);
+				$('#login-pane').append(line);
+			}
+		});
+	}
 }
 
 /**
@@ -440,41 +442,47 @@ function fillHistoryReport(visits) {
 	
 	//will use this to pad date
 	function pad (number) {
-				return ("00" + number).slice (-2);
-			}
-	
-	//for each visit found in the log add a row to the table
-	visits.forEach(function (visitElement) {
-		if(visitElement) {
-			//prepare the data for display
-			var visit = {};
-			
-			var visitDate = new Date(+visitElement.timestamp);
-			visit.date = visitDate.getFullYear() + "-"+ 
-						pad((visitDate.getMonth()+1))+ "-" +
-						pad(visitDate.getDate())+" "+
-						pad(visitDate.getHours())+":"+
-						pad(visitDate.getMinutes());
-			visit.title = visitElement.title;
-			visit.url = $('<a>').attr("href",visitElement.url).html(removeUrlPrefix(visitElement.url));
-			visit.url.attr("target","_blank");
+		return ("00" + number).slice(-2);
+	}
 
-			//create a row that will hold the data
-			var line = $('<tr>'); 
-			
-			//for each attribute of the visit, create a table data element and put it in the row
-			for (var name in visit) {
-				if (visit.hasOwnProperty(name)) {
-					line.append($('<td>').html(visit[name]));
+	if(visits.length === 0) {
+		$('#history-pane #visits').hide();
+	} else {
+		$('#history-pane #no-visit').hide();
+		$('#history-pane #visits').show();
+		//for each visit found in the log add a row to the table
+		visits.forEach(function (visitElement) {
+			if(visitElement) {
+				//prepare the data for display
+				var visit = {};
+				
+				var visitDate = new Date(+visitElement.timestamp);
+				visit.date = visitDate.getFullYear() + "-"+ 
+							pad((visitDate.getMonth()+1))+ "-" +
+							pad(visitDate.getDate())+" "+
+							pad(visitDate.getHours())+":"+
+							pad(visitDate.getMinutes());
+				visit.title = visitElement.title;
+				visit.url = $('<a>').attr("href",visitElement.url).html(removeUrlPrefix(visitElement.url));
+				visit.url.attr("target","_blank");
+
+				//create a row that will hold the data
+				var line = $('<tr>'); 
+				
+				//for each attribute of the visit, create a table data element and put it in the row
+				for (var name in visit) {
+					if (visit.hasOwnProperty(name)) {
+						line.append($('<td>').html(visit[name]));
+					}
 				}
+				
+				//append the line to the table
+				$('#history-pane tbody').append(line);
 			}
-			
-			//append the line to the table
-			$('#history-pane tbody').append(line);
-		}
-	});
-	$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
-	$(".tablesorter-filter").addClass("form-control input-md");
+		});
+		$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
+		$(".tablesorter-filter").addClass("form-control input-md");
+	}
 
 }
 

@@ -138,36 +138,40 @@
 				<li><a id="history" data-toggle="tab" href="#history-pane">History</a></li>
 			</ul>
 			<div id="reports-tab-content" class="tab-content">
-				<div id="login-pane" class="tab-pane active" style="width: 100%; overflow: hidden;"></div>
+				<div id="login-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<div id="no-event">No login attempt was recorded yet</div>
+				</div>
 				<div id="history-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
-					<table id="table-history" class="table tablesorter">
-						<thead>
-							<tr>
-								<th>Date</th>
-								<th>Title</th>
-								<th>Url</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-					<div id="pager" class="pager">
-						<form class="form-inline">
-							<!--<img src="../addons/pager/icons/first.png" class="first"/>-->
-							<span class="glyphicon glyphicon-fast-backward first"></span>
-							<!--<img src="../addons/pager/icons/prev.png" class="prev"/>-->
-							<span class="glyphicon glyphicon-backward prev"></span>
-							<input type="text" class="pagedisplay form-control" style="max-width:20%"/>
-							<span class="glyphicon glyphicon-forward next"></span>
-							<span class="glyphicon glyphicon-fast-forward last"></span>
-							<select class="pagesize form-control" style="max-width:10%">
-								<option selected="selected"  value="10">5</option>
-								<option value="20">10</option>
-								<option value="30">20</option>
-							</select>
-						</form>
+					<div id="no-visit">No website has been visited yet</div>
+					<div id="visits">
+						<table id="table-history" class="table tablesorter">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Title</th>
+									<th>Url</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						<div id="pager" class="pager">
+							<form class="form-inline">
+								<!--<img src="../addons/pager/icons/first.png" class="first"/>-->
+								<span class="glyphicon glyphicon-fast-backward first"></span>
+								<!--<img src="../addons/pager/icons/prev.png" class="prev"/>-->
+								<span class="glyphicon glyphicon-backward prev"></span>
+								<input type="text" class="pagedisplay form-control" style="max-width:20%"/>
+								<span class="glyphicon glyphicon-forward next"></span>
+								<span class="glyphicon glyphicon-fast-forward last"></span>
+								<select class="pagesize form-control" style="max-width:10%">
+									<option selected="selected"  value="10">5</option>
+									<option value="20">10</option>
+									<option value="30">20</option>
+								</select>
+							</form>
+						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
