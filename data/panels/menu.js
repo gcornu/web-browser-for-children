@@ -4,9 +4,15 @@ $(function () {
 		self.port.emit(id);
 	});
 
-	$('#activate, #deactivate').click(function () {
-		var label = $(this).attr('id') == 'activate' ? 'Deactivate' : 'Activate';
-		$(this).attr('id', label.toLowerCase());
-		$(this).html(label + ' FfC');
+	self.port.on('activated', function() {
+		$('#addBlacklist, #addWhitelist').hide();
+		$('#activate').html('Deactivate FfC');
+		$('#activate').attr('id', 'deactivate');
+	});
+
+	self.port.on('deactivated', function() {
+		$('#addBlacklist, #addWhitelist').show();
+		$('#deactivate').html('Activate FfC');
+		$('#deactivate').attr('id', 'activate');
 	});
 });

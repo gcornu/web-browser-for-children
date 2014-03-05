@@ -1,6 +1,7 @@
 <html>
 <head>
     <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <title>Web browser for children options</title>
 </head>
 <body style="padding:2%">
     <div id="nav" style="margin-bottom: 10px">
@@ -11,8 +12,9 @@
             <li id="reports"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
         </ul>
     </div>
-    <div class="panel panel-default" style="padding:2%">
-        <div id="gen_tab" class="container">
+    <div class="container panel panel-default" style="padding:2%">
+        <div id="gen_tab" class="tab_container">
+        	What kind of filtering would you like to use?
             <div class="radio">
               <label>
                 <input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
@@ -30,11 +32,10 @@
                 <input type="radio" name="filteringOptions" id="filteringOptions3" value="wlist"/>
                 Use whitelist
               </label>
-            
             </div>
         </div>
 		
-		<div id="pass_tab" class="container">
+		<div id="pass_tab" class="tab_container">
 			<div class="form-group">
 				<label for="old_pass">Old password:</label>
 				<input type="password" id="old_pass" class="form-control password" ></input>
@@ -52,7 +53,7 @@
 			</div>
 		</div>
 		
-		<div id="lists_tab" class="container">
+		<div id="lists_tab" class="tab_container">
 			<ul id="lists-tabs" class="nav nav-tabs">
 				<li><a id="default_blacklist" data-toggle="tab" href="#default-blacklist-pane">Default Blacklist</a></li>
 				<li><a id="default_whitelist" data-toggle="tab" href="#default-whitelist-pane">Default Whitelist</a></li>
@@ -118,7 +119,7 @@
 					<div id="custom-blacklist-buttons" style="width: 30%; height: 200px; float: left;">
 						<div id="custom-blacklist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
 							<button id="remove-custom-blacklist" class="btn" style="width: 100%">Delete selected elements<br/>from blacklist</button>
-							<button id="add-custom-blacklist" class="btn" style="width: 100%; margin-top: 10px;"></span>Add element</br>to blacklist</button>
+							<button id="add-custom-blacklist" class="btn" style="width: 100%; margin-top: 10px;">Add element<br/>to blacklist</button>
 						</div>
 					</div>
 				</div>
@@ -134,35 +135,57 @@
 					<div id="custom-whitelist-buttons" style="width: 30%; height: 200px; float: left;">
 						<div id="custom-whitelist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
 							<button id="remove-custom-whitelist" class="btn" style="width: 100%">Delete selected elements<br/>from whitelist</button>
-							<button id="add-custom-whitelist" class="btn" style="width: 100%; margin-top: 10px;"></span>Add element</br>to whitelist</button>
+							<button id="add-custom-whitelist" class="btn" style="width: 100%; margin-top: 10px;">Add element<br/>to whitelist</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		
-		<div id="reports_tab" class="container">
+		<div id="reports_tab" class="tab_container">
 			<ul id="reports-tabs" class="nav nav-tabs">
-				<li class="active"><a id="login" data-toggle="tab" href="#login-pane">Login</a></li>
+				<li><a id="login" data-toggle="tab" href="#login-pane">Login</a></li>
 				<li><a id="history" data-toggle="tab" href="#history-pane">History</a></li>
 			</ul>
 			<div id="reports-tab-content" class="tab-content">
-				<div id="login-pane" class="tab-pane active" style="width: 100%; overflow: hidden;"></div>
+				<div id="login-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<div id="no-event">No login attempt was recorded yet</div>
+				</div>
 				<div id="history-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
-					<table id="table-history" class="table tablesorter">
-						<thead>
-							<tr>
-								<th>Date</th>
-								<th>Title</th>
-								<th>Url</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
+					<div id="no-visit">No website has been visited yet</div>
+					<div id="visits">
+						<table id="table-history" class="table tablesorter">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Title</th>
+									<th>Url</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						<div id="pager" class="pager">
+							<form class="form-inline">
+								<!--<img src="../addons/pager/icons/first.png" class="first"/>-->
+								<span class="glyphicon glyphicon-fast-backward first"></span>
+								<!--<img src="../addons/pager/icons/prev.png" class="prev"/>-->
+								<span class="glyphicon glyphicon-backward prev"></span>
+								<input type="text" class="pagedisplay form-control" style="max-width:20%"/>
+								<span class="glyphicon glyphicon-forward next"></span>
+								<span class="glyphicon glyphicon-fast-forward last"></span>
+								<select class="pagesize form-control" style="max-width:10%">
+									<option selected="selected"  value="10">5</option>
+									<option value="20">10</option>
+									<option value="30">20</option>
+								</select>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
     </div>
+    <button id="save" class="btn btn-success pull-right">Save settings</button>
 </body>
 </html>

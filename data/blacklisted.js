@@ -9,7 +9,7 @@ self.port.on('allow', function () {
 self.port.on('deny', function () {
 	window.stop();
 	// replace page content and title
-	document.documentElement.innerHTML = '<h1>This page is blacklisted. Go away!</h1>';
+	document.documentElement.innerHTML = '<div class="container" style="margin-top:20%"><div class="jumbotron"><h1>&#9785; Sorry, you are not allowed here!</h1></div></div>';
 	document.title = 'Forbidden website';
 	$('html').show();
 
