@@ -1,5 +1,4 @@
 // stop loading of the page
-//window.stop();
 $('html').hide();
 
 self.port.on('allow', function () {
@@ -11,6 +10,12 @@ self.port.on('deny', function () {
 	// replace page content and title
 	document.documentElement.innerHTML = '<div class="container" style="margin-top:20%"><div class="jumbotron"><h1>&#9785; Sorry, you are not allowed here!</h1></div></div>';
 	document.title = 'Forbidden website';
+
+	var link = document.createElement('link');
+	link.rel = 'stylesheet';
+	link.href = self.options.bootstrap_url;
+	document.getElementsByTagName('head')[0].appendChild(link);
+
 	$('html').show();
 
 	// set favicon to null
@@ -19,4 +24,6 @@ self.port.on('deny', function () {
 	link.rel = 'shortcut icon';
 	link.href = '';
 	document.getElementsByTagName('head')[0].appendChild(link);
+
+	
 });
