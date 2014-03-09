@@ -33,7 +33,7 @@ $(function () {
 		var problem = (function () { //do some validation and generate a message if necessary
 			if($("#new_pass1").val() !== $("#new_pass2").val()) {
 				return "Passwords must match";
-			} else if($("#new_pass1").val().length<4) {
+			} else if($("#new_pass1").val().length < 4) {
 				return "New password must be more than 4 characters long";
 			} else {
 				return "";
@@ -44,7 +44,7 @@ $(function () {
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
 			self.port.emit("update_pass", pwords);
-		} else inform(problem,"error");
+		} else inform(problem, "error");
 			//in case there was a message generated, append it to the page.
 	});
 
@@ -190,7 +190,7 @@ $(function () {
 
 
 
-function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
+function inform(message, type, timeout) { //adds the message to the page in an alert div depending on type (error or success)
 	var alertclass = "";
 	switch(type){
 		case "error":
@@ -200,10 +200,19 @@ function inform(message,type) { //adds the message to the page in an alert div d
 			alertclass="\"alert alert-success\"";
 		break;
 	}
-	$('.panel #inform').remove();
-	$('.panel').append('<div id="inform" class='+alertclass+'><small>'+message+'</small></div>');
+	$('#message_container #inform').remove();
+	$('#message_container').append('<div id="inform" class=' + alertclass + '><small>' + message + '</small></div>');
+
+	if(timeout) {
+		setTimeout(function () {
+			$('#message_container #inform').fadeOut(500, function () {
+				$('#message_container #inform').remove();
+			});
+		}, timeout);
+	}
 }
 
+// external events listeners
 self.port.on("change_pass_result", function (result) {
 	if(result) {
 		inform("Password successfully changed", "success"); 
@@ -216,9 +225,9 @@ self.port.on("change_pass_result", function (result) {
 			$("#welcome").hide();
 			$("input[type=password]").val(""); //set all fields to empty
 			showTab("gen");
-		},3000);
+		}, 3000);
     }
-	else inform("Password was not changed. Is your old password correct?","error");
+	else inform("Password was not changed. Is your old password correct?", "error");
 });
 
 self.port.on("set_first_password", function () {
@@ -254,6 +263,10 @@ self.port.on('blacklist_custom_added', function (host, category) {
 
 self.port.on('whitelist_custom_added', function (host, category) {
 	addCustomListListener('whitelist', host, category);
+});
+
+self.port.on('error_null_category', function (host, category) {
+	inform('Please select a category', 'error', 5000);
 });
 
 self.port.on('login_log_read', function (events) {
