@@ -262,6 +262,10 @@ self.port.on('history_log_read', function (visits) {
 	fillHistoryReport(visits);
 });
 
+self.port.on('time_log_read', function (times) {
+	fillTimeReport(times);
+});
+
 self.port.on('show_gen', function () {
 	$('#gen').click();
 });
@@ -442,8 +446,8 @@ function fillHistoryReport(visits) {
 	
 	//will use this to pad date
 	function pad (number) {
-				return ("00" + number).slice (-2);
-			}
+		return ("00" + number).slice (-2);
+	}
 	
 	//for each visit found in the log add a row to the table
 	visits.forEach(function (visitElement) {
@@ -477,6 +481,48 @@ function fillHistoryReport(visits) {
 	});
 	$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
 	$(".tablesorter-filter").addClass("form-control input-md");
+}
+
+/**
+ * Fill time report panel
+ *
+ * @param array times spent on each category
+ */
+function fillTimeReport(times) {
+	var tableBody = $('#time-pane tbody');
+
+	tableBody.empty();
+
+	var oneMinute = 60,
+		oneHour = oneMinute*60,
+		oneDay = oneHour*24;
+
+	Object.keys(times).forEach(function (category) {
+		var line = $('<tr>');
+		var categoryCell = $('<td>').html(category.replace('_', ' '));
+
+		var timeSpent = times[category].duration;
+
+		var days = Math.floor(timeSpent/oneDay),
+			hours = Math.floor((timeSpent%oneDay)/oneHour),
+			minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
+			seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
+
+		var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
+			hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
+			minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
+			secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
+
+		var timeString = daysString + hoursString + minutesString + secondsString;
+		if(timeString === '') {
+			timeString = 'No time spent on this category';
+		}
+		
+		var timeSpentCell = $('<td>').html(timeString);
+
+		line.append(categoryCell).append(timeSpentCell);
+		tableBody.append(line);
+	});
 }
 
 /*
