@@ -75,6 +75,12 @@ $(function () {
 		$('#login').click();
 	});
 
+	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
+		var localThis = this;
+		var logType = $(localThis).attr('id').split('_')[1];
+		self.port.emit('clear_log', logType);
+	});
+
 	$('#limit_time').click(function (e) {
 		e.preventDefault();
 		self.port.emit('limit_time_tab_clicked');
@@ -424,7 +430,9 @@ function listsButtonHandler(eventType, listType, listName) {
  * @param {string} events of the login report
  */
 function fillLoginReport(events) {
-	$('#login-pane').empty();
+	var clearLoginLogButton = $('#clear_login_log');
+	clearLoginLogButton.detach();
+	$('#login-pane').empty().append(clearLoginLogButton);
 	events.forEach(function (eventElement) {
 		if(eventElement) {
 			var eventSplit = eventElement.split(' : ');
@@ -517,7 +525,7 @@ function fillTimeReport(times) {
 		if(timeString === '') {
 			timeString = 'No time spent on this category';
 		}
-		
+
 		var timeSpentCell = $('<td>').html(timeString);
 
 		line.append(categoryCell).append(timeSpentCell);
