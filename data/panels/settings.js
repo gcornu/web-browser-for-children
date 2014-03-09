@@ -100,7 +100,11 @@ $(function () {
 		var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
 		if(uri) {
 			var category = $('#custom-' + listName + '-categories select option:selected').val();
-			self.port.emit('add_custom_' + listName, uri, category);
+			if(category) {
+				self.port.emit('add_custom_' + listName, uri, category);
+			} else {
+				inform('Please select a category', 'error', 5000);
+			}
 		}
 	});
 
@@ -265,8 +269,16 @@ self.port.on('whitelist_custom_added', function (host, category) {
 	addCustomListListener('whitelist', host, category);
 });
 
-self.port.on('error_null_category', function (host, category) {
+self.port.on('error_null_category', function () {
 	inform('Please select a category', 'error', 5000);
+});
+
+self.port.on('malformed_url', function() {
+	inform('The given url is malformed', 'error', 5000);
+});
+
+self.port.on('host_already_added', function() {
+	inform('The given url is already in the list', 'error', 5000);
 });
 
 self.port.on('login_log_read', function (events) {
