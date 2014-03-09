@@ -219,19 +219,13 @@ function inform(message, type, timeout) { //adds the message to the page in an a
 // external events listeners
 self.port.on("change_pass_result", function (result) {
 	if(result) {
-		inform("Password successfully changed", "success"); 
-        $("#nav").hide();
-        $(".tab_container").hide();
-        setTimeout(function(){
-			self.port.emit("password_done");
-			$("#nav").show();
-			$("#old_pass").parent().show(); //this was hidden if first password change
-			$("#welcome").hide();
-			$("input[type=password]").val(""); //set all fields to empty
-			showTab("gen");
-		}, 3000);
+		inform("Password successfully changed", "success", 3000);
+		$("#old_pass").parent().show(); //this was hidden if first password change
+		$("#welcome").hide();
+		$("input[type=password]").val(""); //set all fields to empty
+    } else {
+    	inform("Password was not changed. Is your old password correct?", "error", 5000);
     }
-	else inform("Password was not changed. Is your old password correct?", "error");
 });
 
 self.port.on("set_first_password", function () {
