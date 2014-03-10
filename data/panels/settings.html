@@ -138,12 +138,15 @@
 			<ul id="reports-tabs" class="nav nav-tabs">
 				<li><a id="login" data-toggle="tab" href="#login-pane">Login</a></li>
 				<li><a id="history" data-toggle="tab" href="#history-pane">History</a></li>
+				<li><a id="time" data-toggle="tab" href="#time-pane">Time</a></li>
 			</ul>
 			<div id="reports-tab-content" class="tab-content">
 				<div id="login-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<button id="clear_login_log" class="btn btn-danger">Clear login log</button>
 					<div id="no-event">No login attempt was recorded yet</div>
 				</div>
 				<div id="history-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
+					<button id="clear_history_log" class="btn btn-danger">Clear history log</button>
 					<div id="no-visit">No website has been visited yet</div>
 					<div id="visits">
 						<table id="table-history" class="table tablesorter">
@@ -174,6 +177,19 @@
 							</form>
 						</div>
 					</div>
+				</div>
+				<div id="time-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<button id="clear_time_log" class="btn btn-danger">Clear time log</button>
+					<table id="table-time" class="table">
+						<thead>
+							<tr>
+								<th>Category</th>
+								<th>Time spent</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

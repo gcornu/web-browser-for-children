@@ -82,6 +82,12 @@ $(function () {
 		$('#login').click();
 	});
 
+	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
+		var localThis = this;
+		var logType = $(localThis).attr('id').split('_')[1];
+		self.port.emit('clear_log', logType);
+	});
+
 	$('#limit_time').click(function (e) {
 		e.preventDefault();
 		self.port.emit('limit_time_tab_clicked');
@@ -288,6 +294,10 @@ self.port.on('history_log_read', function (visits) {
 	fillHistoryReport(visits);
 });
 
+self.port.on('time_log_read', function (times) {
+	fillTimeReport(times);
+});
+
 self.port.on('show_gen', function () {
 	$('#gen').click();
 });
@@ -446,17 +456,24 @@ function listsButtonHandler(eventType, listType, listName) {
  * @param {string} events of the login report
  */
 function fillLoginReport(events) {
+	var clearLoginLogButton = $('#clear_login_log');
+	var noEventLabel = $('#login-pane #no-event');
+	clearLoginLogButton.detach();
+	$('#login-pane').empty().append(clearLoginLogButton).append(noEventLabel);
+	
 	if(events.length !== 1 || events[0] !== '') {
-		$('#login-pane').empty();
+		$('#login-pane #no-event').hide();
 		events.forEach(function (eventElement) {
 			if(eventElement) {
 				var eventSplit = eventElement.split(' : ');
 				var timestamp = $('<b>').html(eventSplit[0] + ' : ');
 				var br = $('<br>');
-				var line = $('<span>').html(eventSplit[1]).prepend(timestamp).append(br);
+				var line = $('<div>').html(eventSplit[1]).prepend(timestamp).append(br);
 				$('#login-pane').append(line);
 			}
 		});
+	} else {
+		$('#login-pane #no-event').show();
 	}
 }
 
@@ -475,6 +492,7 @@ function fillHistoryReport(visits) {
 
 	if(visits.length === 0) {
 		$('#history-pane #visits').hide();
+		$('#history-pane #no-visit').show();
 	} else {
 		$('#history-pane #no-visit').hide();
 		$('#history-pane #visits').show();
@@ -511,6 +529,48 @@ function fillHistoryReport(visits) {
 		$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
 		$(".tablesorter-filter").addClass("form-control input-md");
 	}
+}
+
+/**
+ * Fill time report panel
+ *
+ * @param array times spent on each category
+ */
+function fillTimeReport(times) {
+	var tableBody = $('#time-pane tbody');
+
+	tableBody.empty();
+
+	var oneMinute = 60,
+		oneHour = oneMinute*60,
+		oneDay = oneHour*24;
+
+	Object.keys(times).forEach(function (category) {
+		var line = $('<tr>');
+		var categoryCell = $('<td>').html(category.replace('_', ' '));
+
+		var timeSpent = times[category].duration;
+
+		var days = Math.floor(timeSpent/oneDay),
+			hours = Math.floor((timeSpent%oneDay)/oneHour),
+			minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
+			seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
+
+		var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
+			hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
+			minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
+			secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
+
+		var timeString = daysString + hoursString + minutesString + secondsString;
+		if(timeString === '') {
+			timeString = 'No time spent on this category';
+		}
+
+		var timeSpentCell = $('<td>').html(timeString);
+
+		line.append(categoryCell).append(timeSpentCell);
+		tableBody.append(line);
+	});
 }
 
 /*
