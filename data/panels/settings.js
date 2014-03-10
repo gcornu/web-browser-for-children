@@ -30,6 +30,15 @@ $(function () {
 	
 	$("#change_pass").click(function () {
 		$(".alert").hide(); //remove any leftover alert
+		
+		if($('#nav').css('opacity') == 0) {
+			$('#change-password-title').show();
+			$('#nav').css('visibility', 'visible');
+			$('#nav').animate({
+				opacity: '1.0'
+			}, 1000, function () {});
+		}
+		
 		var problem = (function () { //do some validation and generate a message if necessary
 			if($("#new_pass1").val() !== $("#new_pass2").val()) {
 				return "Passwords must match";
@@ -249,11 +258,14 @@ self.port.on("change_pass_result", function (result) {
 self.port.on("set_first_password", function () {
 	showTab("pass");
 	$("#old_pass").parent().hide();
-	$(".panel").prepend("<div id=\"welcome\"><h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p></div>");
+	$('#change-password-title').hide();
+	$('#nav').css('opacity', 0);
+	$('#nav').css('visibility', 'hidden');
+	$("#message_container").append("<div id=\"welcome\"><h3>Welcome to the Firefox for children extension</h3><p>Please set your parent password below:</p></div>");
 });
 
 self.port.on('current_filter', function (value) {
-	$('#gen_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
+	$('#filtering_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
 });
 
 // Add elements in lists when initialization is done
@@ -311,12 +323,16 @@ self.port.on('time_log_read', function (times) {
 	fillTimeReport(times);
 });
 
-self.port.on('show_gen', function () {
-	$('#gen').click();
+self.port.on('show_filtering', function () {
+	$('#filtering').click();
 });
 
 self.port.on('time_limit_initialized', function (categories) {
 	fillTimeLimitSelect(categories);
+})
+
+self.port.on('time_limit_set', function () {
+	inform('Time limit has been successfully set', 'success', 3000);
 })
 
 /**
@@ -618,7 +634,7 @@ function fillTimeLimitSelect (timeLimits) {
 	}
 }
 
-function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
+function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
 	self.port.emit("tab_choice",tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
