@@ -82,6 +82,11 @@ $(function () {
 		$('#login').click();
 	});
 
+	$('#limit_time').click(function (e) {
+		e.preventDefault();
+		self.port.emit('limit_time_tab_clicked');
+	})
+
 	var idHandledButtons =	'#remove-default-blacklist, ' +
 							'#add-default-blacklist, ' +
 							'#remove-default-whitelist, ' +
@@ -286,6 +291,10 @@ self.port.on('history_log_read', function (visits) {
 self.port.on('show_gen', function () {
 	$('#gen').click();
 });
+
+self.port.on('time_limit_initialized', function (categories) {
+	fillTimeLimitSelect(categories);
+})
 
 /**
  * Event handler when the 'add' button is clicked for custom lists
@@ -502,7 +511,37 @@ function fillHistoryReport(visits) {
 		$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
 		$(".tablesorter-filter").addClass("form-control input-md");
 	}
+}
 
+/*
+ * Fill the select for the time limitation
+ *
+ * @param {array} categories to be added to the select element
+ */
+function fillTimeLimitSelect (timeLimits) {
+	var categories = Object.keys(timeLimits);
+	$('#limit_time_tab select').empty();
+	if(categories.length === 0) {
+		$('#limitTimeOptions').hide();
+		$('#limit_time_no_category').show();
+	} else {
+		$('#limit_time_no_category').hide();
+		$('#limitTimeOptions').show();
+		categories.forEach(function (category) {
+			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
+			$('#limit_time_tab select').append(option);
+		});
+
+		$('#limit_time_tab select').change(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
+		}).change();
+
+		$('input:radio[name=limitTimeOptions]').click(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			self.port.emit('limit_time_choice', category, $(this).val());
+		});
+	}
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
