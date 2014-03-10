@@ -52,4 +52,12 @@ border-radius: 0 0 5px 5px;
 		border-right: 0;
 		border-radius: 0 5px 5px 0;
 	}
-} 
+}
+
+.nav > li > a, .nav > li > .dropdown-menu > li > a {
+	cursor: pointer;
+}
+
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+	border-color: transparent;
+}

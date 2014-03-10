@@ -6,8 +6,7 @@ $(function () {
 	 * Nav bar management
 	 */
     "use strict";
-    $("#nav li").click(function () {
-		$('#welcome').remove();
+    $("#nav > ul > li").not('#lists').click(function () {
 		showTab($(this).attr('id'));
     });
 
@@ -32,6 +31,7 @@ $(function () {
 		$(".alert").hide(); //remove any leftover alert
 		
 		if($('#nav').css('opacity') == 0) {
+			$('#welcome').remove();
 			$('#change-password-title').show();
 			$('#nav').css('visibility', 'visible');
 			$('#nav').animate({
@@ -68,9 +68,8 @@ $(function () {
 	/**
 	 * Init tabs in lists management
 	 */
-	$('#lists-tabs a').click(function (e) {
-		e.preventDefault();
-		$(this).tab('show');
+	$('#nav #lists .dropdown-menu a').click(function () {
+		showList($(this).attr('id'));
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
@@ -79,10 +78,6 @@ $(function () {
 		$('#default-blacklist-search-button #search-icon').hide();
 		$('#default-blacklist-search-button #search-loader').show();
 		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
-	});
-
-	$('#lists').click(function (e) {
-		$('#default_blacklist').click();
 	});
 
 	/**
@@ -266,6 +261,10 @@ self.port.on("set_first_password", function () {
 
 self.port.on('current_filter', function (value) {
 	$('#filtering_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
+});
+
+self.port.on('filter_save_success', function () {
+	inform('Filter choice has been successfully set', 'success', 3000);
 });
 
 // Add elements in lists when initialization is done
@@ -635,12 +634,20 @@ function fillTimeLimitSelect (timeLimits) {
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
+	console.log('tab choice: ' + tab_choice);
 	self.port.emit("tab_choice",tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
 	$("#"+tab_choice+"_tab").show();
 	$("#nav .active").removeClass("active");
 	$("#"+tab_choice).addClass("active");
+}
+
+function showList(list_choice) {
+	showTab('lists');
+	$("#"+'lists'+"_tab").show();
+	$('#lists_tab .list-pane').hide();
+	$('#lists_tab #' + list_choice + '-pane').show();
 }
 
 function removeUrlPrefix(url) {
