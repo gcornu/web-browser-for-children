@@ -33,7 +33,7 @@ $(function () {
 		var problem = (function () { //do some validation and generate a message if necessary
 			if($("#new_pass1").val() !== $("#new_pass2").val()) {
 				return "Passwords must match";
-			} else if($("#new_pass1").val().length<4) {
+			} else if($("#new_pass1").val().length < 4) {
 				return "New password must be more than 4 characters long";
 			} else {
 				return "";
@@ -44,7 +44,7 @@ $(function () {
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
 			self.port.emit("update_pass", pwords);
-		} else inform(problem,"error");
+		} else inform(problem, "error");
 			//in case there was a message generated, append it to the page.
 	});
 
@@ -88,7 +88,18 @@ $(function () {
 		$('#login').click();
 	});
 
-	var idHandledButtons =  '#remove-default-blacklist, ' +
+	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
+		var localThis = this;
+		var logType = $(localThis).attr('id').split('_')[1];
+		self.port.emit('clear_log', logType);
+	});
+
+	$('#limit_time').click(function (e) {
+		e.preventDefault();
+		self.port.emit('limit_time_tab_clicked');
+	})
+
+	var idHandledButtons =	'#remove-default-blacklist, ' +
 							'#add-default-blacklist, ' +
 							'#remove-default-whitelist, ' +
 							'#add-default-whitelist, ' +
@@ -106,7 +117,11 @@ $(function () {
 		var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
 		if(uri) {
 			var category = $('#custom-' + listName + '-categories select option:selected').val();
-			self.port.emit('add_custom_' + listName, uri, category);
+			if(category) {
+				self.port.emit('add_custom_' + listName, uri, category);
+			} else {
+				inform('Please select a category', 'error', 5000);
+			}
 		}
 	});
 
@@ -196,7 +211,7 @@ $(function () {
 
 
 
-function inform(message,type) { //adds the message to the page in an alert div depending on type (error or success)
+function inform(message, type, timeout) { //adds the message to the page in an alert div depending on type (error or success)
 	var alertclass = "";
 	switch(type){
 		case "error":
@@ -206,25 +221,28 @@ function inform(message,type) { //adds the message to the page in an alert div d
 			alertclass="\"alert alert-success\"";
 		break;
 	}
-	$('.panel #inform').remove();
-	$('.panel').append('<div id="inform" class='+alertclass+'><small>'+message+'</small></div>');
+	$('#message_container #inform').remove();
+	$('#message_container').append('<div id="inform" class=' + alertclass + '><small>' + message + '</small></div>');
+
+	if(timeout) {
+		setTimeout(function () {
+			$('#message_container #inform').fadeOut(500, function () {
+				$('#message_container #inform').remove();
+			});
+		}, timeout);
+	}
 }
 
+// external events listeners
 self.port.on("change_pass_result", function (result) {
 	if(result) {
-		inform("Password successfully changed", "success"); 
-        $("#nav").hide();
-        $(".tab_container").hide();
-        setTimeout(function(){
-			self.port.emit("password_done");
-			$("#nav").show();
-			$("#old_pass").parent().show(); //this was hidden if first password change
-			$("#welcome").hide();
-			$("input[type=password]").val(""); //set all fields to empty
-			showTab("gen");
-		},3000);
+		inform("Password successfully changed", "success", 3000);
+		$("#old_pass").parent().show(); //this was hidden if first password change
+		$("#welcome").hide();
+		$("input[type=password]").val(""); //set all fields to empty
+    } else {
+    	inform("Password was not changed. Is your old password correct?", "error", 5000);
     }
-	else inform("Password was not changed. Is your old password correct?","error");
 });
 
 self.port.on("set_first_password", function () {
@@ -266,6 +284,18 @@ self.port.on('whitelist_custom_added', function (host, category) {
 	addCustomListListener('whitelist', host, category);
 });
 
+self.port.on('error_null_category', function () {
+	inform('Please select a category', 'error', 5000);
+});
+
+self.port.on('malformed_url', function() {
+	inform('The given url is malformed', 'error', 5000);
+});
+
+self.port.on('host_already_added', function() {
+	inform('The given url is already in the list', 'error', 5000);
+});
+
 self.port.on('login_log_read', function (events) {
 	fillLoginReport(events);
 });
@@ -274,9 +304,17 @@ self.port.on('history_log_read', function (visits) {
 	fillHistoryReport(visits);
 });
 
+self.port.on('time_log_read', function (times) {
+	fillTimeReport(times);
+});
+
 self.port.on('show_gen', function () {
 	$('#gen').click();
 });
+
+self.port.on('time_limit_initialized', function (categories) {
+	fillTimeLimitSelect(categories);
+})
 
 /**
  * Event handler when the 'add' button is clicked for custom lists
@@ -429,17 +467,24 @@ function listsButtonHandler(eventType, listType, listName) {
  * @param {string} events of the login report
  */
 function fillLoginReport(events) {
+	var clearLoginLogButton = $('#clear_login_log');
+	var noEventLabel = $('#login-pane #no-event');
+	clearLoginLogButton.detach();
+	$('#login-pane').empty().append(clearLoginLogButton).append(noEventLabel);
+	
 	if(events.length !== 1 || events[0] !== '') {
-		$('#login-pane').empty();
+		$('#login-pane #no-event').hide();
 		events.forEach(function (eventElement) {
 			if(eventElement) {
 				var eventSplit = eventElement.split(' : ');
 				var timestamp = $('<b>').html(eventSplit[0] + ' : ');
 				var br = $('<br>');
-				var line = $('<span>').html(eventSplit[1]).prepend(timestamp).append(br);
+				var line = $('<div>').html(eventSplit[1]).prepend(timestamp).append(br);
 				$('#login-pane').append(line);
 			}
 		});
+	} else {
+		$('#login-pane #no-event').show();
 	}
 }
 
@@ -458,6 +503,7 @@ function fillHistoryReport(visits) {
 
 	if(visits.length === 0) {
 		$('#history-pane #visits').hide();
+		$('#history-pane #no-visit').show();
 	} else {
 		$('#history-pane #no-visit').hide();
 		$('#history-pane #visits').show();
@@ -494,7 +540,79 @@ function fillHistoryReport(visits) {
 		$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
 		$(".tablesorter-filter").addClass("form-control input-md");
 	}
+}
 
+/**
+ * Fill time report panel
+ *
+ * @param array times spent on each category
+ */
+function fillTimeReport(times) {
+	var tableBody = $('#time-pane tbody');
+
+	tableBody.empty();
+
+	var oneMinute = 60,
+		oneHour = oneMinute*60,
+		oneDay = oneHour*24;
+
+	Object.keys(times).forEach(function (category) {
+		var line = $('<tr>');
+		var categoryCell = $('<td>').html(category.replace('_', ' '));
+
+		var timeSpent = times[category].duration;
+
+		var days = Math.floor(timeSpent/oneDay),
+			hours = Math.floor((timeSpent%oneDay)/oneHour),
+			minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
+			seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
+
+		var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
+			hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
+			minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
+			secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
+
+		var timeString = daysString + hoursString + minutesString + secondsString;
+		if(timeString === '') {
+			timeString = 'No time spent on this category';
+		}
+
+		var timeSpentCell = $('<td>').html(timeString);
+
+		line.append(categoryCell).append(timeSpentCell);
+		tableBody.append(line);
+	});
+}
+
+/*
+ * Fill the select for the time limitation
+ *
+ * @param {array} categories to be added to the select element
+ */
+function fillTimeLimitSelect (timeLimits) {
+	var categories = Object.keys(timeLimits);
+	$('#limit_time_tab select').empty();
+	if(categories.length === 0) {
+		$('#limitTimeOptions').hide();
+		$('#limit_time_no_category').show();
+	} else {
+		$('#limit_time_no_category').hide();
+		$('#limitTimeOptions').show();
+		categories.forEach(function (category) {
+			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
+			$('#limit_time_tab select').append(option);
+		});
+
+		$('#limit_time_tab select').change(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
+		}).change();
+
+		$('input:radio[name=limitTimeOptions]').click(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			self.port.emit('limit_time_choice', category, $(this).val());
+		});
+	}
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
