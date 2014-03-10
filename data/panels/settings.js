@@ -67,7 +67,8 @@ $(function () {
 
 	$('#default-blacklist-search-form').submit(function (e) {
 		e.preventDefault();
-		console.log('form submitted');
+		$('#default-blacklist-search-button #search-icon').hide();
+		$('#default-blacklist-search-button #search-loader').show();
 		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
 	});
 
@@ -261,6 +262,8 @@ self.port.on('blacklist_initialized', function (removedDefaultBlacklistElements)
 });
 
 self.port.on('default_blacklist_search_response', function (matches) {
+	$('#default-blacklist-search-button #search-loader').hide();
+	$('#default-blacklist-search-button #search-icon').show();
 	fillListDivs(matches, [], 'blacklist', 'default');
 });
 
