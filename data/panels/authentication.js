@@ -22,22 +22,34 @@ $(function () {
 	});
 });
 
+function inform(message, alertClass, timeout) {
+	$('#message_container').append('<div id="inform" style="height: 30px; padding-top: 5px; padding-bottom: 5px;" class="alert alert-' + alertClass + '"><small>' + message + '</small></div>');
+
+	if(timeout) {
+		setTimeout(function () {
+			$('#message_container #inform').fadeOut(500, function () {
+				$('#message_container #inform').remove();
+			});
+		}, timeout);
+	}
+}
+
 self.port.on("show", newAttempt);
 	
 self.port.on("auth_fail", function () {
 	$('.alert').remove();
-	$("#pass").after("<div style=\"margin:5px 0px\" class=\"alert alert-danger\"><small>Sorry, the password is wrong</small></div>");
+	inform('Sorry, the password is wrong', 'danger', 5000);
 });
 
 self.port.on("ison", function () { //change the page when safe browsing is on
 	clean();
-	$("#pass").before("<div style=\"margin:5px 0px\" class=\"alert alert-warning\"><small>This will disable safe browsing</div>");
+	inform('This will disable safe browsing', 'warning');
 	$("#input").attr("id","input-safe");
 });
 
 self.port.on("isoff", function () { //change the page when safe browsing is on
 	clean();
-	$("#pass").before("<div style=\"margin:5px 0px\" class=\"alert alert-info\"><small>This will enable safe browsing</div>");
+	inform('This will enable safe browsing', 'info');
 	$("#input").attr("id","input-lock");
 });
 
@@ -53,7 +65,7 @@ self.port.on("auth_success", function() {
 //clean everything
 function clean() {
 	$("#input-safe, #input-lock, #input-options").attr("id","input");
-	$('.alert').remove();
+	$('#inform').remove();
 }
 
 //give focus to input field and clean it at new attempt
