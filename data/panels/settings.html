@@ -13,17 +13,24 @@
 					<li id="pass"><a><span class="glyphicon glyphicon-lock"></span> Password</a></li>
 					<li id="filtering"><a><span class="glyphicon glyphicon-check"></span> Filtering</a></li>
 					<li id="lists" class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" style="width: 100%;"><span class="glyphicon glyphicon-th-list"></span> List management</a>
+						<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span> List management</a>
 						<ul class="dropdown-menu" role="menu">
 							<li class="dropdown-header">Blacklist</li>
-							<li><a id="default-blacklist">Default blacklist</a></li>
-							<li><a id="custom-blacklist">Custom blacklist</a></li>
+							<li id="default-blacklist"><a>Default blacklist</a></li>
+							<li id="custom-blacklist"><a>Custom blacklist</a></li>
 							<li class="dropdown-header">Whitelist</li>
-							<li><a id="default-whitelist">Default whitelist</a></li>
-							<li><a id="custom-whitelist">Custom whitelist</a></li>
+							<li id="default-whitelist"><a>Default whitelist</a></li>
+							<li id="custom-whitelist"><a>Custom whitelist</a></li>
 					  	</ul>
 					</li>
-					<li id="reports"><a><span class="glyphicon glyphicon-dashboard"></span> Reports</a></li>
+					<li id="reports" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-dashboard"></span> Reports</a>
+						<ul class="dropdown-menu" role="menu">
+							<li id="login"><a>Login</a></li>
+							<li id="history"><a>History</a></li>
+							<li id="time"><a>Time</a></li>
+					  	</ul>
+					</li>
 					<li id="limit_time"><a><span class="glyphicon glyphicon-time"></span> Time limits</a></li>
 				</ul>
 			</div>
@@ -153,17 +160,12 @@
 			</div>
 			
 			<div id="reports_tab" class="tab_container">
-				<ul id="reports-tabs" class="nav nav-tabs">
-					<li><a id="login" data-toggle="tab" href="#login-pane">Login</a></li>
-					<li><a id="history" data-toggle="tab" href="#history-pane">History</a></li>
-					<li><a id="time" data-toggle="tab" href="#time-pane">Time</a></li>
-				</ul>
 				<div id="reports-tab-content" class="tab-content">
-					<div id="login-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<div id="login-pane" class="report-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_login_log" class="btn btn-danger">Clear login log</button>
 						<div id="no-event">No login attempt was recorded yet</div>
 					</div>
-					<div id="history-pane" class="tab-pane" style="width: 100%; overflow: hidden;">
+					<div id="history-pane" class="report-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_history_log" class="btn btn-danger">Clear history log</button>
 						<div id="no-visit">No website has been visited yet</div>
 						<div id="visits">
@@ -196,7 +198,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="time-pane" class="tab-pane active" style="width: 100%; overflow: hidden;">
+					<div id="time-pane" class="report-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_time_log" class="btn btn-danger">Clear time log</button>
 						<table id="table-time" class="table">
 							<thead>

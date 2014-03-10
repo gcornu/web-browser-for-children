@@ -6,7 +6,7 @@ $(function () {
 	 * Nav bar management
 	 */
     "use strict";
-    $("#nav > ul > li").not('#lists').click(function () {
+    $("#nav > ul > li").not('#lists, #reports').click(function () {
 		showTab($(this).attr('id'));
     });
 
@@ -68,7 +68,7 @@ $(function () {
 	/**
 	 * Init tabs in lists management
 	 */
-	$('#nav #lists .dropdown-menu a').click(function () {
+	$('#nav #lists .dropdown-menu li').click(function () {
 		showList($(this).attr('id'));
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
@@ -83,14 +83,9 @@ $(function () {
 	/**
 	 * Init tabs in reports panel
 	 */
-	$('#reports-tabs a').click(function (e) {
-		e.preventDefault();
-		$(this).tab('show');
+	$('#nav #reports .dropdown-menu li').click(function () {
+		showReport($(this).attr('id'));
 		self.port.emit('reports_tab_choice', $(this).attr('id'));
-	});
-
-	$('#reports').click(function (e) {
-		$('#login').click();
 	});
 
 	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
@@ -634,7 +629,6 @@ function fillTimeLimitSelect (timeLimits) {
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
-	console.log('tab choice: ' + tab_choice);
 	self.port.emit("tab_choice",tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
@@ -645,9 +639,14 @@ function showTab(tab_choice) { //hides other content and shows chosen tab "pass"
 
 function showList(list_choice) {
 	showTab('lists');
-	$("#"+'lists'+"_tab").show();
 	$('#lists_tab .list-pane').hide();
 	$('#lists_tab #' + list_choice + '-pane').show();
+}
+
+function showReport(report_choice) {
+	showTab('reports');
+	$('#reports_tab .report-pane').hide();
+	$('#reports_tab #' + report_choice + '-pane').show();
 }
 
 function removeUrlPrefix(url) {
