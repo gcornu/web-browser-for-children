@@ -9,7 +9,7 @@
 			margin-bottom: 10px;
 		}
 
-		#pass_tab > div, #filtering_tab > div, #limit_time_tab > div {
+		#pass_tab > div, #filtering_tab > div, #login-pane > div, #history-pane > div, #limit_time_tab > div {
 			margin-left: 15px;
 		}
 	</style>
@@ -180,11 +180,14 @@
 			<div id="reports_tab" class="tab_container">
 				<div id="reports-tab-content" class="tab-content">
 					<div id="login-pane" class="report-pane" style="width: 100%; overflow: hidden;">
-						<button id="clear_login_log" class="btn btn-danger">Clear login log</button>
+						<button id="clear_login_log" class="btn btn-danger pull-right">Clear login log</button>
+						<h3>Following login attempts have been recorded:</h3>
 						<div id="no-event">No login attempt was recorded yet</div>
+						<div id="events"></div>
 					</div>
 					<div id="history-pane" class="report-pane" style="width: 100%; overflow: hidden;">
-						<button id="clear_history_log" class="btn btn-danger">Clear history log</button>
+						<button id="clear_history_log" class="btn btn-danger pull-right">Clear history log</button>
+						<h3>Following websites have been visited:</h3>
 						<div id="no-visit">No website has been visited yet</div>
 						<div id="visits">
 							<table id="table-history" class="table tablesorter">
@@ -217,7 +220,9 @@
 						</div>
 					</div>
 					<div id="time-pane" class="report-pane" style="width: 100%; overflow: hidden;">
-						<button id="clear_time_log" class="btn btn-danger">Clear time log</button>
+						<button id="clear_time_log" class="btn btn-danger pull-right">Clear time log</button>
+						<h3>Time spent per category:</h3>
+						<div id="no-categories"><h4>No category defined.<br/>Please add a category in custom whitelist.</h4></div>
 						<table id="table-time" class="table">
 							<thead>
 								<tr>

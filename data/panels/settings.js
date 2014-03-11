@@ -511,10 +511,7 @@ function listsButtonHandler(eventType, listType, listName) {
  * @param {string} events of the login report
  */
 function fillLoginReport(events) {
-	var clearLoginLogButton = $('#clear_login_log');
-	var noEventLabel = $('#login-pane #no-event');
-	clearLoginLogButton.detach();
-	$('#login-pane').empty().append(clearLoginLogButton).append(noEventLabel);
+	$('#login-pane #events').empty();
 	
 	if(events.length !== 1 || events[0] !== '') {
 		$('#login-pane #no-event').hide();
@@ -524,7 +521,7 @@ function fillLoginReport(events) {
 				var timestamp = $('<b>').html(eventSplit[0] + ' : ');
 				var br = $('<br>');
 				var line = $('<div>').html(eventSplit[1]).prepend(timestamp).append(br);
-				$('#login-pane').append(line);
+				$('#login-pane #events').append(line);
 			}
 		});
 	} else {
@@ -596,36 +593,46 @@ function fillTimeReport(times) {
 
 	tableBody.empty();
 
-	var oneMinute = 60,
-		oneHour = oneMinute*60,
-		oneDay = oneHour*24;
+	var categories = Object.keys(times);
 
-	Object.keys(times).forEach(function (category) {
-		var line = $('<tr>');
-		var categoryCell = $('<td>').html(category.replace('_', ' '));
+	if(categories.length > 0) {
+		$('#time-pane #no-categories').hide();
+		$('#time-pane table').show();
 
-		var timeSpent = times[category].duration;
+		var oneMinute = 60,
+			oneHour = oneMinute*60,
+			oneDay = oneHour*24;
 
-		var days = Math.floor(timeSpent/oneDay),
-			hours = Math.floor((timeSpent%oneDay)/oneHour),
-			minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
-			seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
+		categories.forEach(function (category) {
+			var line = $('<tr>');
+			var categoryCell = $('<td>').html(category.replace('_', ' '));
 
-		var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
-			hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
-			minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
-			secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
+			var timeSpent = times[category].duration;
 
-		var timeString = daysString + hoursString + minutesString + secondsString;
-		if(timeString === '') {
-			timeString = 'No time spent on this category';
-		}
+			var days = Math.floor(timeSpent/oneDay),
+				hours = Math.floor((timeSpent%oneDay)/oneHour),
+				minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
+				seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
 
-		var timeSpentCell = $('<td>').html(timeString);
+			var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
+				hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
+				minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
+				secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
 
-		line.append(categoryCell).append(timeSpentCell);
-		tableBody.append(line);
-	});
+			var timeString = daysString + hoursString + minutesString + secondsString;
+			if(timeString === '') {
+				timeString = 'No time spent on this category';
+			}
+
+			var timeSpentCell = $('<td>').html(timeString);
+
+			line.append(categoryCell).append(timeSpentCell);
+			tableBody.append(line);
+		});
+	} else {
+		$('#time-pane table').hide();
+		$('#time-pane #no-categories').show();
+	}
 }
 
 /*
