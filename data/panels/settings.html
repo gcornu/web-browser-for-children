@@ -40,16 +40,19 @@
 			<div id="pass_tab" class="tab_container">
 				<h3 id="change-password-title" style="margin-top: 0; margin-bottom: 10px;">You can change your password below:</h3>
 				<div class="form-group">
-					<label for="old_pass">Old password</label>
-					<input type="password" id="old_pass" class="form-control password" ></input>
+					<label class="control-label" for="old_pass">Old password</label>
+					<input type="password" id="old_pass" class="form-control password"></input>
+					<span class="help-block" style="visibility: hidden;">Incorrect password</span>
 				</div>
 				<div class="form-group">
-					<label for="old_pass">New password</label>
-					<input type="password" id="new_pass1" class="form-control password" ></input>
+					<label class="control-label" for="old_pass">New password</label>
+					<input type="password" id="new_pass1" class="form-control password"></input>
+					<span class="help-block" style="visibility: hidden;">New password must be more than 4 characters long</span>
 				</div>
 				<div class="form-group">
-					<label for="old_pass">Confirm new password</label>
-					<input type="password" id="new_pass2" class="form-control password" ></input>
+					<label class="control-label" for="old_pass">Confirm new password</label>
+					<input type="password" id="new_pass2" class="form-control password"></input>
+					<span class="help-block" style="visibility: hidden;">Passwords must match</span>
 				</div>
 				<div class="form-group">
 					<input type="submit" id="change_pass" class="btn btn-primary" value="Set password"></input>

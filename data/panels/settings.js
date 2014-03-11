@@ -29,32 +29,58 @@ $(function () {
 	
 	$("#change_pass").click(function () {
 		$(".alert").hide(); //remove any leftover alert
-		
-		if($('#nav').css('opacity') == 0) {
-			$('#welcome').remove();
-			$('#change-password-title').show();
-			$('#nav').css('visibility', 'visible');
-			$('#nav').animate({
-				opacity: '1.0'
-			}, 1000, function () {});
-		}
-		
-		var problem = (function () { //do some validation and generate a message if necessary
-			if($("#new_pass1").val() !== $("#new_pass2").val()) {
-				return "Passwords must match";
-			} else if($("#new_pass1").val().length < 4) {
-				return "New password must be more than 4 characters long";
-			} else {
-				return "";
+
+		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
+			// display menu if hidden
+			if($('#nav').css('opacity') == 0) {
+				$('#welcome').remove();
+				$('#change-password-title').show();
+				$('#nav').css('visibility', 'visible');
+				$('#nav').animate({
+					opacity: '1.0'
+				}, 1000, function () {});
 			}
-		})();
-		if(problem === ""){ //if there was no validation error, send old and new passwords
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
 			self.port.emit("update_pass", pwords);
-		} else inform(problem, "error");
-			//in case there was a message generated, append it to the page.
+		} else if($("#new_pass1").val() !== $("#new_pass2").val()) {
+			$("#new_pass2").parent().addClass('has-error');
+			$("#new_pass2").parent().find('.help-block').css('visibility', 'visible');
+		} else if($("#new_pass1").val().length < 4) {
+			$("#new_pass1").parent().addClass('has-error');
+			$("#new_pass1").parent().find('.help-block').css('visibility', 'visible');
+		}
+	});
+
+	$('#old_pass').on('change keyup paste', function () {
+		$(this).parent().removeClass('has-error');
+		$(this).parent().find('.help-block').css('visibility', 'hidden');
+	});
+
+	$('#new_pass1').on('change keyup paste', function () {
+		if($(this).val().length >= 4) {
+			$(this).parent().removeClass('has-error').addClass('has-success');
+			$(this).parent().find('.help-block').css('visibility', 'hidden');
+		}
+		$('#new_pass2').change();
+	});
+
+	$('#new_pass1').focusout(function () {
+		if($(this).val().length < 4) {
+			$(this).parent().removeClass('has-success').addClass('has-error');
+			$(this).parent().find('.help-block').css('visibility', 'visible');
+		}
+	});
+
+	$('#new_pass2').on('change keyup paste', function () {
+		if($(this).val() === $('#new_pass1').val()) {
+			$(this).parent().removeClass('has-error').addClass('has-success');
+			$(this).parent().find('.help-block').css('visibility', 'hidden');
+		} else {
+			$(this).parent().removeClass('has-success').addClass('has-error');
+			$(this).parent().find('.help-block').css('visibility', 'visible');
+		}
 	});
 
     /**
@@ -240,8 +266,10 @@ self.port.on("change_pass_result", function (result) {
 		$("#old_pass").parent().show(); //this was hidden if first password change
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
+		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
     } else {
-    	inform("Password was not changed. Is your old password correct?", "error", 5000);
+    	$('#old_pass').parent().addClass('has-error');
+    	$('#old_pass').parent().find('.help-block').css('visibility', 'visible');
     }
 });
 
