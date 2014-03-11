@@ -97,13 +97,14 @@ $(function () {
 	/**
 	 * Init tabs in lists management
 	 */
-	$('#nav #lists .dropdown-menu li').click(function () {
+	$('#nav #lists .dropdown-menu li').not('.dropdown-header').click(function () {
 		showList($(this).attr('id'));
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
 	$('#default-blacklist-search-form').submit(function (e) {
 		e.preventDefault();
+		$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
 		$('#default-blacklist-search-button #search-icon').hide();
 		$('#default-blacklist-search-button #search-loader').show();
 		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
@@ -295,13 +296,19 @@ self.port.on('filter_save_success', function () {
 
 // Add elements in lists when initialization is done
 self.port.on('blacklist_initialized', function (removedDefaultBlacklistElements) {
-	fillListDivs([], removedDefaultBlacklistElements, 'blacklist', 'default');
+	$('#default-blacklist-categories select').selectpicker();
 });
 
-self.port.on('default_blacklist_search_response', function (matches) {
+self.port.on('default_blacklist_search_response', function (matches, removedMatchesElements) {
+	$('#default-blacklist-search-term, #default-blacklist-search-button').removeAttr('disabled');
 	$('#default-blacklist-search-button #search-loader').hide();
 	$('#default-blacklist-search-button #search-icon').show();
-	fillListDivs(matches, [], 'blacklist', 'default');
+
+	if(Object.keys(matches).length === 0) {
+		$('#default-blacklist-inner').append('<h4>No match found</h4>');
+	} else {
+		fillListDivs(matches, removedMatchesElements, 'blacklist', 'default');
+	}
 });
 
 self.port.on('whitelist_initialized', function (defaultWhitelist, removedDefaultBlacklistElements) {
@@ -309,11 +316,11 @@ self.port.on('whitelist_initialized', function (defaultWhitelist, removedDefault
 });
 
 self.port.on('custom_blacklist_initialized', function (list) {
-	fillListDivs(list, [], 'blacklist', 'custom');
+	fillListDivs(list, null, 'blacklist', 'custom');
 });
 
 self.port.on('custom_whitelist_initialized', function (list) {
-	fillListDivs(list, [], 'whitelist', 'custom');
+	fillListDivs(list, null, 'whitelist', 'custom');
 });
 
 self.port.on('blacklist_custom_added', function (host, category) {
@@ -405,7 +412,7 @@ function fillListDivs(defaultList, removedList, name, type) {
 	var prefix = type + '-' + name,
 		removedPrefix = '';
 	fillListsDivsHelper(defaultList, prefix);
-	if(removedList) {
+	if(removedList !== null) {
 		removedPrefix = 'removed-' + prefix;
 		fillListsDivsHelper(removedList, removedPrefix);
 	}
@@ -421,18 +428,31 @@ function fillListDivs(defaultList, removedList, name, type) {
  * @param {string} prefix of id of elements
  */
 function fillListsDivsHelper(list, prefix) {
-	var title = $('#' + prefix + '-inner h3').detach();
-	var form = $('#' + prefix + '-inner form').detach();
-	$('#' + prefix + '-inner').empty().append(title).append(form);
+	$('#' + prefix + '-inner').empty();
 
 	Object.keys(list).forEach(function (category) {
 		var div = $('<div>').attr('id', prefix + '-category-' + category);
 		list[category].forEach(function (elem) {
-			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+			div.append('<div class="checkbox"><label><input type="checkbox" id="' + elem + '"/> ' + elem + '</label></div>');
 		});
+
+		div.find('input').change(function () {
+			var localPrefix = prefix.replace('removed', 'add');
+			if(!localPrefix.startsWith('add')) {
+				localPrefix = 'remove-' + localPrefix;
+			}
+			var localDiv = div;
+			
+			if(localDiv.find('input:checked').length === 0) {
+				$('#' + localPrefix).attr('disabled', 'disabled');
+			} else {
+				$('#' + localPrefix).removeAttr('disabled');
+			}
+		});
+
 		$('#' + prefix + '-inner').append(div);
 	});
-	$('#' + prefix + '-inner div:not(:first)').hide();
+	$('#' + prefix + '-inner > div:not(:first)').hide();
 }
 
 /**
@@ -444,22 +464,33 @@ function fillListsDivsHelper(list, prefix) {
  * @param {string} prefix of the removed elements divs
  */
 function fillMenu(list, prefix, removedPrefix) {
-	if($('#' + prefix + '-categories select').is(':empty')) {
-		Object.keys(list).forEach(function (category) {
+	$('#' + prefix + '-categories select').empty();
+
+	var categories = Object.keys(list);
+
+	if(categories.length > 0) {
+		categories.forEach(function (category) {
 			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
 			$('#' + prefix + '-categories select').append(option);
 		});
 		$('#' + prefix + '-categories select').first('option').prop('selected', 'selected');
+		$('#' + prefix + '-categories select').prop('disabled', false);
+		$('#' + prefix + '-categories select').removeAttr('disabled');
+		$('#' + prefix + '-categories select').selectpicker('refresh');
 		$('#' + prefix + '-categories select').change(function () {
-			$('#' + prefix + '-inner div').hide();
+			$('#' + prefix + '-inner > div').hide();
 			$('#' + prefix + '-category-' + $(this).val()).show();
-		});
-		if(removedPrefix) {
-			$('#' + prefix + '-categories select').change(function () {
-				$('#' + removedPrefix + '-inner div').hide();
-				$('#' + removedPrefix + '-category-' + $(this).val()).show();
-			});
-		}
+		}).change();
+	} else {
+		$('#' + prefix + '-categories select').prop('disabled', true);
+		$('#' + prefix + '-categories select').selectpicker('refresh');
+	}
+	
+	if(removedPrefix) {
+		$('#' + prefix + '-categories select').change(function () {
+			$('#' + removedPrefix + '-inner > div').hide();
+			$('#' + removedPrefix + '-category-' + $(this).val()).show();
+		}).change();
 	}
 }
 
@@ -487,15 +518,25 @@ function listsButtonHandler(eventType, listType, listName) {
 
 	$('#' + prefixOrigin + listType + '-' + listName + '-inner input:checked').each(function(index, element) {
 		checked_elements.push(element.id);
-		label = $(element).next();
-		br = $(element).next().next();
 		if(listType === 'default') {
-			$(element).attr('checked', false);
-			$('#' + prefixDest + listType + '-' + listName + '-inner').append($(element)).append(label).append(br);
+			$(element).attr('checked', false).change();
+			$('#' + prefixDest + listType + '-' + listName + '-category-' + category).append($(element).parent().parent());
+			$(element).unbind('change');
+			$(element).change(function () {
+				var localDiv = $(element).parent().parent().parent().parent();
+				var localPrefix = localDiv.attr('id').replace('-inner', '').replace('removed', 'add');
+				if(!localPrefix.startsWith('add')) {
+					localPrefix = 'remove-' + localPrefix;
+				}
+				
+				if(localDiv.find('input:checked').length === 0) {
+					$('#' + localPrefix).attr('disabled', 'disabled');
+				} else {
+					$('#' + localPrefix).removeAttr('disabled');
+				}
+			});
 		} else {
-			br.remove();
-			label.remove();
-			element.remove();
+			element.parent().parent().remove();
 			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
 			}
@@ -685,6 +726,7 @@ function showList(list_choice) {
 	showTab('lists');
 	$('#lists_tab .list-pane').hide();
 	$('#lists_tab #' + list_choice + '-pane').show();
+	$('#lists_tab #' + list_choice + '-buttons span.glyphicon').css('margin-top', ($('#lists_tab #' + list_choice + '-buttons button').height() - $('#lists_tab #' + list_choice + '-buttons span.glyphicon').height()) / 2);
 }
 
 function showReport(report_choice) {

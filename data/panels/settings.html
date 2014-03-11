@@ -9,7 +9,7 @@
 			margin-bottom: 10px;
 		}
 
-		#pass_tab > div, #filtering_tab > div, #login-pane > div, #history-pane > div, #limit_time_tab > div {
+		#pass_tab > div, #filtering_tab > div, #login-pane > div, #history-pane > div, #limit_time_tab > div:not(.row) {
 			margin-left: 15px;
 		}
 	</style>
@@ -98,31 +98,44 @@
 
 			<div id="lists_tab" class="tab_container">
 				<div id="default-blacklist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
-					<div id="default-blacklist-categories" class="btn-group" style="width: 50%;">
-						Please select a category:
-						<select class="form-control"></select>
-					</div>
-					<form id="default-blacklist-search-form" class="col-sm-4 pull-right" role="search">
-						<div class="input-group input-group-sm" style="margin-top: 20px;">
-							<input type="search" class="form-control" placeholder="Search" id="default-blacklist-search-term"></input>
+					<form id="default-blacklist-search-form" class="col-sm-7" role="search" style="padding: 0; margin-bottom: 10px;">
+						<h3 style="float: left; margin-right: 10px;">Enter a search term</h3>
+						<div class="input-group input-group-sm" style="float: left;">
+							<input type="search" class="form-control" placeholder="Search in default blacklist" id="default-blacklist-search-term"></input>
 							<span class="input-group-btn">
 								<button id="default-blacklist-search-button" class="btn btn-default"><span id="search-icon" class="glyphicon glyphicon-search"></span><img id="search-loader" style="display: none;" src="../loader.gif"/></button>
 							</span>
 						</div>
 					</form>
-					<br/>
-					<div id="default-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
-						<h3>Default blacklist</h3>
-						
-					</div>
-					<div id="default-blacklist-buttons" style="width: 30%; height: 200px; float: left;">
-						<div id="default-blacklist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
-							<button id="remove-default-blacklist" class="btn" style="width: 100%">Remove selected elements<br/>from blacklist <span class="glyphicon glyphicon-chevron-right"></span></button>
-							<button id="add-default-blacklist" class="btn" style="width: 100%; margin-top: 10px;"><span class="glyphicon glyphicon-chevron-left"></span> Add selected elements<br/>to blacklist</button>
+					<div style="clear: both;"></div>
+					<div class="row" style="margin: 0;">
+						<div id="default-blacklist-categories" class="">
+							<h3 style="float: left; margin-right: 10px">Select a category</h3>
+							<select style="float: left;" disabled="disabled"></select>
 						</div>
 					</div>
-					<div id="removed-default-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
-						<h3>Removed elements</h3>
+					<div style="clear: both; margin-bottom: 20px"></div>
+					<div class="row" style="height: 250px;">
+						<div class="col-sm-5">
+							<h3>Matching elements in default blacklist</h3>
+							<div id="default-blacklist-inner" style="height: 100%; overflow-y: auto;">
+							</div>
+						</div>
+						<div id="default-blacklist-buttons" class="col-sm-2" style="top: 30%;">
+							<button id="remove-default-blacklist" class="btn" style="width: 100%" disabled="disabled">
+								<span class="glyphicon glyphicon-chevron-right" style="float: right;"></span>
+								Remove from<br/>blacklist
+							</button>
+							<button id="add-default-blacklist" class="btn" style="width: 100%; margin-top: 10px;" disabled="disabled">
+								<span class="glyphicon glyphicon-chevron-left" style="float: left;"></span>
+								Add to<br/>blacklist
+							</button>
+						</div>
+						<div class="col-sm-5">
+							<h3>Removed elements from default blacklist</h3>
+							<div id="removed-default-blacklist-inner" style="height: 100%; overflow-y: auto;">
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="default-whitelist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
@@ -238,9 +251,9 @@
 			</div>
 
 			<div id="limit_time_tab" class="tab_container">
-				<h3>Select a category:</h3>
-				<div class="row">
-					<div class="col-sm-5" style="padding: 0;">
+				<div class="row" style="margin: 0;">
+					<h3 style="float: left; margin-right: 10px;">Select a category:</h3>
+					<div class="col-sm-5" style="padding: 0; float: left;">
 						<select style="margin-bottom: 10px;"></select>
 					</div>
 				</div>
