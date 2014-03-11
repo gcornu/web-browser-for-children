@@ -1,3 +1,4 @@
+$('#pass-label').css('visibility', 'hidden');
 $(function () {
 	//Cannot use jQuery's "submit()" as if I wrap in a <form> element, firefox tries to save the password and throws error because it is not a browser window...
 	
@@ -37,8 +38,8 @@ function inform(message, alertClass, timeout) {
 self.port.on("show", newAttempt);
 	
 self.port.on("auth_fail", function () {
-	$('.alert').remove();
-	inform('Sorry, the password is wrong', 'danger', 5000);
+	$('#pass').parent().addClass('has-error');
+	$('#pass-label').css('visibility', 'visible');
 });
 
 self.port.on("ison", function () { //change the page when safe browsing is on
@@ -66,6 +67,8 @@ self.port.on("auth_success", function() {
 function clean() {
 	$("#input-safe, #input-lock, #input-options").attr("id","input");
 	$('#inform').remove();
+	$('#pass-label').css('visibility', 'hidden');
+	$('#pass').parent().removeClass('has-error');
 }
 
 //give focus to input field and clean it at new attempt
