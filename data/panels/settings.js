@@ -2,6 +2,9 @@
 $(".tab_container").hide();
 
 $(function () {
+	$('.selectpicker').selectpicker({
+	});
+
 	/**
 	 * Nav bar management
 	 */
@@ -635,10 +638,14 @@ function fillTimeLimitSelect (timeLimits) {
 	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
 		$('#limitTimeOptions').hide();
+		$('#limit_time_options_title').hide();
+		$('#limit_time_tab select').selectpicker('hide');
 		$('#limit_time_no_category').show();
 	} else {
 		$('#limit_time_no_category').hide();
 		$('#limitTimeOptions').show();
+		$('#limit_time_options_title').show();
+		$('#limit_time_tab select').empty().selectpicker('show');
 		categories.forEach(function (category) {
 			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
 			$('#limit_time_tab select').append(option);
@@ -653,6 +660,8 @@ function fillTimeLimitSelect (timeLimits) {
 			var category = $('#limit_time_tab select option:selected').val();
 			self.port.emit('limit_time_choice', category, $(this).val());
 		});
+
+		$('#limit_time_tab select').selectpicker('refresh');
 	}
 }
 

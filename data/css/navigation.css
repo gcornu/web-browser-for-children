@@ -30,7 +30,7 @@
 
 .nav-justified > li:last-child > a {
 	border-bottom: 0;
-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
 }
 
 @media (min-width: 768px) {
