@@ -7,6 +7,6 @@
   "license": "MPL 2.0",
   "version": "1.0",
   "unpack": true,
-  "dependencies": ["toolbarbutton", "addon-sdk"]
+  "dependencies": ["toolbar-button-complete", "addon-sdk"]
 }
 
