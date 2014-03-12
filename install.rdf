@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>jid1-AsvP94viAKaIpA@jetpack</em:id>
+		<em:version>1.0.2</em:version>
+		<em:type>2</em:type>
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> Firefox
+				<em:minVersion>21.0</em:minVersion>
+				<em:maxVersion>28.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		<em:name>Firefox for children</em:name>
+		<em:description>Turn your brwoser into a safe navigating tool for children</em:description>
+		<em:developer>Romain BIREMON, Florian CLERC, Gauthier CORNU, Lin LIANG, Baptiste VANNESSON</em:developer>
+		<em:homepageURL>https://github.com/gcornu/web-browser-for-children</em:homepageURL>
+		<em:optionsURL>resource://jid1-asvp94viakaipa-at-jetpack/web-browser-for-children/data/panels/settings.html</em:optionsURL>
+		<em:iconURL>resource://jid1-asvp94viakaipa-at-jetpack/web-browser-for-children/data/logo-on.png</em:iconURL>
+	</Description>
+</RDF>

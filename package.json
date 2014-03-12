@@ -1,12 +1,14 @@
 {
-  "name": "web-browser-for-children",
-  "title": "Web browser for children",
-  "id": "jid1-AsvP94viAKaIpA",
-  "description": "Protect your children from the hazards of Internet",
-  "author": "Romain BIREMON, Florian CLERC, Gauthier CORNU, Lin LIANG, Baptiste VANNESSON",
-  "license": "MPL 2.0",
-  "version": "1.0",
-  "unpack": true,
-  "dependencies": ["toolbar-button-complete", "addon-sdk"]
+	"name": "web-browser-for-children",
+	"title": "Firefox for children",
+	"id": "jid1-AsvP94viAKaIpA",
+	"description": "Protect your children from the hazards of Internet",
+	"author": "Romain BIREMON, Florian CLERC, Gauthier CORNU, Lin LIANG, Baptiste VANNESSON",
+	"license": "MPL 2.0",
+	"version": "1.0.2",
+	"unpack": true,
+	"dependencies": ["toolbar-button-complete", "addon-sdk"],
+	"homepage": "https://github.com/gcornu/web-browser-for-children",
+	"icon": "./data/logo-on.png"
 }
 
