@@ -394,7 +394,20 @@ function addCustomListListener(listName, host, category) {
 			var div = $('<div>').attr('id', divId);
 			$('#custom-' + listName + '-inner').append(div);
 		}
-		$('#' + divId).append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+		var div = $('#' + divId);
+		var checkbox = $('<div class="checkbox"><label><input type="checkbox" id="' + host + '"/> ' + host + '</label></div>');
+		div.append(checkbox);
+
+		checkbox.find('input').change(function () {
+			var localListName = listName;
+			var localDiv = div;
+			
+			if(localDiv.find('input:checked').length === 0) {
+				$('#remove-custom-' + localListName).attr('disabled', 'disabled');
+			} else {
+				$('#remove-custom-' + localListName).removeAttr('disabled');
+			}
+		});
 	} else {
 		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
 	}
@@ -485,6 +498,16 @@ function fillMenu(list, prefix, removedPrefix) {
 		$('#' + prefix + '-categories select').prop('disabled', true);
 		$('#' + prefix + '-categories select').selectpicker('refresh');
 	}
+
+	if(prefix.indexOf('custom') !== -1) {
+		$('#' + prefix + '-categories select').change(function () {
+			if($(this.find('option')).length == 0) {
+				$(this).prop('disabled', true);
+			} else {
+				$(this).prop('disabled', false);
+			}
+		}).change();
+	}
 	
 	if(removedPrefix) {
 		$('#' + prefix + '-categories select').change(function () {
@@ -536,9 +559,11 @@ function listsButtonHandler(eventType, listType, listName) {
 				}
 			});
 		} else {
-			element.parent().parent().remove();
+			$(element).parent().parent().remove();
 			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
+				$('#' + listType + '-' + listName + '-categories select').selectpicker('refresh');
+				$('#add-' + listType + '-' + listName).attr('disabled', 'disabled');
 			}
 		}
 	});
