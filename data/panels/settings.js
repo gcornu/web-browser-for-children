@@ -398,16 +398,7 @@ function addCustomListListener(listName, host, category) {
 		var checkbox = $('<div class="checkbox"><label><input type="checkbox" id="' + host + '"/> ' + host + '</label></div>');
 		div.append(checkbox);
 
-		checkbox.find('input').change(function () {
-			var localListName = listName;
-			var localDiv = div;
-			
-			if(localDiv.find('input:checked').length === 0) {
-				$('#remove-custom-' + localListName).attr('disabled', 'disabled');
-			} else {
-				$('#remove-custom-' + localListName).removeAttr('disabled');
-			}
-		});
+		addInputChangeHandler(div);
 	} else {
 		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
 	}
@@ -449,19 +440,7 @@ function fillListsDivsHelper(list, prefix) {
 			div.append('<div class="checkbox"><label><input type="checkbox" id="' + elem + '"/> ' + elem + '</label></div>');
 		});
 
-		div.find('input').change(function () {
-			var localPrefix = prefix.replace('removed', 'add');
-			if(!localPrefix.startsWith('add')) {
-				localPrefix = 'remove-' + localPrefix;
-			}
-			var localDiv = div;
-			
-			if(localDiv.find('input:checked').length === 0) {
-				$('#' + localPrefix).attr('disabled', 'disabled');
-			} else {
-				$('#' + localPrefix).removeAttr('disabled');
-			}
-		});
+		addInputChangeHandler(div);
 
 		$('#' + prefix + '-inner').append(div);
 	});
@@ -501,11 +480,17 @@ function fillMenu(list, prefix, removedPrefix) {
 
 	if(prefix.indexOf('custom') !== -1) {
 		$('#' + prefix + '-categories select').change(function () {
-			if($(this.find('option')).length == 0) {
+			if($(this).find('option').length == 0) {
 				$(this).prop('disabled', true);
 			} else {
 				$(this).prop('disabled', false);
 			}
+			if($(this).find('option:selected').length == 0) {
+				$('#add-' + prefix).attr('disabled', 'disabled');
+			} else {
+				$('#add-' + prefix).removeAttr('disabled');
+			}
+			$(this).selectpicker('refresh');
 		}).change();
 	}
 	
@@ -544,31 +529,44 @@ function listsButtonHandler(eventType, listType, listName) {
 		if(listType === 'default') {
 			$(element).attr('checked', false).change();
 			$('#' + prefixDest + listType + '-' + listName + '-category-' + category).append($(element).parent().parent());
+
 			$(element).unbind('change');
-			$(element).change(function () {
-				var localDiv = $(element).parent().parent().parent().parent();
-				var localPrefix = localDiv.attr('id').replace('-inner', '').replace('removed', 'add');
-				if(!localPrefix.startsWith('add')) {
-					localPrefix = 'remove-' + localPrefix;
-				}
-				
-				if(localDiv.find('input:checked').length === 0) {
-					$('#' + localPrefix).attr('disabled', 'disabled');
-				} else {
-					$('#' + localPrefix).removeAttr('disabled');
-				}
-			});
+			addInputChangeHandler($(element).parent().parent().parent());
 		} else {
+			var containingDiv = $(element).parent().parent().parent();
 			$(element).parent().parent().remove();
+			containingDiv.find('input').change();
 			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
-				$('#' + listType + '-' + listName + '-categories select').selectpicker('refresh');
-				$('#add-' + listType + '-' + listName).attr('disabled', 'disabled');
+				$('#' + listType + '-' + listName + '-categories select').change().selectpicker('refresh');
+				$('#remove-' + listType + '-' + listName).attr('disabled', 'disabled');
 			}
 		}
 	});
 
 	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
+}
+
+
+/**
+ * This function adds change event handlers on every input element of the div on order to activate or deactivate buttons
+ *
+ * @param {Object} div containing input elements
+ */
+function addInputChangeHandler(div) {
+	div.find('input').change(function () {
+		var prefix = div.parent().attr('id').replace('-inner', '').replace('removed', 'add');
+		if(!prefix.startsWith('add')) {
+			prefix = 'remove-' + prefix;
+		}
+		var localDiv = div;
+
+		if(localDiv.find('input:checked').length === 0) {
+			$('#' + prefix).attr('disabled', 'disabled');
+		} else {
+			$('#' + prefix).removeAttr('disabled');
+		}
+	});
 }
 
 /**

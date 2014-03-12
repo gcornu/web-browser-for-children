@@ -139,18 +139,26 @@
 					</div>
 				</div>
 				<div id="custom-blacklist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
-					<div id="custom-blacklist-categories" class="btn-group" style="width: 100%;">
-						Please select a category:
-						<select class="form-control"></select>
-						<button id="add-custom-blacklist-category" class="btn">Add a category</button>
+					<div class="row" style="margin: 0;">
+						<div id="custom-blacklist-categories">
+							<h3 style="float: left; margin-right: 10px">Select a category</h3>
+							<select class="pull-left" title="No category defined"></select>
+							<button id="add-custom-blacklist-category" class="btn pull-left" style="margin-left: 10px;">Add a category</button>
+						</div>
 					</div>
-					<div id="custom-blacklist-inner" style="width: 30%; height: 200px; overflow-y: auto; float: left;">
-						<h3>Custom blacklist</h3>
-					</div>
-					<div id="custom-blacklist-buttons" style="width: 30%; height: 200px; float: left;">
-						<div id="custom-blacklist-buttons-inner" style="height: 200px; width: 80%; margin: auto;">
-							<button id="remove-custom-blacklist" class="btn" style="width: 100%">Delete selected elements<br/>from blacklist</button>
-							<button id="add-custom-blacklist" class="btn" style="width: 100%; margin-top: 10px;">Add element<br/>to blacklist</button>
+					<div class="row" style="height: 250px;">
+						<div class="col-sm-5">
+							<h3>Custom blacklist elements</h3>
+							<div id="custom-blacklist-inner" style="height: 100%; overflow-y: auto;">
+							</div>
+						</div>
+						<div id="custom-blacklist-buttons" class="col-sm-3" style="top: 30%;">
+							<button id="add-custom-blacklist" class="btn" style="width: 100%;">
+								Add to blacklist
+							</button>
+							<button id="remove-custom-blacklist" class="btn" style="width: 100%; margin-top: 10px;" disabled="disabled">
+								Delete from blacklist
+							</button>
 						</div>
 					</div>
 				</div>
