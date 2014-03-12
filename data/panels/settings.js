@@ -278,8 +278,8 @@ self.port.on("set_first_password", function () {
 	$('#change-password-title').hide();
 	$('#nav').css('opacity', 0);
 	$('#nav').css('visibility', 'hidden');
-	$("#message_container").append($('<div>', {'id': 'welcome'}).append('<h3>', {'text': 'Welcome to the Firefox for children extension'})
-																.append('<p>', {'text': 'Please set your parent password below:'}));
+	$("#message_container").append($('<div>', {'id': 'welcome'}).append($('<h3>', {'text': 'Welcome to the Firefox for children extension'}))
+																.append($('<p>', {'text': 'Please set your parent password below:'})));
 });
 
 self.port.on('current_filter', function (value) {
@@ -638,7 +638,7 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
 				visit.title = visitElement.title;
-				visit.url = $('<a>').attr("href",visitElement.url).html(removeUrlPrefix(visitElement.url));
+				visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
 				visit.url.attr("target","_blank");
 
 				//create a row that will hold the data
