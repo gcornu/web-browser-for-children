@@ -2,9 +2,6 @@
 $(".tab_container").hide();
 
 $(function () {
-	$('.selectpicker').selectpicker({
-	});
-
 	/**
 	 * Nav bar management
 	 */
@@ -163,9 +160,7 @@ $(function () {
 			var listName = id.pop();
 			var select = $('#custom-' + listName + '-categories select');
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
-				var option = $('<option>').attr('value', category.replace(' ', '_')).html(category);
-				select.append(option);
-				option.prop('selected', 'selected');
+				select.append(createOption(category).prop('selected', 'selected'));
 				select.change();
 			}
 		}
@@ -252,7 +247,7 @@ function inform(message, type, timeout) { //adds the message to the page in an a
 		break;
 	}
 	$('#message_container #inform').remove();
-	$('#message_container').append('<div id="inform" class=' + alertclass + '><small>' + message + '</small></div>');
+	$('#message_container').append($('<div>', {'id': 'inform', 'class': alertclass}).append($('<small>', {'text': message})));
 
 	if(timeout) {
 		setTimeout(function () {
@@ -283,7 +278,8 @@ self.port.on("set_first_password", function () {
 	$('#change-password-title').hide();
 	$('#nav').css('opacity', 0);
 	$('#nav').css('visibility', 'hidden');
-	$("#message_container").append("<div id=\"welcome\"><h3>Welcome to the Firefox for children extension</h3><p>Please set your parent password below:</p></div>");
+	$("#message_container").append($('<div>', {'id': 'welcome'}).append('<h3>', {'text': 'Welcome to the Firefox for children extension'})
+																.append('<p>', {'text': 'Please set your parent password below:'}));
 });
 
 self.port.on('current_filter', function (value) {
@@ -305,7 +301,7 @@ self.port.on('default_blacklist_search_response', function (matches, removedMatc
 	$('#default-blacklist-search-button #search-icon').show();
 
 	if(Object.keys(matches).length === 0) {
-		$('#default-blacklist-inner').append('<h4>No match found</h4>');
+		$('#default-blacklist-inner').append($('<h4>', {'text': 'No match found'}));
 	} else {
 		fillListDivs(matches, removedMatchesElements, 'blacklist', 'default');
 	}
@@ -391,12 +387,11 @@ function addCustomListListener(listName, host, category) {
 	if(host) {
 		var divId = 'custom-' + listName + '-category-' + category;
 		if($('#' + divId).length === 0) {
-			var div = $('<div>').attr('id', divId);
+			var div = $('<div>', {'id': divId});
 			$('#custom-' + listName + '-inner').append(div);
 		}
 		var div = $('#' + divId);
-		var checkbox = $('<div class="checkbox"><label><input type="checkbox" id="' + host + '"/> ' + host + '</label></div>');
-		div.append(checkbox);
+		div.append(createCheckbox(host));
 
 		addInputChangeHandler(div);
 	} else {
@@ -435,9 +430,9 @@ function fillListsDivsHelper(list, prefix) {
 	$('#' + prefix + '-inner').empty();
 
 	Object.keys(list).forEach(function (category) {
-		var div = $('<div>').attr('id', prefix + '-category-' + category);
+		var div = $('<div>', {'id': prefix + '-category-' + category});
 		list[category].forEach(function (elem) {
-			div.append('<div class="checkbox"><label><input type="checkbox" id="' + elem + '"/> ' + elem + '</label></div>');
+			div.append(createCheckbox(elem));
 		});
 
 		addInputChangeHandler(div);
@@ -459,23 +454,24 @@ function fillMenu(list, prefix, removedPrefix) {
 	$('#' + prefix + '-categories select').empty();
 
 	var categories = Object.keys(list);
+	var select = $('#' + prefix + '-categories select');
 
 	if(categories.length > 0) {
 		categories.forEach(function (category) {
-			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
-			$('#' + prefix + '-categories select').append(option);
+			select.append(createOption(category));
 		});
-		$('#' + prefix + '-categories select').first('option').prop('selected', 'selected');
-		$('#' + prefix + '-categories select').prop('disabled', false);
-		$('#' + prefix + '-categories select').removeAttr('disabled');
-		$('#' + prefix + '-categories select').selectpicker('refresh');
-		$('#' + prefix + '-categories select').change(function () {
+		select.first('option').prop('selected', 'selected');
+		select.prop('disabled', false);
+		//select.removeAttr('disabled');
+		select.selectpicker('refresh');
+		select.change(function () {
 			$('#' + prefix + '-inner > div').hide();
 			$('#' + prefix + '-category-' + $(this).val()).show();
+			$('#' + prefix + '-category-' + $(this).val() + ' input').change();
 		}).change();
 	} else {
-		$('#' + prefix + '-categories select').prop('disabled', true);
-		$('#' + prefix + '-categories select').selectpicker('refresh');
+		select.prop('disabled', true);
+		select.selectpicker('refresh');
 	}
 
 	if(prefix.indexOf('custom') !== -1) {
@@ -495,7 +491,7 @@ function fillMenu(list, prefix, removedPrefix) {
 	}
 	
 	if(removedPrefix) {
-		$('#' + prefix + '-categories select').change(function () {
+		select.change(function () {
 			$('#' + removedPrefix + '-inner > div').hide();
 			$('#' + removedPrefix + '-category-' + $(this).val()).show();
 		}).change();
@@ -547,6 +543,23 @@ function listsButtonHandler(eventType, listType, listName) {
 	self.port.emit(eventType + '_' + listType + '_' + listName, checked_elements, category);
 }
 
+/**
+ * This function creates a checkbox with everything around it
+ *
+ * @param {string} id and text of the checkbox
+ */
+function createCheckbox(label) {
+	return $('<div>', {'class': 'checkbox'}).append($('<label>', {'text': label}).append($('<input>', {'type': 'checkbox', 'id': label})));
+}
+
+/**
+ * This function creates option element for selects in lists
+ *
+ * @param {string} label of the option
+ */
+function createOption(label) {
+	return $('<option>', {'value': label.replace(' ', '_'), 'text': label.replace('_', ' ')});
+}
 
 /**
  * This function adds change event handlers on every input element of the div on order to activate or deactivate buttons
@@ -582,9 +595,9 @@ function fillLoginReport(events) {
 		events.forEach(function (eventElement) {
 			if(eventElement) {
 				var eventSplit = eventElement.split(' : ');
-				var timestamp = $('<b>').html(eventSplit[0] + ' : ');
+				var timestamp = $('<b>', {'text': eventSplit[0] + ' : '});
 				var br = $('<br>');
-				var line = $('<div>').html(eventSplit[1]).prepend(timestamp).append(br);
+				var line = $('<div>', {'text': eventSplit[1]}).prepend(timestamp).append(br);
 				$('#login-pane #events').append(line);
 			}
 		});
@@ -634,7 +647,7 @@ function fillHistoryReport(visits) {
 				//for each attribute of the visit, create a table data element and put it in the row
 				for (var name in visit) {
 					if (visit.hasOwnProperty(name)) {
-						line.append($('<td>').html(visit[name]));
+						line.append($('<td>', {'text': visit[name]}));
 					}
 				}
 				
@@ -669,7 +682,7 @@ function fillTimeReport(times) {
 
 		categories.forEach(function (category) {
 			var line = $('<tr>');
-			var categoryCell = $('<td>').html(category.replace('_', ' '));
+			var categoryCell = $('<td>', {'text': category.replace('_', ' ')});
 
 			var timeSpent = times[category].duration;
 
@@ -688,7 +701,7 @@ function fillTimeReport(times) {
 				timeString = 'No time spent on this category';
 			}
 
-			var timeSpentCell = $('<td>').html(timeString);
+			var timeSpentCell = $('<td>', {'text': timeString});
 
 			line.append(categoryCell).append(timeSpentCell);
 			tableBody.append(line);
@@ -718,8 +731,7 @@ function fillTimeLimitSelect (timeLimits) {
 		$('#limit_time_options_title').show();
 		$('#limit_time_tab select').empty().selectpicker('show');
 		categories.forEach(function (category) {
-			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
-			$('#limit_time_tab select').append(option);
+			$('#limit_time_tab select').append(createOption(category));
 		});
 
 		$('#limit_time_tab select').change(function () {
@@ -749,6 +761,7 @@ function showList(list_choice) {
 	showTab('lists');
 	$('#lists_tab .list-pane').hide();
 	$('#lists_tab #' + list_choice + '-pane').show();
+	// center glyphicons in buttons
 	$('#lists_tab #' + list_choice + '-buttons span.glyphicon').css('margin-top', ($('#lists_tab #' + list_choice + '-buttons button').height() - $('#lists_tab #' + list_choice + '-buttons span.glyphicon').height()) / 2);
 }
 
