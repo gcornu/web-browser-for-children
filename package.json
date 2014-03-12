@@ -9,6 +9,7 @@
 	"unpack": true,
 	"dependencies": ["toolbar-button-complete", "addon-sdk"],
 	"homepage": "https://github.com/gcornu/web-browser-for-children",
-	"icon": "./data/logo-on.png"
+	"icon": "./data/logo-on.png",
+	"icon64": "./data/logo_64.png"
 }
 
