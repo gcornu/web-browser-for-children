@@ -7,14 +7,14 @@ var utils = require('utils');
 exports['test default blacklist'] = function (assert) {
 	var defaultBlacklist, index;
 	blacklisting.removeElementsFromDefaultBlacklist(['*.mozilla.org'], 'General');
-	defaultBlacklist = blacklisting.getDefaultBlacklist();
-	index = defaultBlacklist['General'].indexOf('*.mozilla.org');
-	assert.ok(index === -1, 'Remove element from default blacklist');
+	removedDefaultBlacklist = blacklisting.getRemovedDefaultBlacklistElements();
+	index = removedDefaultBlacklist['General'].indexOf('*.mozilla.org');
+	assert.ok(index !== -1, 'Remove element from default blacklist');
 
 	blacklisting.addElementsToDefaultBlacklist(['*.mozilla.org'], 'General');
-	defaultBlacklist = blacklisting.getDefaultBlacklist();
-	index = defaultBlacklist['General'].indexOf('*.mozilla.org');
-	assert.ok(index !== -1, 'Add element to default blacklist');
+	removedDefaultBlacklist = blacklisting.getRemovedDefaultBlacklistElements();
+	index = removedDefaultBlacklist['General'].indexOf('*.mozilla.org');
+	assert.ok(index === -1, 'Add element to default blacklist');
 };
 
 exports['test default blacklist errors'] = function (assert) {
@@ -80,13 +80,11 @@ exports['test custom blacklist errors'] = function (assert) {
 }
 
 before(exports, function (name, assert, done) {
-	blacklisting.setInitCallback(function () {
-    	done();
-  	});
   	var portStub = new Object();
 	portStub.emit = function () {};
 	blacklisting.setPort(portStub);
   	blacklisting.init(true);
+  	done();
 });
 
 after(exports, function (name, assert, done) {

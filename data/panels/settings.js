@@ -6,8 +6,7 @@ $(function () {
 	 * Nav bar management
 	 */
     "use strict";
-    $("#nav li").click(function () {
-		$('#welcome').remove();
+    $("#nav > ul > li").not('#lists, #reports').click(function () {
 		showTab($(this).attr('id'));
     });
 
@@ -30,22 +29,58 @@ $(function () {
 	
 	$("#change_pass").click(function () {
 		$(".alert").hide(); //remove any leftover alert
-		var problem = (function () { //do some validation and generate a message if necessary
-			if($("#new_pass1").val() !== $("#new_pass2").val()) {
-				return "Passwords must match";
-			} else if($("#new_pass1").val().length < 4) {
-				return "New password must be more than 4 characters long";
-			} else {
-				return "";
+
+		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
+			// display menu if hidden
+			if($('#nav').css('opacity') == 0) {
+				$('#welcome').remove();
+				$('#change-password-title').show();
+				$('#nav').css('visibility', 'visible');
+				$('#nav').animate({
+					opacity: '1.0'
+				}, 1000, function () {});
 			}
-		})();
-		if(problem === ""){ //if there was no validation error, send old and new passwords
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
 			self.port.emit("update_pass", pwords);
-		} else inform(problem, "error");
-			//in case there was a message generated, append it to the page.
+		} else if($("#new_pass1").val() !== $("#new_pass2").val()) {
+			$("#new_pass2").parent().addClass('has-error');
+			$("#new_pass2").parent().find('.help-block').css('visibility', 'visible');
+		} else if($("#new_pass1").val().length < 4) {
+			$("#new_pass1").parent().addClass('has-error');
+			$("#new_pass1").parent().find('.help-block').css('visibility', 'visible');
+		}
+	});
+
+	$('#old_pass').on('change keyup paste', function () {
+		$(this).parent().removeClass('has-error');
+		$(this).parent().find('.help-block').css('visibility', 'hidden');
+	});
+
+	$('#new_pass1').on('change keyup paste', function () {
+		if($(this).val().length >= 4) {
+			$(this).parent().removeClass('has-error').addClass('has-success');
+			$(this).parent().find('.help-block').css('visibility', 'hidden');
+		}
+		$('#new_pass2').change();
+	});
+
+	$('#new_pass1').focusout(function () {
+		if($(this).val().length < 4) {
+			$(this).parent().removeClass('has-success').addClass('has-error');
+			$(this).parent().find('.help-block').css('visibility', 'visible');
+		}
+	});
+
+	$('#new_pass2').on('change keyup paste', function () {
+		if($(this).val() === $('#new_pass1').val()) {
+			$(this).parent().removeClass('has-error').addClass('has-success');
+			$(this).parent().find('.help-block').css('visibility', 'hidden');
+		} else {
+			$(this).parent().removeClass('has-success').addClass('has-error');
+			$(this).parent().find('.help-block').css('visibility', 'visible');
+		}
 	});
 
     /**
@@ -59,27 +94,25 @@ $(function () {
 	/**
 	 * Init tabs in lists management
 	 */
-	$('#lists-tabs a').click(function (e) {
-		e.preventDefault();
-		$(this).tab('show');
+	$('#nav #lists .dropdown-menu li').not('.dropdown-header').click(function () {
+		showList($(this).attr('id'));
 		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
-	$('#lists').click(function (e) {
-		$('#default_blacklist').click();
+	$('#default-blacklist-search-form').submit(function (e) {
+		e.preventDefault();
+		$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
+		$('#default-blacklist-search-button #search-icon').hide();
+		$('#default-blacklist-search-button #search-loader').show();
+		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
 	});
 
 	/**
 	 * Init tabs in reports panel
 	 */
-	$('#reports-tabs a').click(function (e) {
-		e.preventDefault();
-		$(this).tab('show');
+	$('#nav #reports .dropdown-menu li').click(function () {
+		showReport($(this).attr('id'));
 		self.port.emit('reports_tab_choice', $(this).attr('id'));
-	});
-
-	$('#reports').click(function (e) {
-		$('#login').click();
 	});
 
 	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
@@ -127,9 +160,7 @@ $(function () {
 			var listName = id.pop();
 			var select = $('#custom-' + listName + '-categories select');
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
-				var option = $('<option>').attr('value', category.replace(' ', '_')).html(category);
-				select.append(option);
-				option.prop('selected', 'selected');
+				select.append(createOption(category).prop('selected', 'selected'));
 				select.change();
 			}
 		}
@@ -216,7 +247,7 @@ function inform(message, type, timeout) { //adds the message to the page in an a
 		break;
 	}
 	$('#message_container #inform').remove();
-	$('#message_container').append('<div id="inform" class=' + alertclass + '><small>' + message + '</small></div>');
+	$('#message_container').append($('<div>', {'id': 'inform', 'class': alertclass}).append($('<small>', {'text': message})));
 
 	if(timeout) {
 		setTimeout(function () {
@@ -234,24 +265,46 @@ self.port.on("change_pass_result", function (result) {
 		$("#old_pass").parent().show(); //this was hidden if first password change
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
+		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
     } else {
-    	inform("Password was not changed. Is your old password correct?", "error", 5000);
+    	$('#old_pass').parent().addClass('has-error');
+    	$('#old_pass').parent().find('.help-block').css('visibility', 'visible');
     }
 });
 
 self.port.on("set_first_password", function () {
 	showTab("pass");
 	$("#old_pass").parent().hide();
-	$(".panel").prepend("<div id=\"welcome\"><h2>Welcome to the Firefox for children extension</h2><p>Please set your parent password below:</p></div>");
+	$('#change-password-title').hide();
+	$('#nav').css('opacity', 0);
+	$('#nav').css('visibility', 'hidden');
+	$("#message_container").append($('<div>', {'id': 'welcome'}).append($('<h3>', {'text': 'Welcome to the Firefox for children extension'}))
+																.append($('<p>', {'text': 'Please set your parent password below:'})));
 });
 
 self.port.on('current_filter', function (value) {
-	$('#gen_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
+	$('#filtering_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
+});
+
+self.port.on('filter_save_success', function () {
+	inform('Filter choice has been successfully set', 'success', 3000);
 });
 
 // Add elements in lists when initialization is done
-self.port.on('blacklist_initialized', function (defaultBlacklist, removedDefaultBlacklistElements) {
-	fillListDivs(defaultBlacklist, removedDefaultBlacklistElements, 'blacklist', 'default');
+self.port.on('blacklist_initialized', function (removedDefaultBlacklistElements) {
+	$('#default-blacklist-categories select').selectpicker();
+});
+
+self.port.on('default_blacklist_search_response', function (matches, removedMatchesElements) {
+	$('#default-blacklist-search-term, #default-blacklist-search-button').removeAttr('disabled');
+	$('#default-blacklist-search-button #search-loader').hide();
+	$('#default-blacklist-search-button #search-icon').show();
+
+	if(Object.keys(matches).length === 0) {
+		$('#default-blacklist-inner').append($('<h4>', {'text': 'No match found'}));
+	} else {
+		fillListDivs(matches, removedMatchesElements, 'blacklist', 'default');
+	}
 });
 
 self.port.on('whitelist_initialized', function (defaultWhitelist, removedDefaultBlacklistElements) {
@@ -259,11 +312,11 @@ self.port.on('whitelist_initialized', function (defaultWhitelist, removedDefault
 });
 
 self.port.on('custom_blacklist_initialized', function (list) {
-	fillListDivs(list, [], 'blacklist', 'custom');
+	fillListDivs(list, null, 'blacklist', 'custom');
 });
 
 self.port.on('custom_whitelist_initialized', function (list) {
-	fillListDivs(list, [], 'whitelist', 'custom');
+	fillListDivs(list, null, 'whitelist', 'custom');
 });
 
 self.port.on('blacklist_custom_added', function (host, category) {
@@ -298,12 +351,16 @@ self.port.on('time_log_read', function (times) {
 	fillTimeReport(times);
 });
 
-self.port.on('show_gen', function () {
-	$('#gen').click();
+self.port.on('show_filtering', function () {
+	$('#filtering').click();
 });
 
 self.port.on('time_limit_initialized', function (categories) {
 	fillTimeLimitSelect(categories);
+})
+
+self.port.on('time_limit_set', function () {
+	inform('Time limit has been successfully set', 'success', 3000);
 })
 
 /**
@@ -330,10 +387,13 @@ function addCustomListListener(listName, host, category) {
 	if(host) {
 		var divId = 'custom-' + listName + '-category-' + category;
 		if($('#' + divId).length === 0) {
-			var div = $('<div>').attr('id', divId);
+			var div = $('<div>', {'id': divId});
 			$('#custom-' + listName + '-inner').append(div);
 		}
-		$('#' + divId).append('<input type="checkbox" id="' + host + '"/><label for="' + host + '">' + host + '</label><br/>');
+		var div = $('#' + divId);
+		div.append(createCheckbox(host));
+
+		addInputChangeHandler(div);
 	} else {
 		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
 	}
@@ -351,7 +411,7 @@ function fillListDivs(defaultList, removedList, name, type) {
 	var prefix = type + '-' + name,
 		removedPrefix = '';
 	fillListsDivsHelper(defaultList, prefix);
-	if(removedList) {
+	if(removedList !== null) {
 		removedPrefix = 'removed-' + prefix;
 		fillListsDivsHelper(removedList, removedPrefix);
 	}
@@ -367,17 +427,19 @@ function fillListDivs(defaultList, removedList, name, type) {
  * @param {string} prefix of id of elements
  */
 function fillListsDivsHelper(list, prefix) {
-	var title = $('#' + prefix + '-inner h3');
-	$('#' + prefix + '-inner').empty().append(title);
+	$('#' + prefix + '-inner').empty();
 
 	Object.keys(list).forEach(function (category) {
-		var div = $('<div>').attr('id', prefix + '-category-' + category);
+		var div = $('<div>', {'id': prefix + '-category-' + category});
 		list[category].forEach(function (elem) {
-			div.append('<input type="checkbox" id="' + elem + '"/><label for="' + elem + '">' + elem + '</label><br/>');
+			div.append(createCheckbox(elem));
 		});
+
+		addInputChangeHandler(div);
+
 		$('#' + prefix + '-inner').append(div);
 	});
-	$('#' + prefix + '-inner div:not(:first)').hide();
+	$('#' + prefix + '-inner > div:not(:first)').hide();
 }
 
 /**
@@ -389,22 +451,50 @@ function fillListsDivsHelper(list, prefix) {
  * @param {string} prefix of the removed elements divs
  */
 function fillMenu(list, prefix, removedPrefix) {
-	if($('#' + prefix + '-categories select').is(':empty')) {
-		Object.keys(list).forEach(function (category) {
-			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
-			$('#' + prefix + '-categories select').append(option);
+	$('#' + prefix + '-categories select').empty();
+
+	var categories = Object.keys(list);
+	var select = $('#' + prefix + '-categories select');
+
+	if(categories.length > 0) {
+		categories.forEach(function (category) {
+			select.append(createOption(category));
 		});
-		$('#' + prefix + '-categories select').first('option').prop('selected', 'selected');
-		$('#' + prefix + '-categories select').change(function () {
-			$('#' + prefix + '-inner div').hide();
+		select.first('option').prop('selected', 'selected');
+		select.prop('disabled', false);
+		//select.removeAttr('disabled');
+		select.selectpicker('refresh');
+		select.change(function () {
+			$('#' + prefix + '-inner > div').hide();
 			$('#' + prefix + '-category-' + $(this).val()).show();
-		});
-		if(removedPrefix) {
-			$('#' + prefix + '-categories select').change(function () {
-				$('#' + removedPrefix + '-inner div').hide();
-				$('#' + removedPrefix + '-category-' + $(this).val()).show();
-			});
-		}
+			$('#' + prefix + '-category-' + $(this).val() + ' input').change();
+		}).change();
+	} else {
+		select.prop('disabled', true);
+		select.selectpicker('refresh');
+	}
+
+	if(prefix.indexOf('custom') !== -1) {
+		$('#' + prefix + '-categories select').change(function () {
+			if($(this).find('option').length == 0) {
+				$(this).prop('disabled', true);
+			} else {
+				$(this).prop('disabled', false);
+			}
+			if($(this).find('option:selected').length == 0) {
+				$('#add-' + prefix).attr('disabled', 'disabled');
+			} else {
+				$('#add-' + prefix).removeAttr('disabled');
+			}
+			$(this).selectpicker('refresh');
+		}).change();
+	}
+	
+	if(removedPrefix) {
+		select.change(function () {
+			$('#' + removedPrefix + '-inner > div').hide();
+			$('#' + removedPrefix + '-category-' + $(this).val()).show();
+		}).change();
 	}
 }
 
@@ -432,17 +522,20 @@ function listsButtonHandler(eventType, listType, listName) {
 
 	$('#' + prefixOrigin + listType + '-' + listName + '-inner input:checked').each(function(index, element) {
 		checked_elements.push(element.id);
-		label = $(element).next();
-		br = $(element).next().next();
 		if(listType === 'default') {
-			$(element).attr('checked', false);
-			$('#' + prefixDest + listType + '-' + listName + '-inner').append($(element)).append(label).append(br);
+			$(element).attr('checked', false).change();
+			$('#' + prefixDest + listType + '-' + listName + '-category-' + category).append($(element).parent().parent());
+
+			$(element).unbind('change');
+			addInputChangeHandler($(element).parent().parent().parent());
 		} else {
-			br.remove();
-			label.remove();
-			element.remove();
+			var containingDiv = $(element).parent().parent().parent();
+			$(element).parent().parent().remove();
+			containingDiv.find('input').change();
 			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
+				$('#' + listType + '-' + listName + '-categories select').change().selectpicker('refresh');
+				$('#remove-' + listType + '-' + listName).attr('disabled', 'disabled');
 			}
 		}
 	});
@@ -451,25 +544,61 @@ function listsButtonHandler(eventType, listType, listName) {
 }
 
 /**
+ * This function creates a checkbox with everything around it
+ *
+ * @param {string} id and text of the checkbox
+ */
+function createCheckbox(label) {
+	return $('<div>', {'class': 'checkbox'}).append($('<label>', {'text': label}).append($('<input>', {'type': 'checkbox', 'id': label})));
+}
+
+/**
+ * This function creates option element for selects in lists
+ *
+ * @param {string} label of the option
+ */
+function createOption(label) {
+	return $('<option>', {'value': label.replace(' ', '_'), 'text': label.replace('_', ' ')});
+}
+
+/**
+ * This function adds change event handlers on every input element of the div on order to activate or deactivate buttons
+ *
+ * @param {Object} div containing input elements
+ */
+function addInputChangeHandler(div) {
+	div.find('input').change(function () {
+		var prefix = div.parent().attr('id').replace('-inner', '').replace('removed', 'add');
+		if(!prefix.startsWith('add')) {
+			prefix = 'remove-' + prefix;
+		}
+		var localDiv = div;
+
+		if(localDiv.find('input:checked').length === 0) {
+			$('#' + prefix).attr('disabled', 'disabled');
+		} else {
+			$('#' + prefix).removeAttr('disabled');
+		}
+	});
+}
+
+/**
  * Fill login report panel
  *
  * @param {string} events of the login report
  */
 function fillLoginReport(events) {
-	var clearLoginLogButton = $('#clear_login_log');
-	var noEventLabel = $('#login-pane #no-event');
-	clearLoginLogButton.detach();
-	$('#login-pane').empty().append(clearLoginLogButton).append(noEventLabel);
+	$('#login-pane #events').empty();
 	
 	if(events.length !== 1 || events[0] !== '') {
 		$('#login-pane #no-event').hide();
 		events.forEach(function (eventElement) {
 			if(eventElement) {
 				var eventSplit = eventElement.split(' : ');
-				var timestamp = $('<b>').html(eventSplit[0] + ' : ');
+				var timestamp = $('<b>', {'text': eventSplit[0] + ' : '});
 				var br = $('<br>');
-				var line = $('<div>').html(eventSplit[1]).prepend(timestamp).append(br);
-				$('#login-pane').append(line);
+				var line = $('<div>', {'text': eventSplit[1]}).prepend(timestamp).append(br);
+				$('#login-pane #events').append(line);
 			}
 		});
 	} else {
@@ -509,7 +638,7 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
 				visit.title = visitElement.title;
-				visit.url = $('<a>').attr("href",visitElement.url).html(removeUrlPrefix(visitElement.url));
+				visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
 				visit.url.attr("target","_blank");
 
 				//create a row that will hold the data
@@ -518,7 +647,7 @@ function fillHistoryReport(visits) {
 				//for each attribute of the visit, create a table data element and put it in the row
 				for (var name in visit) {
 					if (visit.hasOwnProperty(name)) {
-						line.append($('<td>').html(visit[name]));
+						line.append($('<td>', {'text': visit[name]}));
 					}
 				}
 				
@@ -541,36 +670,46 @@ function fillTimeReport(times) {
 
 	tableBody.empty();
 
-	var oneMinute = 60,
-		oneHour = oneMinute*60,
-		oneDay = oneHour*24;
+	var categories = Object.keys(times);
 
-	Object.keys(times).forEach(function (category) {
-		var line = $('<tr>');
-		var categoryCell = $('<td>').html(category.replace('_', ' '));
+	if(categories.length > 0) {
+		$('#time-pane #no-categories').hide();
+		$('#time-pane table').show();
 
-		var timeSpent = times[category].duration;
+		var oneMinute = 60,
+			oneHour = oneMinute*60,
+			oneDay = oneHour*24;
 
-		var days = Math.floor(timeSpent/oneDay),
-			hours = Math.floor((timeSpent%oneDay)/oneHour),
-			minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
-			seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
+		categories.forEach(function (category) {
+			var line = $('<tr>');
+			var categoryCell = $('<td>', {'text': category.replace('_', ' ')});
 
-		var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
-			hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
-			minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
-			secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
+			var timeSpent = times[category].duration;
 
-		var timeString = daysString + hoursString + minutesString + secondsString;
-		if(timeString === '') {
-			timeString = 'No time spent on this category';
-		}
+			var days = Math.floor(timeSpent/oneDay),
+				hours = Math.floor((timeSpent%oneDay)/oneHour),
+				minutes = Math.floor((timeSpent%oneDay)%oneHour/oneMinute),
+				seconds = Math.floor(((timeSpent%oneDay)%oneHour)%oneMinute);
 
-		var timeSpentCell = $('<td>').html(timeString);
+			var daysString = days>0 ? days + ' day' + (days>1 ? 's ' : ' ') : '',
+				hoursString = hours>0 ? hours + ' hour' + (hours>1 ? 's ' : ' ') : '',
+				minutesString = minutes>0 ? minutes + ' minute' + (minutes>1 ? 's ' : ' ') : '',
+				secondsString = seconds>0 ? seconds + ' second' + (seconds>1 ? 's' : '') : '';
 
-		line.append(categoryCell).append(timeSpentCell);
-		tableBody.append(line);
-	});
+			var timeString = daysString + hoursString + minutesString + secondsString;
+			if(timeString === '') {
+				timeString = 'No time spent on this category';
+			}
+
+			var timeSpentCell = $('<td>', {'text': timeString});
+
+			line.append(categoryCell).append(timeSpentCell);
+			tableBody.append(line);
+		});
+	} else {
+		$('#time-pane table').hide();
+		$('#time-pane #no-categories').show();
+	}
 }
 
 /*
@@ -583,13 +722,16 @@ function fillTimeLimitSelect (timeLimits) {
 	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
 		$('#limitTimeOptions').hide();
+		$('#limit_time_options_title').hide();
+		$('#limit_time_tab select').selectpicker('hide');
 		$('#limit_time_no_category').show();
 	} else {
 		$('#limit_time_no_category').hide();
 		$('#limitTimeOptions').show();
+		$('#limit_time_options_title').show();
+		$('#limit_time_tab select').empty().selectpicker('show');
 		categories.forEach(function (category) {
-			var option = $('<option>').attr('value', category).html(category.replace('_', ' '));
-			$('#limit_time_tab select').append(option);
+			$('#limit_time_tab select').append(createOption(category));
 		});
 
 		$('#limit_time_tab select').change(function () {
@@ -601,16 +743,32 @@ function fillTimeLimitSelect (timeLimits) {
 			var category = $('#limit_time_tab select option:selected').val();
 			self.port.emit('limit_time_choice', category, $(this).val());
 		});
+
+		$('#limit_time_tab select').selectpicker('refresh');
 	}
 }
 
-function showTab(tab_choice) { //hides other content and shows chosen tab "pass","gen","lists" or "report"
+function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
 	self.port.emit("tab_choice",tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
 	$("#"+tab_choice+"_tab").show();
 	$("#nav .active").removeClass("active");
 	$("#"+tab_choice).addClass("active");
+}
+
+function showList(list_choice) {
+	showTab('lists');
+	$('#lists_tab .list-pane').hide();
+	$('#lists_tab #' + list_choice + '-pane').show();
+	// center glyphicons in buttons
+	$('#lists_tab #' + list_choice + '-buttons span.glyphicon').css('margin-top', ($('#lists_tab #' + list_choice + '-buttons button').height() - $('#lists_tab #' + list_choice + '-buttons span.glyphicon').height()) / 2);
+}
+
+function showReport(report_choice) {
+	showTab('reports');
+	$('#reports_tab .report-pane').hide();
+	$('#reports_tab #' + report_choice + '-pane').show();
 }
 
 function removeUrlPrefix(url) {
