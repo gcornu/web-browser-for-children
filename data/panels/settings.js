@@ -244,13 +244,13 @@ $(function () {
 
 
 function inform(message, type, timeout) { //adds the message to the page in an alert div depending on type (error or success)
-	var alertclass = "";
+	var alertclass = '';
 	switch(type){
-		case "error":
-			alertclass="\"alert alert-danger\"";
+		case 'error':
+			alertclass = 'alert alert-danger';
 		break;
-		case "success":
-			alertclass="\"alert alert-success\"";
+		case 'success':
+			alertclass = 'alert alert-success';
 		break;
 	}
 	$('#message_container #inform').remove();
@@ -645,6 +645,7 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getDate())+" "+
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
+							
 				visit.title = decodeURI(visitElement.title);
 				//visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
 				//visit.url.attr("target","_blank");
