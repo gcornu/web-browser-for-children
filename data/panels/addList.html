@@ -1,22 +1,18 @@
 <html>
 	<head>
 		<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<style>
-			.select {
-				width: 200px;
-			}
-		</style>
 	</head>
 
-	<body style="padding:2%">
+	<body style="padding:5%">
 		<h3 style="margin-top: 10px;">Please select a category:</h3>
-		<div id="input">
+		<div id="input" style="width: 100%">
 			<div id="message_container" style="height: 30px; margin-bottom: 5px;"></div>
+			<select class="pull-left form-control" style="width: 100%; margin-bottom: 5px;"></select>
 			<div class="row" style="margin: 0;">
-				<select class="pull-left select" title="No category defined"></select>
-				<button id="new_category" class="btn pull-left">New category</button>
+					<button id="new_category" class="btn pull-left">New category</button>
+					<button id="add" class="btn btn-primary pull-right"></button>
 			</div>
-			<button id="add" class="btn btn-sm btn-primary" style="margin-top:5px"></button>
+			
 		</div>
 	</body>
 </html>

@@ -1,5 +1,5 @@
 $(function() {
-	$("#add").html('Add to blacklist');
+	$("#add").html('Add to ' + self.options.listType);
 
 	$('#new_category').click(function () {
 		var category = window.prompt('Name of the new category:');
@@ -8,19 +8,18 @@ $(function() {
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
 				select.append(createOption(category).prop('selected', 'selected'));
 				select.prop('disabled', false);
-				select.selectpicker('refresh');
 			} else {
 				inform('This category already exists', 'danger', 5000);
 			}
 		}
 	});
 
-	$("#submit").click(function () {
+	$("#add").click(function () {
 		var category = $('select option:selected').val();
 		if(!category) {
-			alert('Please select a category.');
+			inform('Please select a category', 'danger', 5000);
 		} else {
-			self.port.emit('add_blacklist', category);
+			self.port.emit('add_' + self.options.listType, category);
 		}
 	});
 });
@@ -36,9 +35,6 @@ self.port.on('categories', function (categories) {
 	} else {
 		select.prop('disabled', true);
 	}
-
-	select.selectpicker('refresh');
-	select.selectpicker('setStyle');
 });
 
 /**
