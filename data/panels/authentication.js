@@ -15,7 +15,9 @@ $(function () {
 		if ($("#input").length===1) self.port.emit("answer", password); //do this if safe browsing is off
 		else if($("#input-lock").length===1) self.port.emit("answer-lock", password)
 		else if($("#input-safe").length===1) self.port.emit("answer-unlock", password); //do this if safe browsing is on
-		else self.port.emit("answer-options", password);
+		else if($("#input-options").length===1) self.port.emit("answer-options", password);
+		else if($("#input-addBlacklist").length===1) self.port.emit("answer-addBlacklist", password);
+		else if($("#input-addWhitelist").length===1) self.port.emit("answer-addWhitelist", password);
 
 		//remove answer from input field
 		$('#pass').val('');
@@ -43,21 +45,31 @@ self.port.on("auth_fail", function () {
 	$('#pass-label').css('visibility', 'visible');
 });
 
-self.port.on("ison", function () { //change the page when safe browsing is on
+self.port.on("ison", function () { 
 	clean();
 	inform('This will disable safe browsing', 'warning');
 	$("#input").attr("id","input-safe");
 });
 
-self.port.on("isoff", function () { //change the page when safe browsing is on
+self.port.on("isoff", function () { 
 	clean();
 	inform('This will enable safe browsing', 'info');
 	$("#input").attr("id","input-lock");
 });
 
-self.port.on("options", function () { //change the page when safe browsing is on
+self.port.on("options", function () { 
 	clean();
 	$("#input").attr("id","input-options");
+});
+
+self.port.on("addBlacklist", function () { 
+	clean();
+	$("#input").attr("id","input-addBlacklist");
+});
+
+self.port.on("addWhitelist", function () { 
+	clean();
+	$("#input").attr("id","input-addWhitelist");
 });
 
 self.port.on("auth_success", function() {
