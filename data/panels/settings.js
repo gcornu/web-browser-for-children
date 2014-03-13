@@ -638,8 +638,7 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
 				visit.title = visitElement.title;
-				visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
-				visit.url.attr("target","_blank");
+				visit.url = $('<a>', {'href': visitElement.url, 'target': '_blank', 'text': removeUrlPrefix(visitElement.url)});
 
 				//create a row that will hold the data
 				var line = $('<tr>'); 
