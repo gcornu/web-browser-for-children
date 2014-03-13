@@ -645,7 +645,7 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getDate())+" "+
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
-				visit.title = visitElement.title;
+				visit.title = decodeURI(visitElement.title);
 				//visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
 				//visit.url.attr("target","_blank");
 
@@ -658,7 +658,7 @@ function fillHistoryReport(visits) {
 						line.append($('<td>', {'text': visit[name]}));
 					}
 				}
-				var url_cell=$('<td>').append($('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url), 'target':"_blank"}));
+				var url_cell=$('<td>').append($('<a>', {'href': decodeURI(visitElement.url), 'text': decodeURI(removeUrlPrefix(visitElement.url)), 'target':"_blank"}));
 				line.append(url_cell);
 				
 				//append the line to the table
