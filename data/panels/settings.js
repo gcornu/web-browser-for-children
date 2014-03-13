@@ -614,7 +614,7 @@ function fillLoginReport(events) {
 function fillHistoryReport(visits) {
 	$('#history-pane tbody').empty();
 	
-	//will use this to pad date
+	//pad(number) function adds zeros in front of number, used to get consistent date / time display. 
 	function pad (number) {
 		return ("00" + number).slice(-2);
 	}
@@ -638,8 +638,8 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
 				visit.title = visitElement.title;
-				visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
-				visit.url.attr("target","_blank");
+				//visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
+				//visit.url.attr("target","_blank");
 
 				//create a row that will hold the data
 				var line = $('<tr>'); 
@@ -650,6 +650,8 @@ function fillHistoryReport(visits) {
 						line.append($('<td>', {'text': visit[name]}));
 					}
 				}
+				var url_cell=$('<td>').append($('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url), 'target':"_blank"}));
+				line.append(url_cell);
 				
 				//append the line to the table
 				$('#history-pane tbody').append(line);
