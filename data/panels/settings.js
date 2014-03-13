@@ -290,6 +290,9 @@ self.port.on("set_first_password", function () {
 });
 
 self.port.on('current_filter', function (value) {
+	if(!value) {
+		value = 'none';
+	}
 	$('#filtering_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
 });
 
@@ -645,7 +648,7 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getDate())+" "+
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
-							
+
 				visit.title = decodeURI(visitElement.title);
 				//visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
 				//visit.url.attr("target","_blank");
