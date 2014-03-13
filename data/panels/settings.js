@@ -1,6 +1,29 @@
 //begin by hiding everything in order to prevent flickering
 $(".tab_container").hide();
 
+//define options to be used for pager
+var pagerOptions = {
+
+		// target the pager markup - see the HTML block below
+		container: $(".ts-pager"),
+
+		// target the pager page select dropdown - choose a page
+		cssGoto  : ".pagenum",
+		cssNext: '.next', // next page arrow
+		cssPrev: '.prev', // previous page arrow
+		cssFirst: '.first', // go to first page arrow
+		cssLast: '.last', // go to last page arrow
+
+		// remove rows from the table to speed up the sort of large tables.
+		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+		removeRows: false,
+
+		// output string - default is '{page}/{totalPages}';
+		// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+		};
+
 $(function () {
 	/**
 	 * Nav bar management
@@ -213,23 +236,7 @@ $(function () {
 			// ,uitheme : "bootstrap"
 		}
 	})
-		.tablesorterPager({
-
-		// target the pager markup - see the HTML block below
-		container: $("#pager"),
-
-		// target the pager page select dropdown - choose a page
-		cssGoto  : ".pagenum",
-
-		// remove rows from the table to speed up the sort of large tables.
-		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-		removeRows: false,
-
-		// output string - default is '{page}/{totalPages}';
-		// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
-
-		});
+		.tablesorterPager(pagerOptions);
 });
 
 // --- END OF document.ready function
@@ -613,7 +620,8 @@ function fillLoginReport(events) {
  */
 function fillHistoryReport(visits) {
 	$('#history-pane tbody').empty();
-	
+	$('#table-history').trigger('destroy.pager');
+	$("#table-history").trigger("update"); //trigger an update after emptying
 	//pad(number) function adds zeros in front of number, used to get consistent date / time display. 
 	function pad (number) {
 		return ("00" + number).slice(-2);
@@ -654,9 +662,12 @@ function fillHistoryReport(visits) {
 				line.append(url_cell);
 				
 				//append the line to the table
-				$('#history-pane tbody').append(line);
+				$('#table-history')
+					.find('tbody').append(line)
+					.trigger('addRows',[$(line)]);
 			}
 		});
+		$('#table-history').tablesorterPager(pagerOptions);
 		$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
 		$(".tablesorter-filter").addClass("form-control input-md");
 	}
