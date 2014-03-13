@@ -1,6 +1,7 @@
-$(function () {
-	console.log("hello1");
-	getChildFavorites();
+	self.port.emit('truc');
+	console.log('child js');
+	
+	
 	// var homeWebsites=new Array(
 		// {'url' : "http://kidrex.org" ,  "thumb":"kidrex.jpg" },
 		// {"url" : "http://super-kids.com" ,  "thumb": "super-kids.jpg"},
@@ -20,7 +21,6 @@ $(function () {
 		// $(link).attr('href' , website.url);
 		// $(image).attr('src' , 'screenshots/'+website.thumb);
 	// });
-});
 
 self.port.on('child-favorites_read', function (favorites) {
 		console.log("hello2");
