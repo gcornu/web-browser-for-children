@@ -830,9 +830,9 @@ function nextTourStep() {
 		$('#tour-panel').remove();
 		$('#tour-end').show();
 	} else {
-		$('*[tour-step]' + step).popover('destroy');
+		$('*[tour-step]').popover('destroy');
 	}
-	$('*[tour-step]' + step).css('z-index', 0).removeAttr('tour-step');
+	$('*[tour-step]').css('z-index', 0).removeAttr('tour-step');
 
 	switch(step) {
 		case '0':
@@ -840,7 +840,8 @@ function nextTourStep() {
 			content = 'In the \'Password\' section, you can change the password of the application'; 
 			break;
 		case '1':
-			elementId = 'filter';
+			console.log('case 1');
+			elementId = 'filtering';
 			content = 'In the \'Filter\' section, you can choose what kind of filter use';
 			break;
 		default:
@@ -850,7 +851,7 @@ function nextTourStep() {
 	content = $('<div>', {'text': content}).append($('<div>', {'id': 'tour-next-step', 'class': 'btn btn-link pull-right', 'text': 'Next »'}));
 	//$('#tour-next-step').click(nextTourStep);
 
-	$('#' + elementId).css('z-index', 101).attr('tour-step', step++);
+	$('#' + elementId).css('z-index', 101).attr('tour-step', parseInt(step) + 1);
 	$('#' + elementId).popover({
 		html: true,
 		placement: placement,
@@ -858,8 +859,6 @@ function nextTourStep() {
 		content: content,
 		container: 'body',
 	}).popover('show');
-
-	console.log('end');
 }
 
 /**
