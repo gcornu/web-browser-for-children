@@ -54,15 +54,7 @@ $(function () {
 		$(".alert").hide(); //remove any leftover alert
 
 		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
-			// display menu if hidden
-			if($('#nav').css('opacity') == 0) {
-				$('#welcome').remove();
-				$('#change-password-title').show();
-				$('#nav').css('visibility', 'visible');
-				$('#nav').animate({
-					opacity: '1.0'
-				}, 1000, function () {});
-			}
+			
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
@@ -270,6 +262,18 @@ self.port.on("change_pass_result", function (result) {
 	if(result) {
 		inform("Password successfully changed", "success", 3000);
 		$("#old_pass").parent().show(); //this was hidden if first password change
+		// display menu if hidden
+		if($('#nav').css('opacity') == 0) {
+			$('#welcome').remove();
+			$('#change-password-title').show();
+			$('#nav').css('visibility', 'visible');
+			$('#nav').animate({
+				opacity: '1.0'
+			}, 1000, function () {
+				
+			});
+			showTour();
+		}
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
 		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
@@ -794,4 +798,73 @@ function removeUrlPrefix(url) {
     url = url.replace(prefix, "");
 	//url = url.replace(/www\/./, "");
 	return url;
+}
+
+/**
+ * This function shows the presentation tour after first startup
+ */
+function showTour() {
+	$('body').prepend($('<div>', {'id': 'tour-filter'}));
+	$('#tour-filter').height($('body').outerHeight());
+	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'tour-step': 0})
+					.append($('<div>', {'class': 'panel-body', 'text': 'Would you like a short presentation of what you can do here?'})
+						.prepend($('<h3>', {'text': 'Congratulations!'}))
+						.append($('<div>', {'id': 'tour-button-accept', 'class': 'btn btn-success pull-left', 'text': 'Yes'}))
+						.append($('<div>', {'id': 'tour-button-deny', 'class': 'btn btn-danger pull-right', 'text': 'No'})));
+	$('#tour-filter').append(panel);
+	$('#tour-filter').append($('<div>', {'id': 'tour-end', 'class': 'btn btn-danger btn-xs pull-left', 'text': 'End tour'}).hide())
+
+	$('#tour-button-accept').click(nextTourStep);
+	$('#tour-button-deny, #tour-end').click(endTour);
+	$('body').on('click', '#tour-next-step', nextTourStep);
+}
+
+function nextTourStep() {
+	var content = '';
+	var elementId = '';
+	var placement = 'top';
+
+	var step = $('*[tour-step]').attr('tour-step');
+	console.log(step);
+	if(step == '0') {
+		$('#tour-panel').remove();
+		$('#tour-end').show();
+	} else {
+		$('*[tour-step]' + step).popover('destroy');
+	}
+	$('*[tour-step]' + step).css('z-index', 0).removeAttr('tour-step');
+
+	switch(step) {
+		case '0':
+			elementId = 'pass';
+			content = 'In the \'Password\' section, you can change the password of the application'; 
+			break;
+		case '1':
+			elementId = 'filter';
+			content = 'In the \'Filter\' section, you can choose what kind of filter use';
+			break;
+		default:
+			endTour();
+	}
+
+	content = $('<div>', {'text': content}).append($('<div>', {'id': 'tour-next-step', 'class': 'btn btn-link pull-right', 'text': 'Next »'}));
+	//$('#tour-next-step').click(nextTourStep);
+
+	$('#' + elementId).css('z-index', 101).attr('tour-step', step++);
+	$('#' + elementId).popover({
+		html: true,
+		placement: placement,
+		trigger: 'manual',
+		content: content,
+		container: 'body',
+	}).popover('show');
+
+	console.log('end');
+}
+
+/**
+ * This function ends tour presentation by removing all of its elements
+ */
+function endTour() {
+	$('div[id^="tour-"]').remove();
 }
