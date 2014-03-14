@@ -1,0 +1,14 @@
+{
+	"favorites" : [
+		{"index":0 , "title":"truc" , "uri":"http://example.com", "homepage":"false" , "thumb" : "background.jpg"},
+		{"index":1 , "title":"Kidrex" , "uri":"http://kidrex.org", "homepage":"true" , "thumb" : "kidrex.jpg"},
+		{"index":2 , "title":"SuperKids" , "uri":"http://super-kids.com", "homepage":"true" , "thumb" : "super-kids.jpg"},
+		{"index":3 , "title":"Kidtopia" , "uri":"http://kidtopia.info/", "homepage":"true" , "thumb" : "kidtopia.jpg"},
+		{"index":4 , "title":"Searchypants" , "uri":"http://searchypants.com", "homepage":"true" , "thumb" : "searchypants.jpg"},
+		{"index":5 , "title":"Kideos" , "uri":"http://www.kideos.com/", "homepage":"true" , "thumb" : "kideos.jpg"},
+		{"index":6 , "title":"KidsGames" , "uri":"http://www.kidsgames.org/", "homepage":"true" , "thumb" : "kidsgames.jpg"},
+		{"index":7 , "title":"Disney" , "uri": "http://disney.com", "homepage":"true" , "thumb" : "disney.jpg"},
+		{"index":8 , "title":"Nick" , "uri":"http://www.nick.com/", "homepage":"true" , "thumb" : "nick.jpg"},
+		{"index":9 , "title":"Poney Academy" , "uri":"http://en.poney-academy.com/index.html", "homepage":"true", "thumb" : "poney-academy.jpg"}
+	]
+}
