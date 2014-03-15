@@ -806,6 +806,8 @@ function removeUrlPrefix(url) {
 function showTour() {
 	$('body').prepend($('<div>', {'id': 'tour-filter'}));
 	$('#tour-filter').height($('body').outerHeight());
+
+	// construct the panel
 	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'tour-step': 0})
 					.append($('<div>', {'class': 'panel-body', 'text': 'Would you like a short presentation of what you can do here?'})
 						.prepend($('<h3>', {'text': 'Congratulations!'}))
@@ -814,6 +816,7 @@ function showTour() {
 	$('#tour-filter').append(panel);
 	$('#tour-filter').append($('<div>', {'id': 'tour-end', 'class': 'btn btn-danger btn-xs pull-left', 'text': 'End tour'}).hide())
 
+	// attach event handlers
 	$('#tour-button-accept').click(nextTourStep);
 	$('#tour-button-deny, #tour-end').click(endTour);
 	$('body').on('click', '#tour-next-step', nextTourStep);
@@ -823,36 +826,48 @@ function nextTourStep() {
 	var content = '';
 	var elementId = '';
 	var placement = 'top';
+	var buttonLabel = 'Next »';
+	var clickElement = false;
 
-	var step = $('*[tour-step]').attr('tour-step');
-	console.log(step);
-	if(step == '0') {
+	// get the current step
+	var step = parseInt($('*[tour-step]').attr('tour-step'));
+	// remove previous popover
+	if(step === 0) {
 		$('#tour-panel').remove();
 		$('#tour-end').show();
 	} else {
 		$('*[tour-step]').popover('destroy');
 	}
+	// clean the previous popovered element
 	$('*[tour-step]').css('z-index', 0).removeAttr('tour-step');
 
+	// define variables depending on the step
 	switch(step) {
-		case '0':
+		case 0:
 			elementId = 'pass';
+			clickElement = true;
 			content = 'In the \'Password\' section, you can change the password of the application'; 
 			break;
-		case '1':
-			console.log('case 1');
+		case 1:
 			elementId = 'filtering';
+			clickElement = true;
 			content = 'In the \'Filter\' section, you can choose what kind of filter use';
 			break;
+		case 999:
+			buttonLabel = 'End';
 		default:
 			endTour();
 	}
 
-	content = $('<div>', {'text': content}).append($('<div>', {'id': 'tour-next-step', 'class': 'btn btn-link pull-right', 'text': 'Next »'}));
-	//$('#tour-next-step').click(nextTourStep);
+	content = $('<div>', {'text': content}).append($('<div>', {'id': 'tour-next-step', 'class': 'btn btn-link pull-right', 'text': buttonLabel}));
 
-	$('#' + elementId).css('z-index', 101).attr('tour-step', parseInt(step) + 1);
+	// attach the new popover
+	$('#' + elementId).css('z-index', 101).attr('tour-step', step + 1);
+	if(clickElement) {
+		$('#' + elementId).click();
+	}
 	$('#' + elementId).popover({
+		animate: false,
 		html: true,
 		placement: placement,
 		trigger: 'manual',
