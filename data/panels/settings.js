@@ -4,25 +4,25 @@ $(".tab_container").hide();
 //define options to be used for pager
 var pagerOptions = {
 
-		// target the pager markup - see the HTML block below
-		container: $(".ts-pager"),
+	// target the pager markup - see the HTML block below
+	container: $(".ts-pager"),
 
-		// target the pager page select dropdown - choose a page
-		cssGoto  : ".pagenum",
-		cssNext: '.next', // next page arrow
-		cssPrev: '.prev', // previous page arrow
-		cssFirst: '.first', // go to first page arrow
-		cssLast: '.last', // go to last page arrow
+	// target the pager page select dropdown - choose a page
+	cssGoto  : ".pagenum",
+	cssNext: '.next', // next page arrow
+	cssPrev: '.prev', // previous page arrow
+	cssFirst: '.first', // go to first page arrow
+	cssLast: '.last', // go to last page arrow
 
-		// remove rows from the table to speed up the sort of large tables.
-		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-		removeRows: false,
+	// remove rows from the table to speed up the sort of large tables.
+	// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+	removeRows: false,
 
-		// output string - default is '{page}/{totalPages}';
-		// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+	// output string - default is '{page}/{totalPages}';
+	// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+	output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
 
-		};
+};
 
 $(function () {
 	/**
@@ -808,50 +808,87 @@ function showTour() {
 	$('#tour-filter').height($('body').outerHeight());
 
 	// construct the panel
-	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'tour-step': 0})
+	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'data-tour-step': 0})
 					.append($('<div>', {'class': 'panel-body', 'text': 'Would you like a short presentation of what you can do here?'})
 						.prepend($('<h3>', {'text': 'Congratulations!'}))
 						.append($('<div>', {'id': 'tour-button-accept', 'class': 'btn btn-success pull-left', 'text': 'Yes'}))
 						.append($('<div>', {'id': 'tour-button-deny', 'class': 'btn btn-danger pull-right', 'text': 'No'})));
 	$('#tour-filter').append(panel);
-	$('#tour-filter').append($('<div>', {'id': 'tour-end', 'class': 'btn btn-danger btn-xs pull-left', 'text': 'End tour'}).hide())
+	$('#tour-filter').append($('<div>', {'id': 'tour-end', 'class': 'btn btn-danger btn-xs pull-right', 'text': 'End tour'}).hide())
 
 	// attach event handlers
 	$('#tour-button-accept').click(nextTourStep);
+
 	$('#tour-button-deny, #tour-end').click(endTour);
 	$('body').on('click', '#tour-next-step', nextTourStep);
+	nextTourStep();
 }
 
 function nextTourStep() {
 	var content = '';
-	var elementId = '';
+	var element = null;
 	var placement = 'top';
 	var buttonLabel = 'Next »';
 	var clickElement = false;
 
 	// get the current step
-	var step = parseInt($('*[tour-step]').attr('tour-step'));
+	var step = parseInt($('*[data-tour-step]').attr('data-tour-step'));
 	// remove previous popover
 	if(step === 0) {
 		$('#tour-panel').remove();
 		$('#tour-end').show();
 	} else {
-		$('*[tour-step]').popover('destroy');
+		$('*[data-tour-step]').popover('destroy');
+		$('div.popover').remove();
 	}
 	// clean the previous popovered element
-	$('*[tour-step]').css('z-index', 0).removeAttr('tour-step');
+	$('*[data-tour-step]').css('z-index', 0).removeAttr('data-tour-step');
 
 	// define variables depending on the step
 	switch(step) {
 		case 0:
-			elementId = 'pass';
+			element = $('#pass');
 			clickElement = true;
 			content = 'In the \'Password\' section, you can change the password of the application'; 
 			break;
 		case 1:
-			elementId = 'filtering';
+			element = $('#filtering');
 			clickElement = true;
 			content = 'In the \'Filter\' section, you can choose what kind of filter use';
+			break;
+		case 2:
+			element = $('#filteringOptionsBlack').parent();
+			content = 'Blacklist forbids a list of websites to be visited';
+			placement = 'right';
+			break;
+		case 3:
+			element = $('#filteringOptionsWhite').parent();
+			content = 'Whitelist only allows websites which are in a list';
+			placement = 'right';
+			break;
+		case 4:
+			element = $('#filteringOptionsNone').parent();
+			content = 'If you don\'t want to use any filtering on visited websites, use this option';
+			placement = 'right';
+			break;
+		case 5:
+			element = $('#lists');
+			// why doesn't it work without the setTimeout ? No idea...
+			setTimeout(function () {
+				element.find('a.dropdown-toggle').click();
+			}, 1);
+			clickElement = false;
+			content = 'In the \'Lists management\' section, you can control the content of the black and white lists';
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			break;
+		case 10:
 			break;
 		case 999:
 			buttonLabel = 'End';
@@ -862,11 +899,12 @@ function nextTourStep() {
 	content = $('<div>', {'text': content}).append($('<div>', {'id': 'tour-next-step', 'class': 'btn btn-link pull-right', 'text': buttonLabel}));
 
 	// attach the new popover
-	$('#' + elementId).css('z-index', 101).attr('tour-step', step + 1);
+	element.css('z-index', 101).attr('data-tour-step', step + 1);
 	if(clickElement) {
-		$('#' + elementId).click();
+		element.click();
+		
 	}
-	$('#' + elementId).popover({
+	element.popover({
 		animate: false,
 		html: true,
 		placement: placement,
@@ -881,4 +919,5 @@ function nextTourStep() {
  */
 function endTour() {
 	$('div[id^="tour-"]').remove();
+	$('div.popover').remove();
 }

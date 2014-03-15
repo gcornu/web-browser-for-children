@@ -13,6 +13,10 @@
 			margin-left: 15px;
 		}
 
+		div.radio label {
+			padding-right: 5px;
+		}
+
 		#tour-filter {
 			top: 0;
 			right: 0;
@@ -58,7 +62,7 @@
 					<li id="pass"><a><span class="glyphicon glyphicon-lock"></span> Password</a></li>
 					<li id="filtering"><a><span class="glyphicon glyphicon-check"></span> Filtering</a></li>
 					<li id="lists" class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span> List management</a>
+						<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span> Lists management</a>
 						<ul class="dropdown-menu" role="menu">
 							<li class="dropdown-header">Blacklist</li>
 							<li id="default-blacklist"><a>Default blacklist</a></li>
@@ -112,20 +116,20 @@
 				<h3>What kind of filtering would you like to use?</h3>
 				<div class="radio">
 					<label>
-						<input type="radio" name="filteringOptions" id="filteringOptions1" value="none"/>
-						No filtering
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<input type="radio" name="filteringOptions" id="filteringOptions2" value="blist"/>
+						<input type="radio" name="filteringOptions" id="filteringOptionsBlack" value="blist"/>
 						Use blacklist
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input type="radio" name="filteringOptions" id="filteringOptions3" value="wlist"/>
+						<input type="radio" name="filteringOptions" id="filteringOptionsWhite" value="wlist"/>
 						Use whitelist
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="filteringOptions" id="filteringOptionsNone" value="none"/>
+						No filtering
 					</label>
 				</div>
 			</div>
