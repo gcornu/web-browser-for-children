@@ -107,11 +107,10 @@ $(function () {
     });
 	
 	/**
-	 * Init tabs in lists management
+	 * Init dropdowns for lists management
 	 */
 	$('#nav #lists .dropdown-menu li').not('.dropdown-header').click(function () {
 		showList($(this).attr('id'));
-		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
 	$('#default-blacklist-search-form').submit(function (e) {
@@ -127,7 +126,6 @@ $(function () {
 	 */
 	$('#nav #reports .dropdown-menu li').click(function () {
 		showReport($(this).attr('id'));
-		self.port.emit('reports_tab_choice', $(this).attr('id'));
 	});
 
 	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
@@ -692,10 +690,10 @@ function fillTimeReport(times) {
 	tableBody.empty();
 
 	var categories = Object.keys(times);
-
+	console.log('categories: ' + categories);
 	if(categories.length > 0) {
 		$('#time-pane #no-categories').hide();
-		$('#time-pane table').show();
+		$('#time-pane #categories').show();
 
 		var oneMinute = 60,
 			oneHour = oneMinute*60,
@@ -728,7 +726,8 @@ function fillTimeReport(times) {
 			tableBody.append(line);
 		});
 	} else {
-		$('#time-pane table').hide();
+		console.log('hide table');
+		$('#time-pane #categories').hide();
 		$('#time-pane #no-categories').show();
 	}
 }
@@ -770,7 +769,7 @@ function fillTimeLimitSelect (timeLimits) {
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
-	self.port.emit("tab_choice",tab_choice);
+	self.port.emit("tab_choice", tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
 	$("#"+tab_choice+"_tab").show();
@@ -779,6 +778,7 @@ function showTab(tab_choice) { //hides other content and shows chosen tab "pass"
 }
 
 function showList(list_choice) {
+	self.port.emit('lists_tab_choice', list_choice);
 	showTab('lists');
 	$('#lists_tab .list-pane').hide();
 	$('#lists_tab #' + list_choice + '-pane').show();
@@ -787,6 +787,7 @@ function showList(list_choice) {
 }
 
 function showReport(report_choice) {
+	self.port.emit('reports_tab_choice', report_choice);
 	showTab('reports');
 	$('#reports_tab .report-pane').hide();
 	$('#reports_tab #' + report_choice + '-pane').show();
@@ -805,7 +806,7 @@ function removeUrlPrefix(url) {
  */
 function showTour() {
 	$('body').prepend($('<div>', {'id': 'tour-filter'}));
-	$('#tour-filter').height($('body').outerHeight());
+	$('#tour-filter').height(Math.max($('body').outerHeight(), window.height));
 
 	// construct the panel
 	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'data-tour-step': 0})
@@ -821,7 +822,6 @@ function showTour() {
 
 	$('#tour-button-deny, #tour-end').click(endTour);
 	$('body').on('click', '#tour-next-step', nextTourStep);
-	nextTourStep();
 }
 
 function nextTourStep() {
@@ -842,7 +842,7 @@ function nextTourStep() {
 		$('div.popover').remove();
 	}
 	// clean the previous popovered element
-	$('*[data-tour-step]').css('z-index', 0).removeAttr('data-tour-step');
+	$('*[data-tour-step]').css('z-index', 'initial').removeAttr('data-tour-step');
 
 	// define variables depending on the step
 	switch(step) {
@@ -873,26 +873,74 @@ function nextTourStep() {
 			break;
 		case 5:
 			element = $('#lists');
-			// why doesn't it work without the setTimeout ? No idea...
-			setTimeout(function () {
-				element.find('a.dropdown-toggle').click();
-			}, 1);
-			clickElement = false;
+			displayDropdown('lists');
 			content = 'In the \'Lists management\' section, you can control the content of the black and white lists';
 			break;
 		case 6:
+			displayDropdown('lists');
+			element = $('#default-blacklist');
+			showList('default-blacklist');
+			content = 'The default blacklist is automatically updated. You can remove some elements from this list, but you cannot add you own elements.';
+			placement = 'right';
 			break;
 		case 7:
+			displayDropdown('lists');
+			element = $('#custom-blacklist');
+			showList('custom-blacklist');
+			content = 'In the custom blacklist, you can add all the elements you want in the blacklist that aren\'t in the default blacklist.';
+			placement = 'right';
 			break;
 		case 8:
+			displayDropdown('lists');
+			element = $('#default-whitelist');
+			showList('default-whitelist');
+			content = 'The default whitelist contains verified websites that are safe for our children. You can remove some elements from this list, but you cannot add you own elements.';
+			placement = 'right';
 			break;
 		case 9:
+			displayDropdown('lists');
+			element = $('#custom-whitelist');
+			showList('custom-whitelist');
+			content = 'As in the custom blacklist, you can add in the custom whitelist all the elements you want in the whitelist that aren\'t in the default whitelist.';
+			placement = 'right';
 			break;
 		case 10:
+			$('#lists').removeClass('open').css('z-index', 'initial');
+			element = $('#reports');
+			displayDropdown('reports');
+			content = 'In the \'Reports\' section, you can track the actions done by your children';
 			break;
-		case 999:
+		case 11:
+			displayDropdown('reports');
+			element = $('#login');
+			showReport('login');
+			content = 'The \'Login\' section displays all the login attempts (successes and fails) made with the extension.';
+			placement = 'right';
+			break;
+		case 12:
+			displayDropdown('reports');
+			element = $('#history');
+			showReport('history');
+			content = 'In the \'History\' section, you can see all the websites visited by your children while the safe navigation is activated.';
+			placement = 'right';
+			break;
+		case 13:
+			displayDropdown('reports');
+			element = $('#time');
+			showReport('time');
+			content = 'In the \'Time\' section, you can see the time spent on each category of website by your children. Categories are defined in the custom whitelist panel (even if you are not using the whitelist filtering).';
+			placement = 'right';
+			break;
+		case 14:
+			$('#reports').removeClass('open').css('z-index', 'initial');
+			element = $('#limit_time');
+			clickElement = true;
+			content = 'In the \'Time limits\' section, you can limit the time spent by your children on each websites category. These categories are defined in the custom whitelist section, even if you are not using the whitelist filtering.';
+			placement = 'bottom';
 			buttonLabel = 'End';
+			break;
 		default:
+			$('#filtering').click();
 			endTour();
 	}
 
@@ -902,7 +950,6 @@ function nextTourStep() {
 	element.css('z-index', 101).attr('data-tour-step', step + 1);
 	if(clickElement) {
 		element.click();
-		
 	}
 	element.popover({
 		animate: false,
@@ -912,6 +959,21 @@ function nextTourStep() {
 		content: content,
 		container: 'body',
 	}).popover('show');
+
+	// Adjust filter height to newly diplayed element
+	$('#tour-filter').height(Math.max($('body').outerHeight(), window.height));
+}
+
+/**
+ * Display the dropdown associated to the given id
+ *
+ * @param {string} id of the container of the dropdown
+ */
+function displayDropdown(id) {
+	// why doesn't it work without the setTimeout ? No idea...
+	setTimeout(function () {
+		$('#' + id).addClass('open').css('z-index', 101);
+	}, 1);
 }
 
 /**
