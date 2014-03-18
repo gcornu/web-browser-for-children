@@ -4,25 +4,25 @@ $(".tab_container").hide();
 //define options to be used for pager
 var pagerOptions = {
 
-		// target the pager markup - see the HTML block below
-		container: $(".ts-pager"),
+	// target the pager markup - see the HTML block below
+	container: $(".ts-pager"),
 
-		// target the pager page select dropdown - choose a page
-		cssGoto  : ".pagenum",
-		cssNext: '.next', // next page arrow
-		cssPrev: '.prev', // previous page arrow
-		cssFirst: '.first', // go to first page arrow
-		cssLast: '.last', // go to last page arrow
+	// target the pager page select dropdown - choose a page
+	cssGoto  : ".pagenum",
+	cssNext: '.next', // next page arrow
+	cssPrev: '.prev', // previous page arrow
+	cssFirst: '.first', // go to first page arrow
+	cssLast: '.last', // go to last page arrow
 
-		// remove rows from the table to speed up the sort of large tables.
-		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-		removeRows: false,
+	// remove rows from the table to speed up the sort of large tables.
+	// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+	removeRows: false,
 
-		// output string - default is '{page}/{totalPages}';
-		// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+	// output string - default is '{page}/{totalPages}';
+	// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+	output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
 
-		};
+};
 
 $(function () {
 	/**
@@ -54,15 +54,7 @@ $(function () {
 		$(".alert").hide(); //remove any leftover alert
 
 		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
-			// display menu if hidden
-			if($('#nav').css('opacity') == 0) {
-				$('#welcome').remove();
-				$('#change-password-title').show();
-				$('#nav').css('visibility', 'visible');
-				$('#nav').animate({
-					opacity: '1.0'
-				}, 1000, function () {});
-			}
+			
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
@@ -115,11 +107,10 @@ $(function () {
     });
 	
 	/**
-	 * Init tabs in lists management
+	 * Init dropdowns for lists management
 	 */
 	$('#nav #lists .dropdown-menu li').not('.dropdown-header').click(function () {
 		showList($(this).attr('id'));
-		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
 	$('#default-blacklist-search-form').submit(function (e) {
@@ -135,7 +126,6 @@ $(function () {
 	 */
 	$('#nav #reports .dropdown-menu li').click(function () {
 		showReport($(this).attr('id'));
-		self.port.emit('reports_tab_choice', $(this).attr('id'));
 	});
 
 	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
@@ -270,6 +260,18 @@ self.port.on("change_pass_result", function (result) {
 	if(result) {
 		inform("Password successfully changed", "success", 3000);
 		$("#old_pass").parent().show(); //this was hidden if first password change
+		// display menu if hidden
+		if($('#nav').css('opacity') == 0) {
+			$('#welcome').remove();
+			$('#change-password-title').show();
+			$('#nav').css('visibility', 'visible');
+			$('#nav').animate({
+				opacity: '1.0'
+			}, 1000, function () {
+				
+			});
+			showTour();
+		}
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
 		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
@@ -688,10 +690,10 @@ function fillTimeReport(times) {
 	tableBody.empty();
 
 	var categories = Object.keys(times);
-
+	console.log('categories: ' + categories);
 	if(categories.length > 0) {
 		$('#time-pane #no-categories').hide();
-		$('#time-pane table').show();
+		$('#time-pane #categories').show();
 
 		var oneMinute = 60,
 			oneHour = oneMinute*60,
@@ -724,7 +726,8 @@ function fillTimeReport(times) {
 			tableBody.append(line);
 		});
 	} else {
-		$('#time-pane table').hide();
+		console.log('hide table');
+		$('#time-pane #categories').hide();
 		$('#time-pane #no-categories').show();
 	}
 }
@@ -766,7 +769,7 @@ function fillTimeLimitSelect (timeLimits) {
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
-	self.port.emit("tab_choice",tab_choice);
+	self.port.emit("tab_choice", tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
 	$("#"+tab_choice+"_tab").show();
@@ -775,6 +778,7 @@ function showTab(tab_choice) { //hides other content and shows chosen tab "pass"
 }
 
 function showList(list_choice) {
+	self.port.emit('lists_tab_choice', list_choice);
 	showTab('lists');
 	$('#lists_tab .list-pane').hide();
 	$('#lists_tab #' + list_choice + '-pane').show();
@@ -783,6 +787,7 @@ function showList(list_choice) {
 }
 
 function showReport(report_choice) {
+	self.port.emit('reports_tab_choice', report_choice);
 	showTab('reports');
 	$('#reports_tab .report-pane').hide();
 	$('#reports_tab #' + report_choice + '-pane').show();
