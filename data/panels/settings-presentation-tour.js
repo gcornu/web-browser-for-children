@@ -54,17 +54,17 @@ function nextTourStep() {
 			content = 'In the \'Filter\' section, you can choose what kind of filter use';
 			break;
 		case 2:
-			element = $('#filteringOptionsBlack').parent();
+			element = $('#filteringOptionsBlack').next();
 			content = 'Blacklist forbids a list of websites to be visited';
 			placement = 'right';
 			break;
 		case 3:
-			element = $('#filteringOptionsWhite').parent();
+			element = $('#filteringOptionsWhite').next();
 			content = 'Whitelist only allows websites which are in a list';
 			placement = 'right';
 			break;
 		case 4:
-			element = $('#filteringOptionsNone').parent();
+			element = $('#filteringOptionsNone').next();
 			content = 'If you don\'t want to use any filtering on visited websites, use this option';
 			placement = 'right';
 			break;
