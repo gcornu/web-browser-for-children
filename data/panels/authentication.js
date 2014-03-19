@@ -47,13 +47,13 @@ self.port.on("auth_fail", function () {
 
 self.port.on("ison", function () { 
 	clean();
-	inform('This will disable safe browsing', 'warning');
+	inform(self.options.disable_safe_browsing, 'warning');
 	$("#input").attr("id","input-safe");
 });
 
 self.port.on("isoff", function () { 
 	clean();
-	inform('This will enable safe browsing', 'info');
+	inform(self.options.enable_safe_browsing, 'info');
 	$("#input").attr("id","input-lock");
 });
 
