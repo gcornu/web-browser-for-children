@@ -11,7 +11,7 @@ self.port.on('deny', function () {
 	$('body').empty();
 	$('body').append($('<div>', {'class': 'container', 'style': 'margin-top:20%'})
 				.append($('<div>', {'class': 'jumbotron'})
-					.append('<h1>', {'text': '&#9785; ' + self.options.not_allowed})));
+					.append($('<h1>', {'text': String.fromCharCode('9785') + ' ' + self.options.not_allowed}))));
 	document.title = 'Forbidden website';
 
 	var link = document.createElement('link');

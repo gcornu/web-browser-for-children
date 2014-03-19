@@ -3,9 +3,9 @@ window.stop();
 
 // replace page content and title
 $('body').empty();
-	$('body').append($('<div>', {'class': 'container', 'style': 'margin-top:20%'})
-				.append($('<div>', {'class': 'jumbotron'})
-					.append('<h1>', {'text': '&#9785; ' + self.options.over_time)));
+$('body').append($('<div>', {'class': 'container', 'style': 'margin-top:20%'})
+			.append($('<div>', {'class': 'jumbotron'})
+				.append($('<h1>', {'text': String.fromCharCode('9785') + ' ' + self.options.over_time))));
 document.title = 'Time limit exceeded';
 
 // set favicon to null
