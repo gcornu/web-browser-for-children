@@ -7,12 +7,12 @@ function showTour() {
 
 	// construct the panel
 	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'data-tour-step': 0})
-					.append($('<div>', {'class': 'panel-body', 'text': 'Would you like a short presentation of what you can do here?'})
+					.append($('<div>', {'class': 'panel-body', 'text': self.options.step0})
 						.prepend($('<h3>', {'text': 'Congratulations!'}))
-						.append($('<div>', {'id': 'tour-button-accept', 'class': 'btn btn-success pull-left', 'text': 'Yes'}))
-						.append($('<div>', {'id': 'tour-button-deny', 'class': 'btn btn-danger pull-right', 'text': 'No'})));
+						.append($('<div>', {'id': 'tour-button-accept', 'class': 'btn btn-success pull-left', 'text': self.options.yes}))
+						.append($('<div>', {'id': 'tour-button-deny', 'class': 'btn btn-danger pull-right', 'text': self.options.no})));
 	$('#tour-filter').append(panel);
-	$('#tour-filter').append($('<div>', {'id': 'tour-end', 'class': 'btn btn-danger btn-xs pull-right', 'text': 'End tour'}).hide())
+	$('#tour-filter').append($('<div>', {'id': 'tour-end', 'class': 'btn btn-danger btn-xs pull-right', 'text': self.options.end_tour}).hide())
 
 	// attach event handlers
 	$('#tour-button-accept').click(nextTourStep);
@@ -25,7 +25,7 @@ function nextTourStep() {
 	var content = '';
 	var element = null;
 	var placement = 'top';
-	var buttonLabel = 'Next »';
+	var buttonLabel = self.options.next + ' »';
 	var clickElement = false;
 
 	// get the current step
@@ -38,103 +38,105 @@ function nextTourStep() {
 		$('*[data-tour-step]').popover('destroy');
 		$('div.popover').remove();
 	}
+	step++;
+
 	// clean the previous popovered element
 	$('*[data-tour-step]').css('z-index', 'initial').removeAttr('data-tour-step');
 
 	// define variables depending on the step
 	switch(step) {
-		case 0:
+		case 1:
 			element = $('#pass');
 			clickElement = true;
-			content = 'In the \'Password\' section, you can change the password of the application'; 
-			break;
-		case 1:
-			element = $('#filtering');
-			clickElement = true;
-			content = 'In the \'Filter\' section, you can choose what kind of filter use';
+			content = self.options.step1; 
 			break;
 		case 2:
-			element = $('#filteringOptionsBlack').next();
-			content = 'Blacklist forbids a list of websites to be visited';
-			placement = 'right';
+			element = $('#filtering');
+			clickElement = true;
+			content = self.options.step2;
 			break;
 		case 3:
-			element = $('#filteringOptionsWhite').next();
-			content = 'Whitelist only allows websites which are in a list';
+			element = $('#filteringOptionsBlack').next();
+			content = self.options.step3;
 			placement = 'right';
 			break;
 		case 4:
-			element = $('#filteringOptionsNone').next();
-			content = 'If you don\'t want to use any filtering on visited websites, use this option';
+			element = $('#filteringOptionsWhite').next();
+			content = self.options.step4;
 			placement = 'right';
 			break;
 		case 5:
-			element = $('#lists');
-			displayDropdown('lists');
-			content = 'In the \'Lists management\' section, you can control the content of the black and white lists';
+			element = $('#filteringOptionsNone').next();
+			content = self.options.step5;
+			placement = 'right';
 			break;
 		case 6:
+			element = $('#lists');
 			displayDropdown('lists');
-			element = $('#default-blacklist');
-			showList('default-blacklist');
-			content = 'The default blacklist is automatically updated. You can remove some elements from this list, but you cannot add you own elements.';
-			placement = 'right';
+			content = self.options.step6;
 			break;
 		case 7:
 			displayDropdown('lists');
-			element = $('#custom-blacklist');
-			showList('custom-blacklist');
-			content = 'In the custom blacklist, you can add all the elements you want in the blacklist that aren\'t in the default blacklist.';
+			element = $('#default-blacklist');
+			showList('default-blacklist');
+			content = self.options.step7;
 			placement = 'right';
 			break;
 		case 8:
 			displayDropdown('lists');
-			element = $('#default-whitelist');
-			showList('default-whitelist');
-			content = 'The default whitelist contains verified websites that are safe for our children. You can remove some elements from this list, but you cannot add you own elements.';
+			element = $('#custom-blacklist');
+			showList('custom-blacklist');
+			content = self.options.step8;
 			placement = 'right';
 			break;
 		case 9:
 			displayDropdown('lists');
-			element = $('#custom-whitelist');
-			showList('custom-whitelist');
-			content = 'As in the custom blacklist, you can add in the custom whitelist all the elements you want in the whitelist that aren\'t in the default whitelist.';
+			element = $('#default-whitelist');
+			showList('default-whitelist');
+			content = self.options.step9;
 			placement = 'right';
 			break;
 		case 10:
+			displayDropdown('lists');
+			element = $('#custom-whitelist');
+			showList('custom-whitelist');
+			content = self.options.step10;
+			placement = 'right';
+			break;
+		case 11:
 			$('#lists').removeClass('open').css('z-index', 'initial');
 			element = $('#reports');
 			displayDropdown('reports');
-			content = 'In the \'Reports\' section, you can track the actions done by your children';
-			break;
-		case 11:
-			displayDropdown('reports');
-			element = $('#login');
-			showReport('login');
-			content = 'The \'Login\' section displays all the login attempts (successes and fails) made with the extension.';
-			placement = 'right';
+			content = self.options.step11;
 			break;
 		case 12:
 			displayDropdown('reports');
-			element = $('#history');
-			showReport('history');
-			content = 'In the \'History\' section, you can see all the websites visited by your children while the safe navigation is activated.';
+			element = $('#login');
+			showReport('login');
+			content = self.options.step12;
 			placement = 'right';
 			break;
 		case 13:
 			displayDropdown('reports');
-			element = $('#time');
-			showReport('time');
-			content = 'In the \'Time\' section, you can see the time spent on each category of website by your children. Categories are defined in the custom whitelist panel (even if you are not using the whitelist filtering).';
+			element = $('#history');
+			showReport('history');
+			content = self.options.step13;
 			placement = 'right';
 			break;
 		case 14:
+			displayDropdown('reports');
+			element = $('#time');
+			showReport('time');
+			content = self.options.step14;
+			placement = 'right';
+			break;
+		case 15:
 			$('#reports').removeClass('open').css('z-index', 'initial');
 			element = $('#limit_time');
 			clickElement = true;
-			content = 'In the \'Time limits\' section, you can limit the time spent by your children on each websites category. These categories are defined in the custom whitelist section, even if you are not using the whitelist filtering.';
+			content = self.options.step15;
 			placement = 'bottom';
-			buttonLabel = 'End';
+			buttonLabel = self.options.end;
 			break;
 		default:
 			$('#filtering').click();
@@ -144,7 +146,7 @@ function nextTourStep() {
 	content = $('<div>', {'text': content}).append($('<div>', {'id': 'tour-next-step', 'class': 'btn btn-link pull-right', 'text': buttonLabel}));
 
 	// attach the new popover
-	element.css('z-index', 101).attr('data-tour-step', step + 1);
+	element.css('z-index', 101).attr('data-tour-step', step);
 	if(clickElement) {
 		element.click();
 	}
