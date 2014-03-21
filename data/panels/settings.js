@@ -134,6 +134,16 @@ $(function () {
         var val = $(this).val();
         self.port.emit("filter", val); //val can be none, wlist or blist
     });
+
+    /**
+     * Handle limit time type options clicks
+     */
+    $('input:radio[name=limit-time-type-options]').click(function () {
+        var val = $(this).val();
+        self.port.emit('limit_time_type_set', val); //val can be overall or categories
+        $('#limit-time-overall-header, #limit-time-categories-header').hide();
+		$('#limit-time-' + val + '-header').show();
+    });
 	
 	/**
 	 * Init dropdowns for lists management
@@ -396,6 +406,17 @@ self.port.on('time_log_read', function (times) {
 
 self.port.on('show_filtering', function () {
 	$('#filtering').click();
+});
+
+self.port.on('limit_time_type', function (value) {
+	if(!value) {
+		value = 'overall';
+	}
+	$('#limit_time_tab input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true);
+});
+
+self.port.on('limit_time_type_save_success', function () {
+	inform('Time limitation method has been successfully saved', 'success', 3000);
 });
 
 self.port.on('time_limit_initialized', function (categories) {
