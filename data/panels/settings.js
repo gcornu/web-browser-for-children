@@ -240,6 +240,18 @@ $(function () {
 			}
 		}
 	});
+
+	$('#remove-custom-blacklist-category, #remove-custom-whitelist-category').click(function () {
+		var id = $(this).attr('id').split('-');
+		id.pop();
+		var listName = id.pop();
+		var select = $('#custom-' + listName + '-categories select');
+		var selectedOption = select.find('option:selected');
+		var category = selectedOption.val();
+		selectedOption.remove();
+		select.change();
+		self.port.emit('remove_custom_' + listName + '_category', category);
+	});
 	
 	
 	// ------ jQuery Tablesorter plugin------------
@@ -611,11 +623,11 @@ function listsButtonHandler(eventType, listType, listName) {
 			var containingDiv = $(element).parent().parent().parent();
 			$(element).parent().parent().remove();
 			containingDiv.find('input').change();
-			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
+			/*if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
 				$('#' + listType + '-' + listName + '-categories select').change().selectpicker('refresh');
 				$('#remove-' + listType + '-' + listName).attr('disabled', 'disabled');
-			}
+			}*/
 		}
 	});
 
