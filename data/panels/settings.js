@@ -143,6 +143,17 @@ $(function () {
         self.port.emit('limit_time_type_set', val); //val can be overall or categories
         $('#limit-time-overall-header, #limit-time-categories-header').hide();
 		$('#limit-time-' + val + '-header').show();
+		if(val === 'categories') {
+			if($('#limit_time_tab select option').length === 0) {
+				$('#limitTimeOptions').hide();
+			}
+		} else {
+			$('#limitTimeOptions').show();
+		}
+		$('input:radio[name=limitTimeOptions]').click(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			self.port.emit('limit_time_choice', category, $(this).val());
+		});
     });
 	
 	/**
@@ -412,7 +423,7 @@ self.port.on('limit_time_type', function (value) {
 	if(!value) {
 		value = 'overall';
 	}
-	$('#limit_time_tab input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true);
+	$('#limit_time_tab input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true).click();
 });
 
 self.port.on('limit_time_type_save_success', function () {
@@ -797,7 +808,9 @@ function fillTimeLimitSelect (timeLimits) {
 	var categories = Object.keys(timeLimits);
 	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
-		$('#limitTimeOptions').hide();
+		if($('#limit-time-categories-radio').is(':checked')) {
+			$('#limitTimeOptions').hide();
+		}
 		$('#limit_time_options_title').hide();
 		$('#limit_time_tab select').selectpicker('hide');
 		$('#limit_time_no_category').show();
@@ -814,11 +827,6 @@ function fillTimeLimitSelect (timeLimits) {
 			var category = $('#limit_time_tab select option:selected').val();
 			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
 		}).change();
-
-		$('input:radio[name=limitTimeOptions]').click(function () {
-			var category = $('#limit_time_tab select option:selected').val();
-			self.port.emit('limit_time_choice', category, $(this).val());
-		});
 
 		$('#limit_time_tab select').selectpicker('refresh');
 	}
