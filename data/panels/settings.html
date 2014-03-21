@@ -87,26 +87,46 @@
 		<div id="message_container" style="height: 50px; margin-bottom: 10px;"></div>
 		<div class="container panel panel-default" style="width: 100%; padding: 20px;">
 			<div id="pass_tab" class="tab_container">
-				<h3 id="change-password-title">You can change your password below:</h3>
-				<div class="row">
-					<div class="col-sm-5" style="padding: 0;">
-						<div class="form-group">
-							<label class="control-label" for="old_pass">Old password</label>
-							<input type="password" id="old_pass" class="form-control password"></input>
-							<span class="help-block" style="visibility: hidden;">Incorrect password</span>
+				<div id="change-pass-pane">
+					<h3 id="change-password-title">You can change your password below:</h3>
+					<div class="row">
+						<div class="col-sm-5" style="padding: 0;">
+							<div class="form-group">
+								<label class="control-label" for="old_pass">Old password</label>
+								<input type="password" id="old_pass" class="form-control password"></input>
+								<span class="help-block" style="visibility: hidden;">Incorrect password</span>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="old_pass">New password</label>
+								<input type="password" id="new_pass1" class="form-control password"></input>
+								<span class="help-block" style="visibility: hidden;">New password must be more than 4 characters long</span>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="old_pass">Confirm new password</label>
+								<input type="password" id="new_pass2" class="form-control password"></input>
+								<span class="help-block" style="visibility: hidden;">Passwords must match</span>
+							</div>
+							<div class="form-group">
+								<input type="submit" id="change_pass" class="btn btn-primary" value="Set password"></input>
+							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label" for="old_pass">New password</label>
-							<input type="password" id="new_pass1" class="form-control password"></input>
-							<span class="help-block" style="visibility: hidden;">New password must be more than 4 characters long</span>
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="old_pass">Confirm new password</label>
-							<input type="password" id="new_pass2" class="form-control password"></input>
-							<span class="help-block" style="visibility: hidden;">Passwords must match</span>
-						</div>
-						<div class="form-group">
-							<input type="submit" id="change_pass" class="btn btn-primary" value="Set password"></input>
+					</div>
+				</div>
+				<div id="private-question-pane" style="display: none;">
+					<h3 id="private-question-title">Please set your private question and its answer. This will be useful if you forget your password.</h3>
+					<div class="row">
+						<div class="col-sm-5" style="padding: 0;">
+							<div class="form-group">
+								<label class="control-label" for="secret-question">Private question</label>
+								<input type="text" id="secret-question" class="form-control password"></input>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="secret-answer">Answer</label>
+								<input type="password" id="secret-answer" class="form-control password"></input>
+							</div>
+							<div class="form-group">
+								<input type="submit" id="set-private-question" class="btn btn-primary" value="Save private question"></input>
+							</div>
 						</div>
 					</div>
 				</div>
