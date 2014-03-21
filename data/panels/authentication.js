@@ -28,7 +28,7 @@ $(function () {
 	});
 
 	$('#lost-pass').click(function () {
-		var answer = window.prompt('To reinitialize your password, please answer to the following question: \n' + privateQuestion);
+		var answer = window.prompt(self.options.private_question_prompt + '\n' + privateQuestion);
 		if(answer) {
 			self.port.emit('private_answer', answer);
 		}
@@ -57,13 +57,13 @@ self.port.on("auth_fail", function () {
 
 self.port.on("ison", function () { 
 	clean();
-	inform('This will disable safe browsing', 'warning');
+	inform(self.options.disable_safe_browsing, 'warning');
 	$("#input").attr("id","input-safe");
 });
 
 self.port.on("isoff", function () { 
 	clean();
-	inform('This will enable safe browsing', 'info');
+	inform(self.options.enable_safe_browsing, 'info');
 	$("#input").attr("id","input-lock");
 });
 
@@ -88,9 +88,9 @@ self.port.on("auth_success", function() {
 
 self.port.on('private_answer_result', function (result) {
 	if(result) {
-		alert('Password has been reinitialized.\nIt is now blank.');
+		alert(self.options.password_reinitialized);
 	} else {
-		alert('Wrong answer.');
+		alert(self.options.wrong_answer);
 	}
 })
 

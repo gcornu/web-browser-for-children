@@ -27,6 +27,12 @@ var pagerOptions = {
 var isActivated = false;
 
 $(function () {
+	// Localization : setting values that cannot be localized in plain HTML
+	$('#change_pass').attr('value', self.options.change_pass_value);
+	$('#set-private-question').attr('value', self.options.set_private_question_value);
+	$('#table-history .pagesize').attr('title', self.options.page_size_title);
+	$('#table-history .pagenum').attr('title', self.options.page_num_title);
+
 	/**
 	 * Nav bar management
 	 */
@@ -216,19 +222,19 @@ $(function () {
 
 	$('#add-custom-blacklist, #add-custom-whitelist').click(function () {
 		var listName = $(this).attr('id').split('-').pop();
-		var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
+		var uri = window.prompt(self.options.url_add_prompt + ' ' + self.options[listName] + ':');
 		if(uri) {
 			var category = $('#custom-' + listName + '-categories select option:selected').val();
 			if(category) {
 				self.port.emit('add_custom_' + listName, uri, category);
 			} else {
-				inform('Please select a category', 'error', 5000);
+				inform(self.options.no_category_error, 'error', 5000);
 			}
 		}
 	});
 
 	$('#add-custom-blacklist-category, #add-custom-whitelist-category').click(function () {
-		var category = window.prompt('Name of the new category:');
+		var category = window.prompt(self.options.new_category);
 		if(category) {
 			var id = $(this).attr('id').split('-');
 			id.pop();
@@ -335,7 +341,7 @@ function inform(message, type, timeout) { //adds the message to the page in an a
 // external events listeners
 self.port.on("change_pass_result", function (result) {
 	if(result) {
-		inform("Password successfully changed", "success", 3000);
+		inform(self.options.password_change_success, "success", 3000);
 		$("#old_pass").parent().show(); //this was hidden if first password change
 		$('#change-pass-pane').hide();
 		$('#private-question-pane').show();
@@ -354,8 +360,8 @@ self.port.on("set_first_password", function () {
 	$('#change-password-title').hide();
 	$('#nav').css('opacity', 0);
 	$('#nav').css('visibility', 'hidden');
-	$("#message_container").append($('<div>', {'id': 'welcome'}).append($('<h3>', {'text': 'Welcome to the Firefox for children extension'}))
-																.append($('<p>', {'text': 'Please set your parent password below:'})));
+	$("#message_container").append($('<div>', {'id': 'welcome'}).append($('<h3>', {'text': self.options.welcome_text}))
+																.append($('<p>', {'text': self.options.welcome_advice})));
 });
 
 self.port.on('current_filter', function (value) {
@@ -366,7 +372,7 @@ self.port.on('current_filter', function (value) {
 });
 
 self.port.on('filter_save_success', function () {
-	inform('Filter choice has been successfully set', 'success', 3000);
+	inform(self.options.filter_set, 'success', 3000);
 });
 
 // Add elements in lists when initialization is done
@@ -380,7 +386,7 @@ self.port.on('default_blacklist_search_response', function (matches, removedMatc
 	$('#default-blacklist-search-button #search-icon').show();
 
 	if(Object.keys(matches).length === 0) {
-		$('#default-blacklist-inner').append($('<h4>', {'text': 'No match found'}));
+		$('#default-blacklist-inner').append($('<h4>', {'text': self.options.no_match}));
 	} else {
 		fillListDivs(matches, removedMatchesElements, 'blacklist', 'default');
 	}
@@ -407,15 +413,15 @@ self.port.on('whitelist_custom_added', function (host, category) {
 });
 
 self.port.on('error_null_category', function () {
-	inform('Please select a category', 'error', 5000);
+	inform(self.options.no_category_error, 'error', 5000);
 });
 
 self.port.on('malformed_url', function() {
-	inform('The given url is malformed', 'error', 5000);
+	inform(self.options.malformed_url, 'error', 5000);
 });
 
 self.port.on('host_already_added', function() {
-	inform('The given url is already in the list', 'error', 5000);
+	inform(sefl.options.already_present_url, 'error', 5000);
 });
 
 self.port.on('login_log_read', function (events) {
@@ -442,7 +448,7 @@ self.port.on('limit_time_type', function (value) {
 });
 
 self.port.on('limit_time_type_save_success', function () {
-	inform('Time limitation method has been successfully saved', 'success', 3000);
+	inform(self.options.time_limit_method_set, 'success', 3000);
 });
 
 self.port.on('time_limit_initialized', function (categories) {
@@ -450,7 +456,7 @@ self.port.on('time_limit_initialized', function (categories) {
 });
 
 self.port.on('time_limit_set', function () {
-	inform('Time limit has been successfully set', 'success', 3000);
+	inform(self.options.time_limit_set, 'success', 3000);
 });
 
 self.port.on('is_activated', function (isActivatedParam) {
@@ -463,7 +469,7 @@ self.port.on('is_activated', function (isActivatedParam) {
  * @param {blacklist|whitelist} name of the list 
  */
 function addCustomListHandler(listName) {
-	var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
+	var uri = window.prompt(self.options.add_url + ' ' + self.options[listName] + ':');
 	if(uri) {
 		var category = $('#custom-' + listName + '-categories select option:selected').val();
 		self.port.emit('add_custom_' + listName, uri, category);
@@ -489,7 +495,7 @@ function addCustomListListener(listName, host, category) {
 
 		addInputChangeHandler(div);
 	} else {
-		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
+		inform(self.options.host_not_added + ' ' + self.options[listName] + self.options.check_syntax, 'error');
 	}
 }
 
@@ -691,7 +697,7 @@ function fillLoginReport(events) {
 				var eventSplit = eventElement.split(' : ');
 				var timestamp = $('<b>', {'text': eventSplit[0] + ' : '});
 				var br = $('<br>');
-				var line = $('<div>', {'text': eventSplit[1]}).prepend(timestamp).append(br);
+				var line = $('<div>', {'text': self.options[eventSplit[1]]}).prepend(timestamp).append(br);
 				$('#login-pane #events').append(line);
 			}
 		});
@@ -772,7 +778,6 @@ function fillTimeReport(times) {
 	tableBody.empty();
 
 	var categories = Object.keys(times);
-	console.log('categories: ' + categories);
 	if(categories.length > 0) {
 		$('#time-pane #no-categories').hide();
 		$('#time-pane #categories').show();
@@ -799,7 +804,7 @@ function fillTimeReport(times) {
 
 			var timeString = daysString + hoursString + minutesString + secondsString;
 			if(timeString === '') {
-				timeString = 'No time spent on this category';
+				timeString = self.options.no_time_spent;
 			}
 
 			var timeSpentCell = $('<td>', {'text': timeString});
@@ -808,7 +813,6 @@ function fillTimeReport(times) {
 			tableBody.append(line);
 		});
 	} else {
-		console.log('hide table');
 		$('#time-pane #categories').hide();
 		$('#time-pane #no-categories').show();
 	}
