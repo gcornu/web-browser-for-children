@@ -24,6 +24,8 @@ var pagerOptions = {
 
 };
 
+var isActivated = false;
+
 $(function () {
 	/**
 	 * Nav bar management
@@ -37,6 +39,9 @@ $(function () {
      * Save button management
      */
     $('#save').click(function () {
+    	if(isActivated) {
+    		window.alert('You need to reactivate the extension to use the latest settings');
+    	}
     	self.port.emit('save_settings');
     });
 
@@ -369,11 +374,15 @@ self.port.on('show_filtering', function () {
 
 self.port.on('time_limit_initialized', function (categories) {
 	fillTimeLimitSelect(categories);
-})
+});
 
 self.port.on('time_limit_set', function () {
 	inform('Time limit has been successfully set', 'success', 3000);
-})
+});
+
+self.port.on('is_activated', function (isActivatedParam) {
+	isActivated = isActivatedParam;
+});
 
 /**
  * Event handler when the 'add' button is clicked for custom lists
