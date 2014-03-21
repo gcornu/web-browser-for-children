@@ -234,7 +234,9 @@ $(function () {
 			id.pop();
 			var listName = id.pop();
 			var select = $('#custom-' + listName + '-categories select');
+			// check if this category doesn't already exists
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
+				$('#custom-' + listName + '-inner').append($('<div>', {'id': 'custom-' + listName + '-category-' + category.replace(' ', '_')}));
 				select.append(createOption(category).prop('selected', 'selected'));
 				select.change();
 			}
@@ -553,17 +555,17 @@ function fillMenu(list, prefix, removedPrefix) {
 		});
 		select.first('option').prop('selected', 'selected');
 		select.prop('disabled', false);
-		//select.removeAttr('disabled');
 		select.selectpicker('refresh');
-		select.change(function () {
-			$('#' + prefix + '-inner > div').hide();
-			$('#' + prefix + '-category-' + $(this).val()).show();
-			$('#' + prefix + '-category-' + $(this).val() + ' input').change();
-		}).change();
 	} else {
 		select.prop('disabled', true);
 		select.selectpicker('refresh');
 	}
+
+	select.change(function () {
+		$('#' + prefix + '-inner > div').hide();
+		$('#' + prefix + '-category-' + $(this).val()).show();
+		$('#' + prefix + '-category-' + $(this).val() + ' input').change();
+	}).change();
 
 	if(prefix.indexOf('custom') !== -1) {
 		$('#' + prefix + '-categories select').change(function () {
