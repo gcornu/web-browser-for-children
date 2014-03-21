@@ -8,7 +8,7 @@ function showTour() {
 	// construct the panel
 	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'data-tour-step': 0})
 					.append($('<div>', {'class': 'panel-body', 'text': self.options.step0})
-						.prepend($('<h3>', {'text': 'Congratulations!'}))
+						.prepend($('<h3>', {'text': self.options.panel_title}))
 						.append($('<div clear:both>'))
 						.append($('<div>', {'id': 'tour-button-accept', 'class': 'btn btn-success pull-left', 'text': self.options.yes}))
 						.append($('<div>', {'id': 'tour-button-deny', 'class': 'btn btn-danger pull-right', 'text': self.options.no})));
@@ -136,16 +136,15 @@ function nextTourStep() {
 			element = $('#limit_time');
 			clickElement = true;
 			content = self.options.step15;
-			placement = 'top';
-			break;
-		case 15:
-			element = $('#limit-time-overall-radio').next();
-			content = 'With the \'Overall\' option, you limit time spent on Internet when safe browsing is activated';
-			placement = 'bottom';
 			break;
 		case 16:
+			element = $('#limit-time-overall-radio').next();
+			content = self.options.step16;
+			placement = 'bottom';
+			break;
+		case 17:
 			element = $('#limit-time-categories-radio').next();
-			content = 'With the \'Categories\' option, you can limit time spent on websites separately for each website category. These categories are defined in the custom whitelist section, even if you are not using the whitelist filtering.';
+			content = self.options.step17;
 			placement = 'bottom';
 			buttonLabel = self.options.end;
 			break;
