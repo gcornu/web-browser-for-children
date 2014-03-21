@@ -120,10 +120,22 @@ $(function () {
 
 	$('#default-blacklist-search-form').submit(function (e) {
 		e.preventDefault();
-		$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
-		$('#default-blacklist-search-button #search-icon').hide();
-		$('#default-blacklist-search-button #search-loader').show();
-		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+		if($('#default-blacklist-search-term').val().length < 3) {
+			$('#default-blacklist-search-form .help-block').css('visibility', 'visible');
+			$('#default-blacklist-search-form').addClass('has-error');
+		} else {
+			$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
+			$('#default-blacklist-search-button #search-icon').hide();
+			$('#default-blacklist-search-button #search-loader').show();
+			self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+		}
+	});
+
+	$('#default-blacklist-search-term').on('change keyup paste', function () {
+		if($(this).val().length > 2) {
+			$('#default-blacklist-search-form').removeClass('has-error');
+			$('#default-blacklist-search-form .help-block').css('visibility', 'hidden');
+		}
 	});
 
 	/**

@@ -136,7 +136,7 @@
 
 			<div id="lists_tab" class="tab_container">
 				<div id="default-blacklist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
-					<form id="default-blacklist-search-form" class="col-sm-7" role="search" style="padding: 0; margin-bottom: 10px;">
+					<form id="default-blacklist-search-form" class="col-sm-7" role="search" style="padding: 0;">
 						<h3 style="float: left; margin-right: 10px;">Enter a search term</h3>
 						<div class="input-group input-group-sm" style="float: left;">
 							<input type="search" class="form-control" placeholder="Search in default blacklist" id="default-blacklist-search-term"></input>
@@ -144,6 +144,7 @@
 								<button id="default-blacklist-search-button" class="btn btn-default"><span id="search-icon" class="glyphicon glyphicon-search"></span><img id="search-loader" style="display: none;" src="../loader.gif"/></button>
 							</span>
 						</div>
+						<span class="help-block" style="visibility: hidden; margin-bottom: 0px;">Search term must contain more than 3 characters</span>
 					</form>
 					<div style="clear: both;"></div>
 					<div class="row" style="margin: 0;">
