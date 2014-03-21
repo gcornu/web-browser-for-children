@@ -29,6 +29,7 @@ var isActivated = false;
 $(function () {
 	// Localization : setting values that cannot be localized in plain HTML
 	$('#change_pass').attr('value', self.options.change_pass_value);
+	$('#set-private-question').attr('value', self.options.set_private_question_value);
 	$('#table-history .pagesize').attr('title', self.options.page_size_title);
 	$('#table-history .pagenum').attr('title', self.options.page_num_title);
 
@@ -227,7 +228,7 @@ $(function () {
 			if(category) {
 				self.port.emit('add_custom_' + listName, uri, category);
 			} else {
-				inform('Please select a category', 'error', 5000);
+				inform(self.options.no_category_error, 'error', 5000);
 			}
 		}
 	});
@@ -447,7 +448,7 @@ self.port.on('limit_time_type', function (value) {
 });
 
 self.port.on('limit_time_type_save_success', function () {
-	inform('Time limitation method has been successfully saved', 'success', 3000);
+	inform(self.options.time_limit_method_set, 'success', 3000);
 });
 
 self.port.on('time_limit_initialized', function (categories) {

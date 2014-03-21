@@ -5,12 +5,12 @@ $(function () {
 	});
 
 	self.port.on('activated', function() {
-		$('#activate').html('Deactivate FfC');
+		$('#activate').html(self.options.deactivate_ffc);
 		$('#activate').attr('id', 'deactivate');
 	});
 
 	self.port.on('deactivated', function() {
-		$('#deactivate').html('Activate FfC');
+		$('#deactivate').html(self.options.activate_ffc);
 		$('#deactivate').attr('id', 'activate');
 	});
 });

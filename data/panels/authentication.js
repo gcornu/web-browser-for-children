@@ -28,7 +28,7 @@ $(function () {
 	});
 
 	$('#lost-pass').click(function () {
-		var answer = window.prompt('To reinitialize your password, please answer to the following question: \n' + privateQuestion);
+		var answer = window.prompt(self.options.private_question_prompt + '\n' + privateQuestion);
 		if(answer) {
 			self.port.emit('private_answer', answer);
 		}
@@ -88,9 +88,9 @@ self.port.on("auth_success", function() {
 
 self.port.on('private_answer_result', function (result) {
 	if(result) {
-		alert('Password has been reinitialized.\nIt is now blank.');
+		alert(self.options.password_reinitialized);
 	} else {
-		alert('Wrong answer.');
+		alert(self.options.wrong_answer);
 	}
 })
 
