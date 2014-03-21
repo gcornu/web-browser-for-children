@@ -43,10 +43,17 @@ $(function () {
 	/**
 	 * Password page submit action
 	 */
-	$("input.password").keyup(function (event) { 
+	$("#change-pass-pane input.password").keyup(function (event) { 
 		//if user presses enter while in a password field, "click" on the submit button
 		if(event.keyCode == 13) {
 			$("#change_pass").click();
+		}
+	});
+
+	$("#private-question-pane input.password").keyup(function (event) { 
+		//if user presses enter while in a password field, "click" on the submit button
+		if(event.keyCode == 13) {
+			$("#set-private-question").click();
 		}
 	});
 	
@@ -54,7 +61,6 @@ $(function () {
 		$(".alert").hide(); //remove any leftover alert
 
 		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
-			
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
@@ -95,6 +101,24 @@ $(function () {
 		} else {
 			$(this).parent().removeClass('has-success').addClass('has-error');
 			$(this).parent().find('.help-block').css('visibility', 'visible');
+		}
+	});
+
+	$('#set-private-question').click(function () {
+		self.port.emit('set_private_question', $('#secret-question').val(), $('#secret-answer').val());
+		$('#private-question-pane').hide();
+		$('#change-pass-pane').show();
+		// display menu if hidden
+		if($('#nav').css('opacity') == 0) {
+			$('#welcome').remove();
+			$('#change-password-title').show();
+			$('#nav').css('visibility', 'visible');
+			$('#nav').animate({
+				opacity: '1.0'
+			}, 1000, function () {
+				
+			});
+			showTour();
 		}
 	});
 
@@ -260,18 +284,8 @@ self.port.on("change_pass_result", function (result) {
 	if(result) {
 		inform("Password successfully changed", "success", 3000);
 		$("#old_pass").parent().show(); //this was hidden if first password change
-		// display menu if hidden
-		if($('#nav').css('opacity') == 0) {
-			$('#welcome').remove();
-			$('#change-password-title').show();
-			$('#nav').css('visibility', 'visible');
-			$('#nav').animate({
-				opacity: '1.0'
-			}, 1000, function () {
-				
-			});
-			showTour();
-		}
+		$('#change-pass-pane').hide();
+		$('#private-question-pane').show();
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
 		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');

@@ -1,4 +1,7 @@
 $('#pass-label').css('visibility', 'hidden');
+
+var privateQuestion = self.options.privateQuestion;
+
 $(function () {
 	//Cannot use jQuery's "submit()" as if I wrap in a <form> element, firefox tries to save the password and throws error because it is not a browser window...
 	
@@ -22,6 +25,13 @@ $(function () {
 		//remove answer from input field
 		$('#pass').val('');
 		newAttempt();
+	});
+
+	$('#lost-pass').click(function () {
+		var answer = window.prompt('To reinitialize your password, please answer to the following question: \n' + privateQuestion);
+		if(answer) {
+			self.port.emit('private_answer', answer);
+		}
 	});
 });
 
@@ -74,6 +84,18 @@ self.port.on("addWhitelist", function () {
 
 self.port.on("auth_success", function() {
 	clean();
+});
+
+self.port.on('private_answer_result', function (result) {
+	if(result) {
+		alert('Password has been reinitialized.\nIt is now blank.');
+	} else {
+		alert('Wrong answer.');
+	}
+})
+
+self.port.on('private_question_set', function (question) {
+	privateQuestion = question;
 });
 
 //clean everything
