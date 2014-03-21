@@ -9,6 +9,7 @@ function showTour() {
 	var panel = $('<div>', {'id': 'tour-panel', 'class': 'panel panel-default', 'data-tour-step': 0})
 					.append($('<div>', {'class': 'panel-body', 'text': self.options.step0})
 						.prepend($('<h3>', {'text': 'Congratulations!'}))
+						.append($('<div clear:both>'))
 						.append($('<div>', {'id': 'tour-button-accept', 'class': 'btn btn-success pull-left', 'text': self.options.yes}))
 						.append($('<div>', {'id': 'tour-button-deny', 'class': 'btn btn-danger pull-right', 'text': self.options.no})));
 	$('#tour-filter').append(panel);
