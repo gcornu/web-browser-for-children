@@ -1,4 +1,3 @@
-
 //Event sent by favorites.js, containing content of child-favorites.js
 self.port.on('child-favorites_read', function (favorites) {
 	//going through favourites and setting images and links of the homepage
