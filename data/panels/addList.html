@@ -1,14 +1,18 @@
 <html>
-<head>
-<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<head>
+		<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	</head>
 
-</head>
-<body style="padding:2%">
-<p>Please select a category:</p>
-<div id="input">
-<select class="form-control"></select>
-<input type="submit" id="new_category" class="btn btn-sm btn-primary" value="New category" style="margin-top:5px"></input>
-<input type="submit" id="submit" class="btn btn-sm btn-primary" value="" style="margin-top:5px"></input>
-</div>
-</body>
+	<body style="padding:5%">
+		<h3 style="margin-top: 10px;">Please select a category:</h3>
+		<div id="input" style="width: 100%">
+			<div id="message_container" style="height: 30px; margin-bottom: 5px;"></div>
+			<select class="pull-left form-control" style="width: 100%; margin-bottom: 5px;"></select>
+			<div class="row" style="margin: 0;">
+					<button id="new_category" class="btn pull-left">New category</button>
+					<button id="add" class="btn btn-primary pull-right"></button>
+			</div>
+			
+		</div>
+	</body>
 </html>

@@ -1,7 +1,38 @@
 //begin by hiding everything in order to prevent flickering
 $(".tab_container").hide();
 
+//define options to be used for pager
+var pagerOptions = {
+
+	// target the pager markup - see the HTML block below
+	container: $(".ts-pager"),
+
+	// target the pager page select dropdown - choose a page
+	cssGoto  : ".pagenum",
+	cssNext: '.next', // next page arrow
+	cssPrev: '.prev', // previous page arrow
+	cssFirst: '.first', // go to first page arrow
+	cssLast: '.last', // go to last page arrow
+
+	// remove rows from the table to speed up the sort of large tables.
+	// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+	removeRows: false,
+
+	// output string - default is '{page}/{totalPages}';
+	// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+	output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+};
+
+var isActivated = false;
+
 $(function () {
+	// Localization : setting values that cannot be localized in plain HTML
+	$('#change_pass').attr('value', self.options.change_pass_value);
+	$('#set-private-question').attr('value', self.options.set_private_question_value);
+	$('#table-history .pagesize').attr('title', self.options.page_size_title);
+	$('#table-history .pagenum').attr('title', self.options.page_num_title);
+
 	/**
 	 * Nav bar management
 	 */
@@ -14,16 +45,26 @@ $(function () {
      * Save button management
      */
     $('#save').click(function () {
+    	if(isActivated) {
+    		window.alert('You need to reactivate the extension to use the latest settings');
+    	}
     	self.port.emit('save_settings');
     });
 
 	/**
 	 * Password page submit action
 	 */
-	$("input.password").keyup(function (event) { 
+	$("#change-pass-pane input.password").keyup(function (event) { 
 		//if user presses enter while in a password field, "click" on the submit button
 		if(event.keyCode == 13) {
 			$("#change_pass").click();
+		}
+	});
+
+	$("#private-question-pane input.password").keyup(function (event) { 
+		//if user presses enter while in a password field, "click" on the submit button
+		if(event.keyCode == 13) {
+			$("#set-private-question").click();
 		}
 	});
 	
@@ -31,15 +72,6 @@ $(function () {
 		$(".alert").hide(); //remove any leftover alert
 
 		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
-			// display menu if hidden
-			if($('#nav').css('opacity') == 0) {
-				$('#welcome').remove();
-				$('#change-password-title').show();
-				$('#nav').css('visibility', 'visible');
-				$('#nav').animate({
-					opacity: '1.0'
-				}, 1000, function () {});
-			}
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
@@ -83,6 +115,24 @@ $(function () {
 		}
 	});
 
+	$('#set-private-question').click(function () {
+		self.port.emit('set_private_question', $('#secret-question').val(), $('#secret-answer').val());
+		$('#private-question-pane').hide();
+		$('#change-pass-pane').show();
+		// display menu if hidden
+		if($('#nav').css('opacity') == 0) {
+			$('#welcome').remove();
+			$('#change-password-title').show();
+			$('#nav').css('visibility', 'visible');
+			$('#nav').animate({
+				opacity: '1.0'
+			}, 1000, function () {
+				
+			});
+			showTour();
+		}
+	});
+
     /**
      * Handle filtering options clicks
      */
@@ -90,21 +140,53 @@ $(function () {
         var val = $(this).val();
         self.port.emit("filter", val); //val can be none, wlist or blist
     });
+
+    /**
+     * Handle limit time type options clicks
+     */
+    $('input:radio[name=limit-time-type-options]').click(function () {
+        var val = $(this).val();
+        self.port.emit('limit_time_type_set', val); //val can be overall or categories
+        $('#limit-time-overall-header, #limit-time-categories-header').hide();
+		$('#limit-time-' + val + '-header').show();
+		if(val === 'categories') {
+			if($('#limit_time_tab select option').length === 0) {
+				$('#limitTimeOptions').hide();
+			}
+		} else {
+			$('#limitTimeOptions').show();
+		}
+		$('input:radio[name=limitTimeOptions]').click(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			self.port.emit('limit_time_choice', category, $(this).val());
+		});
+    });
 	
 	/**
-	 * Init tabs in lists management
+	 * Init dropdowns for lists management
 	 */
 	$('#nav #lists .dropdown-menu li').not('.dropdown-header').click(function () {
 		showList($(this).attr('id'));
-		self.port.emit('lists_tab_choice', $(this).attr('id'));
 	});
 
 	$('#default-blacklist-search-form').submit(function (e) {
 		e.preventDefault();
-		$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
-		$('#default-blacklist-search-button #search-icon').hide();
-		$('#default-blacklist-search-button #search-loader').show();
-		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+		if($('#default-blacklist-search-term').val().length < 3) {
+			$('#default-blacklist-search-form .help-block').css('visibility', 'visible');
+			$('#default-blacklist-search-form').addClass('has-error');
+		} else {
+			$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
+			$('#default-blacklist-search-button #search-icon').hide();
+			$('#default-blacklist-search-button #search-loader').show();
+			self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+		}
+	});
+
+	$('#default-blacklist-search-term').on('change keyup paste', function () {
+		if($(this).val().length > 2) {
+			$('#default-blacklist-search-form').removeClass('has-error');
+			$('#default-blacklist-search-form .help-block').css('visibility', 'hidden');
+		}
 	});
 
 	/**
@@ -112,7 +194,6 @@ $(function () {
 	 */
 	$('#nav #reports .dropdown-menu li').click(function () {
 		showReport($(this).attr('id'));
-		self.port.emit('reports_tab_choice', $(this).attr('id'));
 	});
 
 	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
@@ -141,29 +222,44 @@ $(function () {
 
 	$('#add-custom-blacklist, #add-custom-whitelist').click(function () {
 		var listName = $(this).attr('id').split('-').pop();
-		var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
+		var uri = window.prompt(self.options.url_add_prompt + ' ' + self.options[listName] + ':');
 		if(uri) {
 			var category = $('#custom-' + listName + '-categories select option:selected').val();
 			if(category) {
 				self.port.emit('add_custom_' + listName, uri, category);
 			} else {
-				inform('Please select a category', 'error', 5000);
+				inform(self.options.no_category_error, 'error', 5000);
 			}
 		}
 	});
 
 	$('#add-custom-blacklist-category, #add-custom-whitelist-category').click(function () {
-		var category = window.prompt('Name of the new category:');
+		var category = window.prompt(self.options.new_category);
 		if(category) {
 			var id = $(this).attr('id').split('-');
 			id.pop();
 			var listName = id.pop();
 			var select = $('#custom-' + listName + '-categories select');
+			// check if this category doesn't already exists
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
+				$('#custom-' + listName + '-inner').append($('<div>', {'id': 'custom-' + listName + '-category-' + category.replace(' ', '_')}));
 				select.append(createOption(category).prop('selected', 'selected'));
 				select.change();
+				self.port.emit('add_custom_' + listName + '_category', category.replace(' ', '_'));
 			}
 		}
+	});
+
+	$('#remove-custom-blacklist-category, #remove-custom-whitelist-category').click(function () {
+		var id = $(this).attr('id').split('-');
+		id.pop();
+		var listName = id.pop();
+		var select = $('#custom-' + listName + '-categories select');
+		var selectedOption = select.find('option:selected');
+		var category = selectedOption.val();
+		selectedOption.remove();
+		select.change();
+		self.port.emit('remove_custom_' + listName + '_category', category);
 	});
 	
 	
@@ -213,23 +309,7 @@ $(function () {
 			// ,uitheme : "bootstrap"
 		}
 	})
-		.tablesorterPager({
-
-		// target the pager markup - see the HTML block below
-		container: $("#pager"),
-
-		// target the pager page select dropdown - choose a page
-		cssGoto  : ".pagenum",
-
-		// remove rows from the table to speed up the sort of large tables.
-		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-		removeRows: false,
-
-		// output string - default is '{page}/{totalPages}';
-		// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
-
-		});
+		.tablesorterPager(pagerOptions);
 });
 
 // --- END OF document.ready function
@@ -237,13 +317,13 @@ $(function () {
 
 
 function inform(message, type, timeout) { //adds the message to the page in an alert div depending on type (error or success)
-	var alertclass = "";
+	var alertclass = '';
 	switch(type){
-		case "error":
-			alertclass="\"alert alert-danger\"";
+		case 'error':
+			alertclass = 'alert alert-danger';
 		break;
-		case "success":
-			alertclass="\"alert alert-success\"";
+		case 'success':
+			alertclass = 'alert alert-success';
 		break;
 	}
 	$('#message_container #inform').remove();
@@ -261,8 +341,10 @@ function inform(message, type, timeout) { //adds the message to the page in an a
 // external events listeners
 self.port.on("change_pass_result", function (result) {
 	if(result) {
-		inform("Password successfully changed", "success", 3000);
+		inform(self.options.password_change_success, "success", 3000);
 		$("#old_pass").parent().show(); //this was hidden if first password change
+		$('#change-pass-pane').hide();
+		$('#private-question-pane').show();
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
 		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
@@ -278,16 +360,19 @@ self.port.on("set_first_password", function () {
 	$('#change-password-title').hide();
 	$('#nav').css('opacity', 0);
 	$('#nav').css('visibility', 'hidden');
-	$("#message_container").append($('<div>', {'id': 'welcome'}).append($('<h3>', {'text': 'Welcome to the Firefox for children extension'}))
-																.append($('<p>', {'text': 'Please set your parent password below:'})));
+	$("#message_container").append($('<div>', {'id': 'welcome'}).append($('<h3>', {'text': self.options.welcome_text}))
+																.append($('<p>', {'text': self.options.welcome_advice})));
 });
 
 self.port.on('current_filter', function (value) {
+	if(!value) {
+		value = 'none';
+	}
 	$('#filtering_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
 });
 
 self.port.on('filter_save_success', function () {
-	inform('Filter choice has been successfully set', 'success', 3000);
+	inform(self.options.filter_set, 'success', 3000);
 });
 
 // Add elements in lists when initialization is done
@@ -301,7 +386,7 @@ self.port.on('default_blacklist_search_response', function (matches, removedMatc
 	$('#default-blacklist-search-button #search-icon').show();
 
 	if(Object.keys(matches).length === 0) {
-		$('#default-blacklist-inner').append($('<h4>', {'text': 'No match found'}));
+		$('#default-blacklist-inner').append($('<h4>', {'text': self.options.no_match}));
 	} else {
 		fillListDivs(matches, removedMatchesElements, 'blacklist', 'default');
 	}
@@ -328,15 +413,15 @@ self.port.on('whitelist_custom_added', function (host, category) {
 });
 
 self.port.on('error_null_category', function () {
-	inform('Please select a category', 'error', 5000);
+	inform(self.options.no_category_error, 'error', 5000);
 });
 
 self.port.on('malformed_url', function() {
-	inform('The given url is malformed', 'error', 5000);
+	inform(self.options.malformed_url, 'error', 5000);
 });
 
 self.port.on('host_already_added', function() {
-	inform('The given url is already in the list', 'error', 5000);
+	inform(sefl.options.already_present_url, 'error', 5000);
 });
 
 self.port.on('login_log_read', function (events) {
@@ -355,13 +440,28 @@ self.port.on('show_filtering', function () {
 	$('#filtering').click();
 });
 
+self.port.on('limit_time_type', function (value) {
+	if(!value) {
+		value = 'overall';
+	}
+	$('#limit_time_tab input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true).click();
+});
+
+self.port.on('limit_time_type_save_success', function () {
+	inform(self.options.time_limit_method_set, 'success', 3000);
+});
+
 self.port.on('time_limit_initialized', function (categories) {
 	fillTimeLimitSelect(categories);
-})
+});
 
 self.port.on('time_limit_set', function () {
-	inform('Time limit has been successfully set', 'success', 3000);
-})
+	inform(self.options.time_limit_set, 'success', 3000);
+});
+
+self.port.on('is_activated', function (isActivatedParam) {
+	isActivated = isActivatedParam;
+});
 
 /**
  * Event handler when the 'add' button is clicked for custom lists
@@ -369,7 +469,7 @@ self.port.on('time_limit_set', function () {
  * @param {blacklist|whitelist} name of the list 
  */
 function addCustomListHandler(listName) {
-	var uri = window.prompt('Please enter the URL you want to add to the ' + listName + ':');
+	var uri = window.prompt(self.options.add_url + ' ' + self.options[listName] + ':');
 	if(uri) {
 		var category = $('#custom-' + listName + '-categories select option:selected').val();
 		self.port.emit('add_custom_' + listName, uri, category);
@@ -395,7 +495,7 @@ function addCustomListListener(listName, host, category) {
 
 		addInputChangeHandler(div);
 	} else {
-		inform('Host was not added to the ' + listName + '. Please check your syntax.', 'error');
+		inform(self.options.host_not_added + ' ' + self.options[listName] + self.options.check_syntax, 'error');
 	}
 }
 
@@ -462,17 +562,17 @@ function fillMenu(list, prefix, removedPrefix) {
 		});
 		select.first('option').prop('selected', 'selected');
 		select.prop('disabled', false);
-		//select.removeAttr('disabled');
 		select.selectpicker('refresh');
-		select.change(function () {
-			$('#' + prefix + '-inner > div').hide();
-			$('#' + prefix + '-category-' + $(this).val()).show();
-			$('#' + prefix + '-category-' + $(this).val() + ' input').change();
-		}).change();
 	} else {
 		select.prop('disabled', true);
 		select.selectpicker('refresh');
 	}
+
+	select.change(function () {
+		$('#' + prefix + '-inner > div').hide();
+		$('#' + prefix + '-category-' + $(this).val()).show();
+		$('#' + prefix + '-category-' + $(this).val() + ' input').change();
+	}).change();
 
 	if(prefix.indexOf('custom') !== -1) {
 		$('#' + prefix + '-categories select').change(function () {
@@ -532,11 +632,11 @@ function listsButtonHandler(eventType, listType, listName) {
 			var containingDiv = $(element).parent().parent().parent();
 			$(element).parent().parent().remove();
 			containingDiv.find('input').change();
-			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
+			/*if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
 				$('#' + listType + '-' + listName + '-categories select').change().selectpicker('refresh');
 				$('#remove-' + listType + '-' + listName).attr('disabled', 'disabled');
-			}
+			}*/
 		}
 	});
 
@@ -597,7 +697,7 @@ function fillLoginReport(events) {
 				var eventSplit = eventElement.split(' : ');
 				var timestamp = $('<b>', {'text': eventSplit[0] + ' : '});
 				var br = $('<br>');
-				var line = $('<div>', {'text': eventSplit[1]}).prepend(timestamp).append(br);
+				var line = $('<div>', {'text': self.options[eventSplit[1]]}).prepend(timestamp).append(br);
 				$('#login-pane #events').append(line);
 			}
 		});
@@ -613,8 +713,9 @@ function fillLoginReport(events) {
  */
 function fillHistoryReport(visits) {
 	$('#history-pane tbody').empty();
-	
-	//will use this to pad date
+	$('#table-history').trigger('destroy.pager');
+	$("#table-history").trigger("update"); //trigger an update after emptying
+	//pad(number) function adds zeros in front of number, used to get consistent date / time display. 
 	function pad (number) {
 		return ("00" + number).slice(-2);
 	}
@@ -637,9 +738,10 @@ function fillHistoryReport(visits) {
 							pad(visitDate.getDate())+" "+
 							pad(visitDate.getHours())+":"+
 							pad(visitDate.getMinutes());
-				visit.title = visitElement.title;
-				visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
-				visit.url.attr("target","_blank");
+
+				visit.title = decodeURI(visitElement.title);
+				//visit.url = $('<a>', {'href': visitElement.url, 'text': removeUrlPrefix(visitElement.url)});
+				//visit.url.attr("target","_blank");
 
 				//create a row that will hold the data
 				var line = $('<tr>'); 
@@ -650,11 +752,16 @@ function fillHistoryReport(visits) {
 						line.append($('<td>', {'text': visit[name]}));
 					}
 				}
+				var url_cell=$('<td>').append($('<a>', {'href': decodeURI(visitElement.url), 'text': decodeURI(removeUrlPrefix(visitElement.url)), 'target':"_blank"}));
+				line.append(url_cell);
 				
 				//append the line to the table
-				$('#history-pane tbody').append(line);
+				$('#table-history')
+					.find('tbody').append(line)
+					.trigger('addRows',[$(line)]);
 			}
 		});
+		$('#table-history').tablesorterPager(pagerOptions);
 		$("#table-history").trigger("update"); //trigger update so that tablesorter reloads the table
 		$(".tablesorter-filter").addClass("form-control input-md");
 	}
@@ -671,10 +778,9 @@ function fillTimeReport(times) {
 	tableBody.empty();
 
 	var categories = Object.keys(times);
-
 	if(categories.length > 0) {
 		$('#time-pane #no-categories').hide();
-		$('#time-pane table').show();
+		$('#time-pane #categories').show();
 
 		var oneMinute = 60,
 			oneHour = oneMinute*60,
@@ -698,7 +804,7 @@ function fillTimeReport(times) {
 
 			var timeString = daysString + hoursString + minutesString + secondsString;
 			if(timeString === '') {
-				timeString = 'No time spent on this category';
+				timeString = self.options.no_time_spent;
 			}
 
 			var timeSpentCell = $('<td>', {'text': timeString});
@@ -707,7 +813,7 @@ function fillTimeReport(times) {
 			tableBody.append(line);
 		});
 	} else {
-		$('#time-pane table').hide();
+		$('#time-pane #categories').hide();
 		$('#time-pane #no-categories').show();
 	}
 }
@@ -721,7 +827,9 @@ function fillTimeLimitSelect (timeLimits) {
 	var categories = Object.keys(timeLimits);
 	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
-		$('#limitTimeOptions').hide();
+		if($('#limit-time-categories-radio').is(':checked')) {
+			$('#limitTimeOptions').hide();
+		}
 		$('#limit_time_options_title').hide();
 		$('#limit_time_tab select').selectpicker('hide');
 		$('#limit_time_no_category').show();
@@ -739,17 +847,12 @@ function fillTimeLimitSelect (timeLimits) {
 			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
 		}).change();
 
-		$('input:radio[name=limitTimeOptions]').click(function () {
-			var category = $('#limit_time_tab select option:selected').val();
-			self.port.emit('limit_time_choice', category, $(this).val());
-		});
-
 		$('#limit_time_tab select').selectpicker('refresh');
 	}
 }
 
 function showTab(tab_choice) { //hides other content and shows chosen tab "pass","filtering","lists" or "report"
-	self.port.emit("tab_choice",tab_choice);
+	self.port.emit("tab_choice", tab_choice);
 	$(".tab_container").hide();
 	$(".alert").hide(); //remove leftover alerts
 	$("#"+tab_choice+"_tab").show();
@@ -758,6 +861,7 @@ function showTab(tab_choice) { //hides other content and shows chosen tab "pass"
 }
 
 function showList(list_choice) {
+	self.port.emit('lists_tab_choice', list_choice);
 	showTab('lists');
 	$('#lists_tab .list-pane').hide();
 	$('#lists_tab #' + list_choice + '-pane').show();
@@ -766,6 +870,7 @@ function showList(list_choice) {
 }
 
 function showReport(report_choice) {
+	self.port.emit('reports_tab_choice', report_choice);
 	showTab('reports');
 	$('#reports_tab .report-pane').hide();
 	$('#reports_tab #' + report_choice + '-pane').show();
