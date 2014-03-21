@@ -239,6 +239,7 @@ $(function () {
 				$('#custom-' + listName + '-inner').append($('<div>', {'id': 'custom-' + listName + '-category-' + category.replace(' ', '_')}));
 				select.append(createOption(category).prop('selected', 'selected'));
 				select.change();
+				self.port.emit('add_custom_' + listName + '_category', category.replace(' ', '_'));
 			}
 		}
 	});
