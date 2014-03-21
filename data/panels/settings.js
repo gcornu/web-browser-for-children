@@ -36,20 +36,20 @@ $(function () {
 	/**
 	 * Nav bar management
 	 */
-    "use strict";
-    $("#nav > ul > li").not('#lists, #reports, #time_constraints').click(function () {
+	"use strict";
+	$("#nav > ul > li").not('#lists, #reports, #time_constraints').click(function () {
 		showTab($(this).attr('id'));
-    });
+	});
 
-    /**
-     * Save button management
-     */
-    $('#save').click(function () {
-    	if(isActivated) {
-    		window.alert('You need to reactivate the extension to use the latest settings');
-    	}
-    	self.port.emit('save_settings');
-    });
+	/**
+	 * Save button management
+	 */
+	$('#save').click(function () {
+		if(isActivated) {
+			window.alert('You need to reactivate the extension to use the latest settings');
+		}
+		self.port.emit('save_settings');
+	});
 
 	/**
 	 * Password page submit action
@@ -133,34 +133,31 @@ $(function () {
 		}
 	});
 
-    /**
-     * Handle filtering options clicks
-     */
-    $("input:radio[name=filteringOptions]").click(function () {
-        var val = $(this).val();
-        self.port.emit("filter", val); //val can be none, wlist or blist
-    });
+	/**
+	 * Handle filtering options clicks
+	 */
+	$("input:radio[name=filteringOptions]").click(function () {
+		var val = $(this).val();
+		self.port.emit("filter", val); //val can be none, wlist or blist
+	});
 
-    /**
-     * Handle limit time type options clicks
-     */
-    $('input:radio[name=limit-time-type-options]').click(function () {
-        var val = $(this).val();
-        self.port.emit('limit_time_type_set', val); //val can be overall or categories
-        $('#limit-time-overall-header, #limit-time-categories-header').hide();
-		$('#limit-time-' + val + '-header').show();
-		if(val === 'categories') {
-			if($('#limit_time_tab select option').length === 0) {
-				$('#limitTimeOptions').hide();
-			}
-		} else {
-			$('#limitTimeOptions').show();
-		}
-		$('input:radio[name=limitTimeOptions]').click(function () {
-			var category = $('#limit_time_tab select option:selected').val();
-			self.port.emit('limit_time_choice', category, $(this).val());
-		});
-    });
+	/**
+	 * Handle limit time type options clicks
+	 */
+	$('input:radio[name=limit-time-type-options]').click(function () {
+		var val = $(this).val();
+		self.port.emit('limit_time_type_set', val); //val can be overall or categories
+		handleLimitTimeOptionClick(val);
+	});
+
+	/**
+	 * Handle hour constraints type options clicks
+	 */
+	$('input:radio[name=hour-constraints-type-options]').click(function () {
+		var val = $(this).val();
+		self.port.emit('hour_constraints_type_set', val); //val can be overall or categories
+		handleHourConstraintsOptionClick(val);
+	});
 	
 	/**
 	 * Init dropdowns
@@ -341,10 +338,10 @@ self.port.on("change_pass_result", function (result) {
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
 		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
-    } else {
-    	$('#old_pass').parent().addClass('has-error');
-    	$('#old_pass').parent().find('.help-block').css('visibility', 'visible');
-    }
+	} else {
+		$('#old_pass').parent().addClass('has-error');
+		$('#old_pass').parent().find('.help-block').css('visibility', 'visible');
+	}
 });
 
 self.port.on("set_first_password", function () {
@@ -437,11 +434,12 @@ self.port.on('limit_time_type', function (value) {
 	if(!value) {
 		value = 'overall';
 	}
-	$('#limit_time-pane input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true).click();
+	$('#limit_time-pane input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true);
+	handleLimitTimeOptionClick(value);
 });
 
 self.port.on('limit_time_type_save_success', function () {
-	inform(self.options.time_limit_method_set, 'success', 3000);
+	inform(self.options.time_limit_type_set, 'success', 3000);
 });
 
 self.port.on('time_limit_initialized', function (categories) {
@@ -450,6 +448,18 @@ self.port.on('time_limit_initialized', function (categories) {
 
 self.port.on('time_limit_set', function () {
 	inform(self.options.time_limit_set, 'success', 3000);
+});
+
+self.port.on('hour_constraints_type', function (value) {
+	if(!value) {
+		value = 'overall';
+	}
+	$('#hour_constraints-pane input[name="hour-constraints-type-options"][value="' + value + '"]').prop('checked', true);
+	handleHourConstraintsOptionClick(value);
+});
+
+self.port.on('hour_constraints_type_save_success', function () {
+	inform(self.options.hour_constraints_type_set, 'success', 3000);
 });
 
 self.port.on('is_activated', function (isActivatedParam) {
@@ -861,10 +871,31 @@ function showSubTab(tab, sub_tab_choice) {
 	$('#' + tab + '_tab #' + sub_tab_choice + '-pane').show();
 }
 
+function handleLimitTimeOptionClick(val) {
+	$('#limit-time-overall-header, #limit-time-categories-header').hide();
+	$('#limit-time-' + val + '-header').show();
+	if(val === 'categories') {
+		if($('#limit_time_tab select option').length === 0) {
+			$('#limitTimeOptions').hide();
+		}
+	} else {
+		$('#limitTimeOptions').show();
+	}
+	$('input:radio[name=limitTimeOptions]').click(function () {
+		var category = $('#limit_time_tab select option:selected').val();
+		self.port.emit('limit_time_choice', category, $(this).val());
+	});
+}
+
+function handleHourConstraintsOptionClick(val) {
+	$('#hour-constraints-overall-header, #hour-constraints-categories-header').hide();
+	$('#hour-constraints-' + val + '-header').show();
+}
+
 function removeUrlPrefix(url) {
 	prefix = /(^https?:\/\/|www\.|\/$)/g;
 	// remove any prefix
-    url = url.replace(prefix, "");
+	url = url.replace(prefix, "");
 	//url = url.replace(/www\/./, "");
 	return url;
 }
