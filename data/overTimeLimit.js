@@ -5,7 +5,8 @@ window.stop();
 $('body').empty();
 $('body').append($('<div>', {'class': 'container', 'style': 'margin-top:20%'})
 			.append($('<div>', {'class': 'jumbotron'})
-				.append($('<h1>', {'text': String.fromCharCode('9785') + ' ' + self.options.over_time))));
+				.append($('<h1>', {'text': String.fromCharCode('9785') + ' ' + self.options.message))));
+
 document.title = 'Time limit exceeded';
 
 // set favicon to null

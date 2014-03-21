@@ -139,7 +139,6 @@ function nextTourStep() {
 			buttonLabel = self.options.end;
 			break;
 		default:
-			$('#filtering').click();
 			endTour();
 	}
 
@@ -179,6 +178,7 @@ function displayDropdown(id) {
  * This function ends tour presentation by removing all of its elements
  */
 function endTour() {
+	$('#filtering').click();
 	$('div[id^="tour-"]').remove();
 	$('div.popover').remove();
 }

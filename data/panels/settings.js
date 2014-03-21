@@ -24,6 +24,8 @@ var pagerOptions = {
 
 };
 
+var isActivated = false;
+
 $(function () {
 	// Localization : setting values that cannot be localized in plain HTML
 	$('#change_pass').attr('value', self.options.change_pass_value);
@@ -42,16 +44,26 @@ $(function () {
      * Save button management
      */
     $('#save').click(function () {
+    	if(isActivated) {
+    		window.alert('You need to reactivate the extension to use the latest settings');
+    	}
     	self.port.emit('save_settings');
     });
 
 	/**
 	 * Password page submit action
 	 */
-	$("input.password").keyup(function (event) { 
+	$("#change-pass-pane input.password").keyup(function (event) { 
 		//if user presses enter while in a password field, "click" on the submit button
 		if(event.keyCode == 13) {
 			$("#change_pass").click();
+		}
+	});
+
+	$("#private-question-pane input.password").keyup(function (event) { 
+		//if user presses enter while in a password field, "click" on the submit button
+		if(event.keyCode == 13) {
+			$("#set-private-question").click();
 		}
 	});
 	
@@ -59,7 +71,6 @@ $(function () {
 		$(".alert").hide(); //remove any leftover alert
 
 		if($("#new_pass1").val() === $("#new_pass2").val() && $("#new_pass1").val().length >= 4){ //if there was no validation error, send old and new passwords
-			
 			var pwords = {};
 			pwords.oldpass = $("#old_pass").val();
 			pwords.newpass = $("#new_pass1").val();
@@ -103,12 +114,51 @@ $(function () {
 		}
 	});
 
+	$('#set-private-question').click(function () {
+		self.port.emit('set_private_question', $('#secret-question').val(), $('#secret-answer').val());
+		$('#private-question-pane').hide();
+		$('#change-pass-pane').show();
+		// display menu if hidden
+		if($('#nav').css('opacity') == 0) {
+			$('#welcome').remove();
+			$('#change-password-title').show();
+			$('#nav').css('visibility', 'visible');
+			$('#nav').animate({
+				opacity: '1.0'
+			}, 1000, function () {
+				
+			});
+			showTour();
+		}
+	});
+
     /**
      * Handle filtering options clicks
      */
     $("input:radio[name=filteringOptions]").click(function () {
         var val = $(this).val();
         self.port.emit("filter", val); //val can be none, wlist or blist
+    });
+
+    /**
+     * Handle limit time type options clicks
+     */
+    $('input:radio[name=limit-time-type-options]').click(function () {
+        var val = $(this).val();
+        self.port.emit('limit_time_type_set', val); //val can be overall or categories
+        $('#limit-time-overall-header, #limit-time-categories-header').hide();
+		$('#limit-time-' + val + '-header').show();
+		if(val === 'categories') {
+			if($('#limit_time_tab select option').length === 0) {
+				$('#limitTimeOptions').hide();
+			}
+		} else {
+			$('#limitTimeOptions').show();
+		}
+		$('input:radio[name=limitTimeOptions]').click(function () {
+			var category = $('#limit_time_tab select option:selected').val();
+			self.port.emit('limit_time_choice', category, $(this).val());
+		});
     });
 	
 	/**
@@ -120,10 +170,22 @@ $(function () {
 
 	$('#default-blacklist-search-form').submit(function (e) {
 		e.preventDefault();
-		$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
-		$('#default-blacklist-search-button #search-icon').hide();
-		$('#default-blacklist-search-button #search-loader').show();
-		self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+		if($('#default-blacklist-search-term').val().length < 3) {
+			$('#default-blacklist-search-form .help-block').css('visibility', 'visible');
+			$('#default-blacklist-search-form').addClass('has-error');
+		} else {
+			$('#default-blacklist-search-term, #default-blacklist-search-button').attr('disabled', 'disabled');
+			$('#default-blacklist-search-button #search-icon').hide();
+			$('#default-blacklist-search-button #search-loader').show();
+			self.port.emit('default_blacklist_search', $('#default-blacklist-search-term').val());
+		}
+	});
+
+	$('#default-blacklist-search-term').on('change keyup paste', function () {
+		if($(this).val().length > 2) {
+			$('#default-blacklist-search-form').removeClass('has-error');
+			$('#default-blacklist-search-form .help-block').css('visibility', 'hidden');
+		}
 	});
 
 	/**
@@ -177,11 +239,26 @@ $(function () {
 			id.pop();
 			var listName = id.pop();
 			var select = $('#custom-' + listName + '-categories select');
+			// check if this category doesn't already exists
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
+				$('#custom-' + listName + '-inner').append($('<div>', {'id': 'custom-' + listName + '-category-' + category.replace(' ', '_')}));
 				select.append(createOption(category).prop('selected', 'selected'));
 				select.change();
+				self.port.emit('add_custom_' + listName + '_category', category.replace(' ', '_'));
 			}
 		}
+	});
+
+	$('#remove-custom-blacklist-category, #remove-custom-whitelist-category').click(function () {
+		var id = $(this).attr('id').split('-');
+		id.pop();
+		var listName = id.pop();
+		var select = $('#custom-' + listName + '-categories select');
+		var selectedOption = select.find('option:selected');
+		var category = selectedOption.val();
+		selectedOption.remove();
+		select.change();
+		self.port.emit('remove_custom_' + listName + '_category', category);
 	});
 	
 	
@@ -265,18 +342,8 @@ self.port.on("change_pass_result", function (result) {
 	if(result) {
 		inform(self.options.password_change_success, "success", 3000);
 		$("#old_pass").parent().show(); //this was hidden if first password change
-		// display menu if hidden
-		if($('#nav').css('opacity') == 0) {
-			$('#welcome').remove();
-			$('#change-password-title').show();
-			$('#nav').css('visibility', 'visible');
-			$('#nav').animate({
-				opacity: '1.0'
-			}, 1000, function () {
-				
-			});
-			showTour();
-		}
+		$('#change-pass-pane').hide();
+		$('#private-question-pane').show();
 		$("#welcome").hide();
 		$("input[type=password]").val(""); //set all fields to empty
 		$('#old_pass, #new_pass1, #new_pass2').parent().removeClass('has-error').removeClass('has-success');
@@ -372,13 +439,28 @@ self.port.on('show_filtering', function () {
 	$('#filtering').click();
 });
 
+self.port.on('limit_time_type', function (value) {
+	if(!value) {
+		value = 'overall';
+	}
+	$('#limit_time_tab input[name="limit-time-type-options"][value="' + value + '"]').prop('checked', true).click();
+});
+
+self.port.on('limit_time_type_save_success', function () {
+	inform('Time limitation method has been successfully saved', 'success', 3000);
+});
+
 self.port.on('time_limit_initialized', function (categories) {
 	fillTimeLimitSelect(categories);
-})
+});
 
 self.port.on('time_limit_set', function () {
 	inform(self.options.time_limit_set, 'success', 3000);
-})
+});
+
+self.port.on('is_activated', function (isActivatedParam) {
+	isActivated = isActivatedParam;
+});
 
 /**
  * Event handler when the 'add' button is clicked for custom lists
@@ -479,17 +561,17 @@ function fillMenu(list, prefix, removedPrefix) {
 		});
 		select.first('option').prop('selected', 'selected');
 		select.prop('disabled', false);
-		//select.removeAttr('disabled');
 		select.selectpicker('refresh');
-		select.change(function () {
-			$('#' + prefix + '-inner > div').hide();
-			$('#' + prefix + '-category-' + $(this).val()).show();
-			$('#' + prefix + '-category-' + $(this).val() + ' input').change();
-		}).change();
 	} else {
 		select.prop('disabled', true);
 		select.selectpicker('refresh');
 	}
+
+	select.change(function () {
+		$('#' + prefix + '-inner > div').hide();
+		$('#' + prefix + '-category-' + $(this).val()).show();
+		$('#' + prefix + '-category-' + $(this).val() + ' input').change();
+	}).change();
 
 	if(prefix.indexOf('custom') !== -1) {
 		$('#' + prefix + '-categories select').change(function () {
@@ -549,11 +631,11 @@ function listsButtonHandler(eventType, listType, listName) {
 			var containingDiv = $(element).parent().parent().parent();
 			$(element).parent().parent().remove();
 			containingDiv.find('input').change();
-			if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
+			/*if($('#' + listType + '-' + listName + '-category-' + category + ' input').length == 0) {
 				$('#' + listType + '-' + listName + '-categories option:selected').remove();
 				$('#' + listType + '-' + listName + '-categories select').change().selectpicker('refresh');
 				$('#remove-' + listType + '-' + listName).attr('disabled', 'disabled');
-			}
+			}*/
 		}
 	});
 
@@ -744,7 +826,9 @@ function fillTimeLimitSelect (timeLimits) {
 	var categories = Object.keys(timeLimits);
 	$('#limit_time_tab select').empty();
 	if(categories.length === 0) {
-		$('#limitTimeOptions').hide();
+		if($('#limit-time-categories-radio').is(':checked')) {
+			$('#limitTimeOptions').hide();
+		}
 		$('#limit_time_options_title').hide();
 		$('#limit_time_tab select').selectpicker('hide');
 		$('#limit_time_no_category').show();
@@ -761,11 +845,6 @@ function fillTimeLimitSelect (timeLimits) {
 			var category = $('#limit_time_tab select option:selected').val();
 			$('#limit_time_tab input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
 		}).change();
-
-		$('input:radio[name=limitTimeOptions]').click(function () {
-			var category = $('#limit_time_tab select option:selected').val();
-			self.port.emit('limit_time_choice', category, $(this).val());
-		});
 
 		$('#limit_time_tab select').selectpicker('refresh');
 	}
