@@ -13,17 +13,25 @@ self.port.on('favorites_toolbar' , function(data_received){
 	$(favorites).each(function(index, favorite){
 		var link=$('<a>').attr('href' , favorite.uri);
 		var image = $('<img>');
-		$(image).attr('src' , 'http://g.etfv.co/'+favorite.uri)
+		$(image).attr('src' , 'http://g.etfv.co/'+favorite.uri);
+		$(image).addClass('favorite');
 		$(link).append(image);
 		$(fav_toolbar).append(link);
+		
+		//adding the delete button
+		var delete_button=$('<img>');
+		$(delete_button).attr('src' , data_received.delete_icon).addClass('delete_button');
+		
+		$(fav_toolbar).append(delete_button);
 	});
 	
-	
+	//Creating the new favorite button, which emits a message received by favorites.js to add (or not) the favorite
 	$(add_favorite_image).attr('src' , data_received.star).addClass('favorite_button');
 	$(fav_toolbar).append(add_favorite_image);
 	$(add_favorite_image).click(function(){
 		self.port.emit('add_favorite' , document.URL);
 	});
+	
 	
 	
 	$('body').prepend(fav_toolbar);

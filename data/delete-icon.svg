@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="42" height="41" id="svg2">
+  <defs id="defs4">
+    <linearGradient id="linearGradient2994">
+      <stop id="stop2996" style="stop-color:#000000;stop-opacity:1" offset="0"/>
+      <stop id="stop2998" style="stop-color:#c9c9c9;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient2974">
+      <stop id="stop2976" style="stop-color:#c1c1c1;stop-opacity:1" offset="0"/>
+      <stop id="stop2978" style="stop-color:#acacac;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient2966">
+      <stop id="stop2968" style="stop-color:#ffd1d1;stop-opacity:1" offset="0"/>
+      <stop id="stop3006" style="stop-color:#ffa400;stop-opacity:1" offset="0.5"/>
+      <stop id="stop2970" style="stop-color:#6f0000;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient x1="25.71875" y1="31.046875" x2="25.250879" y2="30.093334" id="linearGradient2752" xlink:href="#linearGradient2994" gradientUnits="userSpaceOnUse" gradientTransform="matrix(3.2453869,-0.9814273,0.8695997,3.6627359,-104.54214,-52.410456)"/>
+    <linearGradient x1="46" y1="19.8125" x2="47.6875" y2="22.625" id="linearGradient2758" xlink:href="#linearGradient2974" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.6315667,-0.4477633,0.4371775,1.6710754,-55.314914,-2.4814369)"/>
+    <linearGradient x1="49.67313" y1="17.238325" x2="50.988335" y2="22.250591" id="linearGradient2761" xlink:href="#linearGradient2966" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.8825649,-0.5493787,0.5044325,2.0503084,-68.258387,-5.9872078)"/>
+  </defs>
+  <path d="M 1.2313074,8.1170541 L 8.9223854,1.0337081 L 20.569497,13.977544 L 33.914194,1.2092901 L 40.656138,8.5710727 L 27.967947,20.639456 L 40.501846,32.68351 L 32.065418,39.788803 L 20.376485,27.21586 L 8.1654634,39.71137 L 1.3204404,31.690408 L 13.166365,20.193209 L 1.2313074,8.1170541 z" id="path2457" style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.99799097px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+</svg>

@@ -8,23 +8,29 @@
 	border-radius: 10px;
 }
 
+.child_fav_toolbar:first-child {
+    padding-left:8px;
+}
 
 .child_fav_toolbar img{
 	height : 40px;
-	margin-right : 8px;
-	border : solid 1px green;
+	margin-bottom : 40px;
 	border-radius : 10px;
-	margin-top : 5px;
 }
 
-.child_fav_toolbar img:hover{
+.child_fav_toolbar .favorite{
+	border : solid 1px green;
+}
+
+.child_fav_toolbar .favorite:hover{
     margin-top:3px;
     margin-right:6px;
     border: 2px dashed black;
 }
 
-.child_fav_toolbar:first-child {
-    padding-left:8px;
+.child_fav_toolbar .delete_button{
+	margin-right:6px;
+	height:8px;
 }
 
 .child_fav_toolbar .favorite_button {
@@ -32,15 +38,6 @@
     opacity:0.7;
 }
 
-
 .child_fav_toolbar .favorite_button:hover {
     opacity:1;
-}
-
-
-.child_fav_toolbar .truc{
-	height:90%;
-	background:url('../star-icon.png');
-
-
 }
