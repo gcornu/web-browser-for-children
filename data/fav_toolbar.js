@@ -9,7 +9,6 @@ var add_favorite_image=$('<img>');
 self.port.on('favorites_toolbar' , function(data_received){
 	
 	var favorites=data_received.favorites
-		
 	//Adding the favorites to the toolbar with favicon images and url
 	$(favorites).each(function(index, favorite){
 		var link=$('<a>').attr('href' , favorite.uri);
@@ -24,8 +23,6 @@ self.port.on('favorites_toolbar' , function(data_received){
 	$(fav_toolbar).append(add_favorite_image);
 	$(add_favorite_image).click(function(){
 		self.port.emit('add_favorite' , document.URL);
-	
-	
 	});
 	
 	

@@ -1,5 +1,4 @@
-{
-	"favorites" : [
+{"favorites" : [
 		{"index":1 , "title":"Kidrex" , "uri":"http://www.kidrex.org/", "homepage":"true" , "thumb" : "kidrex.jpg"},
 		{"index":2 , "title":"SuperKids" , "uri":"http://www.super-kids.com/", "homepage":"true" , "thumb" : "super-kids.jpg"},
 		{"index":3 , "title":"Kidtopia" , "uri":"http://kidtopia.info/", "homepage":"true" , "thumb" : "kidtopia.jpg"},
