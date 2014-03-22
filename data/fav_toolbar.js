@@ -21,8 +21,13 @@ self.port.on('favorites_toolbar' , function(data_received){
 		//adding the delete button
 		var delete_button=$('<img>');
 		$(delete_button).attr('src' , data_received.delete_icon).addClass('delete_button');
-		
 		$(fav_toolbar).append(delete_button);
+		
+		//when delete_button is clicked : emit a message to favorites.js to delete
+		$(delete_button).click(function(){
+			self.port.emit('delete_favorite' , favorite.index);
+		});
+		
 	});
 	
 	//Creating the new favorite button, which emits a message received by favorites.js to add (or not) the favorite
