@@ -1,19 +1,40 @@
 .child_fav_toolbar{
 	padding : 0px; 
 	padding-right:5px;
-	margin : 5px;
+	margin : 1%;
 	background-color:blue; 
-	width:100%; 
+	width:98%; 
 	height:50px;
+	border-radius: 10px;
 }
 
 
 .child_fav_toolbar img{
-	height : 90%;
+	height : 40px;
 	margin-right : 8px;
 	border : solid 1px green;
 	border-radius : 10px;
-	margin-top : 1px;
+	margin-top : 5px;
+}
+
+.child_fav_toolbar img:hover{
+    margin-top:3px;
+    margin-right:6px;
+    border: 2px dashed black;
+}
+
+.child_fav_toolbar:first-child {
+    padding-left:5px;
+}
+
+.child_fav_toolbar .favorite_button {
+    margin-left:10px;
+    opacity:0.7;
+}
+
+
+.child_fav_toolbar .favorite_button:hover {
+    opacity:1;
 }
 
 

@@ -14,7 +14,7 @@ self.port.on('favorites_toolbar' , function(data_received){
 	});
 	
 	var add_favorite_image=$('<img>');
-	$(add_favorite_image).attr('src' , data_received.star);
+	$(add_favorite_image).attr('src' , data_received.star).addClass('favorite_button');
 	$(fav_toolbar).append(add_favorite_image);
 
 	$('body').prepend(fav_toolbar);
