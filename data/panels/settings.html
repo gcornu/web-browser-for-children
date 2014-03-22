@@ -104,11 +104,11 @@
 							<li id="time"><a data-l10n-id="settings-nav-time"></a></li>
 						</ul>
 					</li>
-					<li id="time_constraints" class="dropdown">
+					<li id="time-constraints" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-time"></span><span data-l10n-id="settings-nav-time-constraint"></span></a>
 						<ul class="dropdown-menu" role="menu">
-							<li id="limit_time"><a data-l10n-id="settings-nav-limit-time"></a></li>
-							<li id="hour_constraints"><a data-l10n-id="settings-nav-hour-constraint"></a></li>
+							<li id="limit-time"><a data-l10n-id="settings-nav-limit-time"></a></li>
+							<li id="hour-constraints"><a data-l10n-id="settings-nav-hour-constraint"></a></li>
 					  	</ul>
 					</li>
 				</ul>
@@ -116,7 +116,7 @@
 		</div>
 		<div id="message_container" style="height: 50px; margin-bottom: 10px;"></div>
 		<div class="container panel panel-default" style="width: 100%; padding: 20px;">
-			<div id="pass_tab" class="tab_container">
+			<div id="pass-tab" class="tab_container">
 				<div id="change-pass-pane">
 					<h3 id="change-password-title" data-l10n-id="settings-password-title"></h3>
 					<div class="row">
@@ -162,7 +162,7 @@
 				</div>
 			</div>
 
-			<div id="filtering_tab" class="tab_container">
+			<div id="filtering-tab" class="tab_container">
 				<h3 data-l10n-id="settings-filtering-title"></h3>
 				<div class="radio">
 					<input type="radio" name="filteringOptions" id="filteringOptionsBlack" value="blist"/>
@@ -178,7 +178,7 @@
 				</div>
 			</div>
 
-			<div id="lists_tab" class="tab_container">
+			<div id="lists-tab" class="tab_container">
 				<div id="default-blacklist-pane" class="lists-pane" style="width: 100%; overflow: hidden;">
 					<form id="default-blacklist-search-form" class="col-sm-7" role="search" style="padding: 0;">
 						<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-lists-default-black-search"></h3>
@@ -294,7 +294,7 @@
 				</div>
 			</div>
 			
-			<div id="reports_tab" class="tab_container">
+			<div id="reports-tab" class="tab_container">
 				<div id="reports-tab-content" class="tab-content">
 					<div id="login-pane" class="reports-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_login_log" class="btn btn-danger pull-right" data-l10n-id="settings-reports-login-clear"></button>
@@ -358,8 +358,8 @@
 				</div>
 			</div>
 
-			<div id="time_constraints_tab" class="tab_container">
-				<div id="limit_time-pane" class="time_constraints-pane">
+			<div id="time-constraints-tab" class="tab_container">
+				<div id="limit-time-pane" class="time-constraints-pane">
 					<div id="limit-time-type" class="row" style="margin: 0;">
 						<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-limit-time-type-title"></h3>
 						<input id="limit-time-overall-radio" name="limit-time-type-options" type="radio" value="overall"></input>
@@ -377,29 +377,29 @@
 								<select style="margin-bottom: 10px;"></select>
 							</div>
 						</div>
-						<div id="limit_time_no_category"><h4><span data-l10n-id="settings-limit-time-nothing"></span><br/><span data-l10n-id="settings-limit-time-advice"></span></h4></div>
-						<h3 id="limit_time_options_title" data-l10n-id="settings-limit-time-title"></h3>
+						<div id="limit-time-no-category"><h4><span data-l10n-id="settings-limit-time-nothing"></span><br/><span data-l10n-id="settings-limit-time-advice"></span></h4></div>
+						<h3 id="limit-time-options-title" data-l10n-id="settings-limit-time-title"></h3>
 					</div>
-					<div id="limitTimeOptions">
+					<div id="limit-time-options">
 						<div class="radio">
-							<input type="radio" name="limitTimeOptions" id="limitTimeOptions15" value="15"/>
-							<label for="limitTimeOptions15" data-l10n-id="settings-limit-time-option-15"></label>
+							<input type="radio" name="limit-time-options" id="limit-time-options-15" value="15"/>
+							<label for="limit-time-options-15" data-l10n-id="settings-limit-time-option-15"></label>
 						</div>
 						<div class="radio">
-							<input type="radio" name="limitTimeOptions" id="limitTimeOptions30" value="30"/>
-							<label for="limitTimeOptions30" data-l10n-id="settings-limit-time-option-30"></label>
+							<input type="radio" name="limit-time-options" id="limit-time-options-30" value="30"/>
+							<label for="limit-time-options-30" data-l10n-id="settings-limit-time-option-30"></label>
 						</div>
 						<div class="radio">
-							<input type="radio" name="limitTimeOptions" id="limitTimeOptions60" value="60"/>
-							<label for="limitTimeOptions60" data-l10n-id="settings-limit-time-option-60"></label>
+							<input type="radio" name="limit-time-options" id="limit-time-options-60" value="60"/>
+							<label for="limit-time-options-60" data-l10n-id="settings-limit-time-option-60"></label>
 						</div>
 						<div class="radio">
-							<input type="radio" name="limitTimeOptions" id="limitTimeOptionsNone" value="0"/>
-							<label for="limitTimeOptionsNone" data-l10n-id="settings-limit-time-option-none"></label>
+							<input type="radio" name="limit-time-options" id="limit-time-options-none" value="0"/>
+							<label for="limit-time-options-none" data-l10n-id="settings-limit-time-option-none"></label>
 						</div>
 					</div>
 				</div>
-				<div id="hour_constraints-pane" class="time_constraints-pane">
+				<div id="hour-constraints-pane" class="time-constraints-pane">
 					<div id="hour-constraints-type" class="row" style="margin: 0;">
 						<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-hour-constraints-type-title"></h3>
 						<input id="hour-constraints-overall-radio" name="hour-constraints-type-options" type="radio" value="overall"></input>
@@ -417,8 +417,8 @@
 								<select style="margin-bottom: 10px;"></select>
 							</div>
 						</div>
-						<div id="hour_constraints_no_category"><h4><span data-l10n-id="settings-hour-constraints-nothing"></span><br/><span data-l10n-id="settings-hour-constraints-advice"></span></h4></div>
-						<h3 id="hour_constraints_options_title" data-l10n-id="settings-hour-constraints-title"></h3>
+						<div id="hour-constraints-no-category"><h4><span data-l10n-id="settings-hour-constraints-nothing"></span><br/><span data-l10n-id="settings-hour-constraints-advice"></span></h4></div>
+						<h3 id="hour-constraints-options-title" data-l10n-id="settings-hour-constraints-title"></h3>
 					</div>
 					<table id="hour-constraints-table" class="table table-bordered">
 						<tr>

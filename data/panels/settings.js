@@ -8,7 +8,7 @@ $(function () {
 	 * Nav bar management
 	 */
 	"use strict";
-	$("#nav > ul > li").not('#lists, #reports, #time_constraints').click(function () {
+	$("#nav > ul > li").not('#lists, #reports, #time-constraints').click(function () {
 		showTab($(this).attr('id'));
 	});
 
@@ -84,7 +84,7 @@ function showTab(tab_choice) {
 	$(".tab_container").hide();
 	//remove leftover alerts
 	$(".alert").hide(); 
-	$("#"+tab_choice+"_tab").show();
+	$("#"+tab_choice+"-tab").show();
 	$("#nav .active").removeClass("active");
 	$("#"+tab_choice).addClass("active");
 }
@@ -97,6 +97,6 @@ function showTab(tab_choice) {
 function showSubTab(tab, sub_tab_choice) {
 	self.port.emit(tab + '_tab_choice', sub_tab_choice);
 	showTab(tab);
-	$('#' + tab + '_tab .' + tab + '-pane').hide();
-	$('#' + tab + '_tab #' + sub_tab_choice + '-pane').show();
+	$('#' + tab + '-tab .' + tab + '-pane').hide();
+	$('#' + tab + '-tab #' + sub_tab_choice + '-pane').show();
 }
