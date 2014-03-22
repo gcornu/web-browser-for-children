@@ -84,9 +84,9 @@ function showTab(tab_choice) {
 	$(".tab_container").hide();
 	//remove leftover alerts
 	$(".alert").hide(); 
-	$("#"+tab_choice+"-tab").show();
+	$("#" + tab_choice + "-tab").show();
 	$("#nav .active").removeClass("active");
-	$("#"+tab_choice).addClass("active");
+	$("#" + tab_choice).addClass("active");
 }
 
 /**

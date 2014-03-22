@@ -400,134 +400,137 @@
 					</div>
 				</div>
 				<div id="hour-constraints-pane" class="time-constraints-pane">
-					<div id="hour-constraints-type" class="row" style="margin: 0;">
-						<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-hour-constraints-type-title"></h3>
-						<input id="hour-constraints-overall-radio" name="hour-constraints-type-options" type="radio" value="overall"></input>
-						<label for="hour-constraints-overall-radio" style="margin-right: 10px;" data-l10n-id="settings-hour-constraints-type-option-overall"></label>
-						<input id="hour-constraints-categories-radio" name="hour-constraints-type-options" type="radio" value="categories"></input>
-						<label for="hour-constraints-categories-radio" data-l10n-id="settings-hour-constraints-type-option-categories"></label>
-					</div>
-					<div id="hour-constraints-overall-header">
-						<h3 data-l10n-id="settings-hour-constraints-overall-title"></h3>
-					</div>
-					<div id="hour-constraints-categories-header">
-						<div class="row" style="margin: 0;">
-							<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-hour-constraints-select"></h3>
-							<div class="col-sm-5" style="padding: 0; float: left;">
-								<select style="margin-bottom: 10px;"></select>
-							</div>
+					<input id="hour-constraints-use-checkbox" name="hour-constraints-use" type="checkbox" value="use"></input>
+					<label for="hour-constraints-use-checkbox" data-l10n-id="settings-hour-constraints-use"></label>
+					<div id="hour-constraints-content">
+						<div id="hour-constraints-type" class="row" style="margin: 0;">
+							<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-hour-constraints-type-title"></h3>
+							<input id="hour-constraints-overall-radio" name="hour-constraints-type-options" type="radio" value="overall"></input>
+							<label for="hour-constraints-overall-radio" style="margin-right: 10px;" data-l10n-id="settings-hour-constraints-type-option-overall"></label>
+							<input id="hour-constraints-categories-radio" name="hour-constraints-type-options" type="radio" value="categories"></input>
+							<label for="hour-constraints-categories-radio" data-l10n-id="settings-hour-constraints-type-option-categories"></label>
 						</div>
-						<div id="hour-constraints-no-category"><h4><span data-l10n-id="settings-hour-constraints-nothing"></span><br/><span data-l10n-id="settings-hour-constraints-advice"></span></h4></div>
-						<h3 id="hour-constraints-options-title" data-l10n-id="settings-hour-constraints-title"></h3>
+						<div id="hour-constraints-overall-header">
+							<h3 data-l10n-id="settings-hour-constraints-overall-title"></h3>
+						</div>
+						<div id="hour-constraints-categories-header">
+							<div class="row" style="margin: 0;">
+								<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-hour-constraints-select"></h3>
+								<div class="col-sm-5" style="padding: 0; float: left;">
+									<select style="margin-bottom: 10px;"></select>
+								</div>
+							</div>
+							<div id="hour-constraints-no-category"><h4><span data-l10n-id="settings-hour-constraints-nothing"></span><br/><span data-l10n-id="settings-hour-constraints-advice"></span></h4></div>
+							<h3 id="hour-constraints-options-title" data-l10n-id="settings-hour-constraints-title"></h3>
+						</div>
+						<table id="hour-constraints-table" class="table table-bordered">
+							<tr>
+								<td rowspan="2" class="col-md-1">Monday</td>
+								<td>
+									<input id="hour-constraints-monday-morning-checkbox" type="checkbox" value="monday_morning"></input>
+									<label for="hour-constraints-monday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-monday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-monday-afternoon-checkbox" type="checkbox" value="monday_afternoon"></input>
+									<label for="hour-constraints-monday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-monday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1">Tuesday</td>
+								<td>
+									<input id="hour-constraints-tuesday-morning-checkbox" type="checkbox" value="tuesday_morning"></input>
+									<label for="hour-constraints-tuesday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-tuesday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-tuesday-afternoon-checkbox" type="checkbox" value="tuesday_afternoon"></input>
+									<label for="hour-constraints-tuesday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-tuesday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1">Wednesday</td>
+								<td>
+									<input id="hour-constraints-wednesday-morning-checkbox" type="checkbox" value="wednesday_morning"></input>
+									<label for="hour-constraints-wednesday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-wednesday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-wednesday-afternoon-checkbox" type="checkbox" value="wednesday_afternoon"></input>
+									<label for="hour-constraints-wednesday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-wednesday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1">Thursday</td>
+								<td>
+									<input id="hour-constraints-thursday-morning-checkbox" type="checkbox" value="thursday_morning"></input>
+									<label for="hour-constraints-thursday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-thursday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-thursday-afternoon-checkbox" type="checkbox" value="thursday_afternoon"></input>
+									<label for="hour-constraints-thursday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-thursday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1">Friday</td>
+								<td>
+									<input id="hour-constraints-friday-morning-checkbox" type="checkbox" value="friday_morning"></input>
+									<label for="hour-constraints-friday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-friday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-friday-afternoon-checkbox" type="checkbox" value="friday_afternoon"></input>
+									<label for="hour-constraints-friday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-friday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1">Saturday</td>
+								<td>
+									<input id="hour-constraints-saturday-morning-checkbox" type="checkbox" value="saturday_morning"></input>
+									<label for="hour-constraints-saturday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-saturday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-saturday-afternoon-checkbox" type="checkbox" value="saturday_afternoon"></input>
+									<label for="hour-constraints-saturday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-saturday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1">Sunday</td>
+								<td>
+									<input id="hour-constraints-sunday-morning-checkbox" type="checkbox" value="sunday_morning"></input>
+									<label for="hour-constraints-sunday-morning-checkbox" style="font-weight: normal;">Morning</label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-sunday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-sunday-afternoon-checkbox" type="checkbox" value="sunday_afternoon"></input>
+									<label for="hour-constraints-sunday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
+								</td>
+								<td><div id="hour-constraints-sunday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+						</table>
 					</div>
-					<table id="hour-constraints-table" class="table table-bordered">
-						<tr>
-							<td rowspan="2" class="col-md-1">Monday</td>
-							<td>
-								<input id="hour-constraints-monday-morning-checkbox" type="checkbox" value="monday_morning"></input>
-								<label for="hour-constraints-monday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-monday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-monday-afternoon-checkbox" type="checkbox" value="monday_afternoon"></input>
-								<label for="hour-constraints-monday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-monday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-						<tr>
-							<td rowspan="2" class="col-md-1">Tuesday</td>
-							<td>
-								<input id="hour-constraints-tuesday-morning-checkbox" type="checkbox" value="tuesday_morning"></input>
-								<label for="hour-constraints-tuesday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-tuesday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-tuesday-afternoon-checkbox" type="checkbox" value="tuesday_afternoon"></input>
-								<label for="hour-constraints-tuesday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-tuesday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-						<tr>
-							<td rowspan="2" class="col-md-1">Wednesday</td>
-							<td>
-								<input id="hour-constraints-wednesday-morning-checkbox" type="checkbox" value="wednesday_morning"></input>
-								<label for="hour-constraints-wednesday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-wednesday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-wednesday-afternoon-checkbox" type="checkbox" value="wednesday_afternoon"></input>
-								<label for="hour-constraints-wednesday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-wednesday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-						<tr>
-							<td rowspan="2" class="col-md-1">Thursday</td>
-							<td>
-								<input id="hour-constraints-thursday-morning-checkbox" type="checkbox" value="thursday_morning"></input>
-								<label for="hour-constraints-thursday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-thursday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-thursday-afternoon-checkbox" type="checkbox" value="thursday_afternoon"></input>
-								<label for="hour-constraints-thursday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-thursday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-						<tr>
-							<td rowspan="2" class="col-md-1">Friday</td>
-							<td>
-								<input id="hour-constraints-friday-morning-checkbox" type="checkbox" value="friday_morning"></input>
-								<label for="hour-constraints-friday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-friday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-friday-afternoon-checkbox" type="checkbox" value="friday_afternoon"></input>
-								<label for="hour-constraints-friday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-friday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-						<tr>
-							<td rowspan="2" class="col-md-1">Saturday</td>
-							<td>
-								<input id="hour-constraints-saturday-morning-checkbox" type="checkbox" value="saturday_morning"></input>
-								<label for="hour-constraints-saturday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-saturday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-saturday-afternoon-checkbox" type="checkbox" value="saturday_afternoon"></input>
-								<label for="hour-constraints-saturday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-saturday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-						<tr>
-							<td rowspan="2" class="col-md-1">Sunday</td>
-							<td>
-								<input id="hour-constraints-sunday-morning-checkbox" type="checkbox" value="sunday_morning"></input>
-								<label for="hour-constraints-sunday-morning-checkbox" style="font-weight: normal;">Morning</label>
-							</td>
-							<td class="col-md-10"><div id="hour-constraints-sunday-morning-slider" class="slider slider-morning"></div></td>
-						</tr>
-						<tr>
-							<td>
-								<input id="hour-constraints-sunday-afternoon-checkbox" type="checkbox" value="sunday_afternoon"></input>
-								<label for="hour-constraints-sunday-afternoon-checkbox" style="font-weight: normal;">Afternoon</label>
-							</td>
-							<td><div id="hour-constraints-sunday-afternoon-slider" class="slider slider-afternoon"></div></td>
-						</tr>
-					</table>
-					
 				</div>
 			</div>
 		</div>

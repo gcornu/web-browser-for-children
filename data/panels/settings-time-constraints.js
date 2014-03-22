@@ -1,3 +1,6 @@
+// prevent flickering by hiding elements
+$('#hour-constraints-content').hide();
+
 $(function () {
 	var overallTimeConstraints, timeConstraints;
 	/**
@@ -27,7 +30,8 @@ $(function () {
 		max: 840,
 		step: 15,
 		values: [480, 720],
-		slide: updateTooltip
+		slide: updateTooltip,
+		stop: saveHourConstraint
 	});
 
 	$('#hour-constraints-pane .slider-afternoon').slider({
@@ -36,24 +40,29 @@ $(function () {
 		max: 1440,
 		step: 15,
 		values: [840, 1140],
-		slide: updateTooltip
+		slide: updateTooltip,
+		stop: saveHourConstraint
 	});
 
 	$('#hour-constraints').click(function () {
 		// init sliders tooltips
 		var sliders = $('#hour-constraints-pane .slider');
 		sliders.each(function (index, slider) {
-			var slider = $(this);
-			var handles = slider.find('.ui-slider-handle');
-			slider.slider('option', 'slide')(null, { value: slider.slider('values', 0), handle: handles[0] });
-			slider.slider('option', 'slide')(null, { value: slider.slider('values', 1), handle: handles[1] });
+			triggerSlideEvent($(this));
 		});
+	});
+
+	$('#hour-constraints-use-checkbox').change(function () {
+		handleUseHourConstraintsChange($(this).is(':checked'));
+		self.port.emit('hour_constraints_use_set', $(this).is(':checked'));
 	});
 
 	$('#hour-constraints-table input:checkbox').change(function () {
 		var slider = $('#' + $(this).attr('id').replace('checkbox', 'slider'));
 		if($(this).is(':checked')) {
 			slider.slider('enable');
+			handle = slider.find('.ui-slider-handle:first');
+			slider.slider('option', 'stop')(null, {value: slider.slider('values', 0), handle: handle});
 		} else {
 			slider.slider('disable');
 		}
@@ -81,6 +90,14 @@ self.port.on('time_limit_set', function () {
 	inform(self.options.time_limit_set, 'success', 3000);
 });
 
+self.port.on('hour_constraints_use', function (value) {
+	if(!value) {
+		value = false;
+	}
+	$('#hour-constraints-use-checkbox').prop('checked', value);
+	handleUseHourConstraintsChange(value);
+});
+
 self.port.on('hour_constraints_type', function (value) {
 	if(!value) {
 		value = 'overall';
@@ -89,9 +106,31 @@ self.port.on('hour_constraints_type', function (value) {
 	handleHourConstraintsOptionClick(value);
 });
 
+self.port.on('hour_constraints_use_save_success', function () {
+	inform(self.options.hour_constraints_use_set, success, 3000);
+});
+
 self.port.on('hour_constraints_type_save_success', function () {
 	inform(self.options.hour_constraints_type_set, 'success', 3000);
 });
+
+self.port.on('hour_constraint_set', function () {
+	inform(self.options.hour_constraints_set, 'success', 3000);
+});
+
+/**
+ * Hides all elements when hour constraints are deactivated
+ *
+ * @param {boolean} whether the checkbox is checked or not
+ */
+function handleUseHourConstraintsChange(checked) {
+	if(checked) {
+		$('#hour-constraints-content').show();
+		handleHourConstraintsOptionClick($('#hour-constraints-pane input[name="hour-constraints-type-options"]:checked').val());
+	} else {
+		$('#hour-constraints-content').hide();
+	}
+}
 
 /*
  * Fill the select for the time limitation
@@ -106,7 +145,7 @@ function fillTimeLimitSelect (timeConstraintsParam, overallTimeConstraintsParam)
 	var selects = $('#limit-time-pane select, #hour-constraints-pane select');
 	selects.each(function () {
 		var select = $(this);
-		var prefix = $(this).parent().parent().parent().parent().attr('id').replace('-pane', '');
+		var prefix = $(this).parent().parent().parent().parent().parent().attr('id').replace('-pane', '');
 		select.empty();
 		if(categories.length === 0) {
 			if($('#' + prefix + '-categories-radio').is(':checked')) {
@@ -134,27 +173,11 @@ function fillTimeLimitSelect (timeConstraintsParam, overallTimeConstraintsParam)
 		$('#limit-time-pane input[name="limit-time-options"][value="' + timeConstraints[category].limit + '"]').prop('checked', true);
 	}).change();
 
-	$('input:radio[name=limit-time-type-options]').click(function () {
-		if($(this).val() === 'overall') {
-			$('#limit-time-pane input[name="limit-time-options"][value="' + overallTimeConstraints.limit + '"]').prop('checked', true);
-		} else {
-			$('#limit-time-pane select').change();
-		}
-	});
-
 	// hour constraints specific management
 	$('#hour-constraints-pane select').change(function () {
 		var category = $(this).find('option:selected').val();
 		fillHourConstraintsTable(timeConstraints[category].hours);
 	}).change();
-
-	$('input:radio[name=hour-constraints-type-options]').click(function () {
-		if($(this).val() === 'overall') {
-			fillHourConstraintsTable(overallTimeConstraints.hours);
-		} else {
-			$('#limit-time-pane select').change();
-		}
-	});
 }
 
 /**
@@ -165,9 +188,20 @@ function fillTimeLimitSelect (timeConstraintsParam, overallTimeConstraintsParam)
 function fillHourConstraintsTable(hours) {
 	Object.keys(hours).forEach(function (day) {
 		Object.keys(hours[day]).forEach(function (period) {
-			if(hours[day][period]) {
+			if(hours[day][period] !== null) {
 				$('#hour-constraints-' + day + '-' + period + '-checkbox').prop('checked', true);
-				$('#hour-constraints-' + day + '-' + period + '-slider').slider('values', hours[day][period])
+				$('#hour-constraints-' + day + '-' + period + '-slider').slider('enable');
+				$('#hour-constraints-' + day + '-' + period + '-slider').slider('values', hours[day][period]);
+				triggerSlideEvent($('#hour-constraints-' + day + '-' + period + '-slider'));
+			} else {
+				$('#hour-constraints-' + day + '-' + period + '-checkbox').prop('checked', false);
+				$('#hour-constraints-' + day + '-' + period + '-slider').slider('disable');
+				if($('#hour-constraints-' + day + '-' + period + '-slider').hasClass('slider-morning')) {
+					$('#hour-constraints-' + day + '-' + period + '-slider').slider('values', [480, 720]);
+				} else {
+					$('#hour-constraints-' + day + '-' + period + '-slider').slider('values', [840, 1140]);
+				}
+				triggerSlideEvent($('#hour-constraints-' + day + '-' + period + '-slider'));
 			}
 		});
 	});
@@ -184,10 +218,14 @@ function handleLimitTimeOptionClick(val) {
 	if(val === 'categories') {
 		if($('#limit-time-pane select option').length === 0) {
 			$('#limit-time-options').hide();
+		} else {
+			$('#limit-time-pane select').change();
 		}
 	} else {
 		$('#limit-time-options').show();
+		$('#limit-time-pane input[name="limit-time-options"][value="' + overallTimeConstraints.limit + '"]').prop('checked', true);
 	}
+
 	$('input:radio[name=limit-time-options]').click(function () {
 		var category = $('#limit-time-pane select option:selected').val();
 		if($('input:radio[name=limit-time-type-options]:checked').val() === 'overall') {
@@ -207,6 +245,16 @@ function handleLimitTimeOptionClick(val) {
 function handleHourConstraintsOptionClick(val) {
 	$('#hour-constraints-overall-header, #hour-constraints-categories-header').hide();
 	$('#hour-constraints-' + val + '-header').show();
+	if(val === 'categories') {
+		if($('#hour-constraints-pane select option').length === 0) {
+			$('#hour-constraints-table').hide();
+		} else {
+			$('#hour-constraints-pane select').change();
+		}
+	} else {
+		fillHourConstraintsTable(overallTimeConstraints.hours);
+		$('#hour-constraints-table').show();
+	}
 }
 
 /**
@@ -220,6 +268,17 @@ function addZeroFirst(string) {
 	} else {
 		return string;
 	}
+}
+
+/**
+ * Triggers slide event on the given sliden
+ *
+ * @param {Node} slider
+ */
+function triggerSlideEvent(slider) {
+	var handles = slider.find('.ui-slider-handle');
+	slider.slider('option', 'slide')(null, { value: slider.slider('values', 0), handle: handles[0] });
+	slider.slider('option', 'slide')(null, { value: slider.slider('values', 1), handle: handles[1] });
 }
 
 /**
@@ -248,4 +307,19 @@ function updateTooltip(event, ui) {
 	var max = slider.slider('option', 'max');
 	var position = (ui.value-min)*width/(max-min) - tooltip.width()/2;
 	tooltip.css('left', position);
+}
+
+/**
+ * Saves the new values of the changed slider
+ */
+function saveHourConstraint(event, ui) {
+	var slider = $(ui.handle).parent();
+	var splittedId = slider.attr('id').split('-');
+	var category = $('#hour-constraints-pane select option:selected').val();
+	if($('input:radio[name=hour-constraints-type-options]:checked').val() === 'overall') {
+		overallTimeConstraints.hours[splittedId[2]][splittedId[3]] = slider.slider('values');
+	} else {
+		timeConstraints[category].hours[splittedId[2]][splittedId[3]] = slider.slider('values');
+	}
+	self.port.emit('hour_constraint_change', category, splittedId[2], splittedId[3], slider.slider('values'));
 }
