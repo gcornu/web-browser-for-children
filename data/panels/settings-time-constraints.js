@@ -170,13 +170,17 @@ function fillTimeLimitSelect (timeConstraintsParam, overallTimeConstraintsParam)
 	// limit time specific management
 	$('#limit-time-pane select').change(function () {
 		var category = $(this).find('option:selected').val();
-		$('#limit-time-pane input[name="limit-time-options"][value="' + timeConstraints[category].limit + '"]').prop('checked', true);
+		if(category) {
+			$('#limit-time-pane input[name="limit-time-options"][value="' + timeConstraints[category].limit + '"]').prop('checked', true);
+		}
 	}).change();
 
 	// hour constraints specific management
 	$('#hour-constraints-pane select').change(function () {
 		var category = $(this).find('option:selected').val();
-		fillHourConstraintsTable(timeConstraints[category].hours);
+		if(category) {
+			fillHourConstraintsTable(timeConstraints[category].hours);
+		}
 	}).change();
 }
 
