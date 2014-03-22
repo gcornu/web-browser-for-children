@@ -2,6 +2,7 @@
 <head>
 	<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 	<link href="../css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+	<link href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" />
 	<link href="../css/navigation.css" rel="stylesheet" type="text/css" />
 	<style>
 		#nav .glyphicon {
@@ -19,6 +20,25 @@
 
 		div.radio label {
 			padding-right: 5px;
+		}
+
+		#hour-constraints-table tr:nth-child(even):not(:last-child) td, #hour-constraints-table tr:nth-child(odd) td:first-child{
+			border-bottom-width: 2px;
+		}
+
+		#hour-constraints-table td{
+			vertical-align: middle;
+		}
+
+		#hour-constraints-table tr td:nth-child(2){
+			min-width: 110px;
+		}
+
+		#hour-constraints-table tr td:last-child{
+			vertical-align: bottom;
+			height: 63px;
+			padding-left: 15px;
+			padding-right: 15px;
 		}
 
 		#tour-filter {
@@ -82,15 +102,21 @@
 							<li id="login"><a data-l10n-id="settings-nav-login"></a></li>
 							<li id="history"><a data-l10n-id="settings-nav-history"></a></li>
 							<li id="time"><a data-l10n-id="settings-nav-time"></a></li>
+						</ul>
+					</li>
+					<li id="time-constraints" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-time"></span><span data-l10n-id="settings-nav-time-constraint"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li id="limit-time"><a data-l10n-id="settings-nav-limit-time"></a></li>
+							<li id="hour-constraints"><a data-l10n-id="settings-nav-hour-constraint"></a></li>
 					  	</ul>
 					</li>
-					<li id="limit_time"><a><span class="glyphicon glyphicon-time"></span><span data-l10n-id="settings-nav-limit-time"></span></a></li>
 				</ul>
 			</div>
 		</div>
 		<div id="message_container" style="height: 50px; margin-bottom: 10px;"></div>
 		<div class="container panel panel-default" style="width: 100%; padding: 20px;">
-			<div id="pass_tab" class="tab_container">
+			<div id="pass-tab" class="tab_container">
 				<div id="change-pass-pane">
 					<h3 id="change-password-title" data-l10n-id="settings-password-title"></h3>
 					<div class="row">
@@ -136,7 +162,7 @@
 				</div>
 			</div>
 
-			<div id="filtering_tab" class="tab_container">
+			<div id="filtering-tab" class="tab_container">
 				<h3 data-l10n-id="settings-filtering-title"></h3>
 				<div class="radio">
 					<input type="radio" name="filteringOptions" id="filteringOptionsBlack" value="blist"/>
@@ -152,8 +178,8 @@
 				</div>
 			</div>
 
-			<div id="lists_tab" class="tab_container">
-				<div id="default-blacklist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
+			<div id="lists-tab" class="tab_container">
+				<div id="default-blacklist-pane" class="lists-pane" style="width: 100%; overflow: hidden;">
 					<form id="default-blacklist-search-form" class="col-sm-7" role="search" style="padding: 0;">
 						<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-lists-default-black-search"></h3>
 						<div class="input-group input-group-sm" style="float: left;">
@@ -195,7 +221,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="custom-blacklist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
+				<div id="custom-blacklist-pane" class="lists-pane" style="width: 100%; overflow: hidden;">
 					<div class="row" style="margin: 0;">
 						<div id="custom-blacklist-categories">
 							<h3 style="float: left; margin-right: 10px" data-l10n-id="settings-lists-custom-black-select"></h3>
@@ -215,7 +241,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="default-whitelist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
+				<div id="default-whitelist-pane" class="lists-pane" style="width: 100%; overflow: hidden;">
 					<div class="row" style="margin: 0;">
 						<div id="default-whitelist-categories">
 							<h3 style="float: left; margin-right: 10px" data-l10n-id="settings-lists-default-white-select"></h3>
@@ -245,7 +271,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="custom-whitelist-pane" class="list-pane" style="width: 100%; overflow: hidden;">
+				<div id="custom-whitelist-pane" class="lists-pane" style="width: 100%; overflow: hidden;">
 					<div class="row" style="margin: 0;">
 						<div id="custom-whitelist-categories">
 							<h3 style="float: left; margin-right: 10px" data-l10n-id="settings-lists-custom-white-select"></h3>
@@ -268,15 +294,15 @@
 				</div>
 			</div>
 			
-			<div id="reports_tab" class="tab_container">
+			<div id="reports-tab" class="tab_container">
 				<div id="reports-tab-content" class="tab-content">
-					<div id="login-pane" class="report-pane" style="width: 100%; overflow: hidden;">
+					<div id="login-pane" class="reports-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_login_log" class="btn btn-danger pull-right" data-l10n-id="settings-reports-login-clear"></button>
 						<h3 data-l10n-id="settings-reports-login-title"></h3>
 						<div id="no-event" data-l10n-id="settings-reports-login-nothing"></div>
 						<div id="events"></div>
 					</div>
-					<div id="history-pane" class="report-pane" style="width: 100%; overflow: hidden;">
+					<div id="history-pane" class="reports-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_history_log" class="btn btn-danger pull-right" data-l10n-id="settings-reports-history-clear"></button>
 						<h3 data-l10n-id="settings-reports-history-title"></h3>
 						<div id="no-visit" data-l10n-id="settings-reports-history-nothing"></div>
@@ -312,7 +338,7 @@
 							</table>
 						</div>
 					</div>
-					<div id="time-pane" class="report-pane" style="width: 100%; overflow: hidden;">
+					<div id="time-pane" class="reports-pane" style="width: 100%; overflow: hidden;">
 						<button id="clear_time_log" class="btn btn-danger pull-right" data-l10n-id="settings-reports-time-clear"></button>
 						<h3 data-l10n-id="settings-reports-time-title"></h3>
 						<div id="no-categories"><h4><span data-l10n-id="settings-reports-time-nothing"></span><br/><span data-l10n-id="settings-reports-time-advice"></span></h4></div>
@@ -332,43 +358,178 @@
 				</div>
 			</div>
 
-			<div id="limit_time_tab" class="tab_container">
-				<div id="limit-time-type" class="row" style="margin: 0;">
-					<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-limit-time-type-title"></h3>
-					<input id="limit-time-overall-radio" name="limit-time-type-options" type="radio" value="overall"></input>
-					<label for="limit-time-overall-radio" style="margin-right: 10px;" data-l10n-id="settings-limit-time-type-option-overall"></label>
-					<input id="limit-time-categories-radio" name="limit-time-type-options" type="radio" value="categories"></input>
-					<label for="limit-time-categories-radio" data-l10n-id="settings-limit-time-type-option-categories"></label>
-				</div>
-				<div id="limit-time-overall-header">
-					<h3 data-l10n-id="settings-limit-time-overall-title"></h3>
-				</div>
-				<div id="limit-time-categories-header">
-					<div class="row" style="margin: 0;">
-						<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-limit-time-select"></h3>
-						<div class="col-sm-5" style="padding: 0; float: left;">
-							<select style="margin-bottom: 10px;"></select>
+			<div id="time-constraints-tab" class="tab_container">
+				<div id="limit-time-pane" class="time-constraints-pane">
+					<div id="limit-time-type" class="row" style="margin: 0;">
+						<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-limit-time-type-title"></h3>
+						<input id="limit-time-overall-radio" name="limit-time-type-options" type="radio" value="overall"></input>
+						<label for="limit-time-overall-radio" style="margin-right: 10px;" data-l10n-id="settings-limit-time-type-option-overall"></label>
+						<input id="limit-time-categories-radio" name="limit-time-type-options" type="radio" value="categories"></input>
+						<label for="limit-time-categories-radio" data-l10n-id="settings-limit-time-type-option-categories"></label>
+					</div>
+					<div id="limit-time-overall-header">
+						<h3 data-l10n-id="settings-limit-time-overall-title"></h3>
+					</div>
+					<div id="limit-time-categories-header">
+						<div class="row" style="margin: 0;">
+							<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-limit-time-select"></h3>
+							<div class="col-sm-5" style="padding: 0; float: left;">
+								<select style="margin-bottom: 10px;"></select>
+							</div>
+						</div>
+						<div id="limit-time-no-category"><h4><span data-l10n-id="settings-limit-time-nothing"></span><br/><span data-l10n-id="settings-limit-time-advice"></span></h4></div>
+						<h3 id="limit-time-options-title" data-l10n-id="settings-limit-time-title"></h3>
+					</div>
+					<div id="limit-time-options">
+						<div class="radio">
+							<input type="radio" name="limit-time-options" id="limit-time-options-15" value="15"/>
+							<label for="limit-time-options-15" data-l10n-id="settings-limit-time-option-15"></label>
+						</div>
+						<div class="radio">
+							<input type="radio" name="limit-time-options" id="limit-time-options-30" value="30"/>
+							<label for="limit-time-options-30" data-l10n-id="settings-limit-time-option-30"></label>
+						</div>
+						<div class="radio">
+							<input type="radio" name="limit-time-options" id="limit-time-options-60" value="60"/>
+							<label for="limit-time-options-60" data-l10n-id="settings-limit-time-option-60"></label>
+						</div>
+						<div class="radio">
+							<input type="radio" name="limit-time-options" id="limit-time-options-none" value="0"/>
+							<label for="limit-time-options-none" data-l10n-id="settings-limit-time-option-none"></label>
 						</div>
 					</div>
-					<div id="limit_time_no_category"><h4><span data-l10n-id="settings-limit-time-nothing"></span><br/><span data-l10n-id="settings-limit-time-advice"></span></h4></div>
-					<h3 id="limit_time_options_title" data-l10n-id="settings-limit-time-title"></h3>
 				</div>
-				<div id="limitTimeOptions">
-					<div class="radio">
-						<input type="radio" name="limitTimeOptions" id="limitTimeOptions15" value="15"/>
-						<label for="limitTimeOptions15" data-l10n-id="settings-limit-time-option-15"></label>
-					</div>
-					<div class="radio">
-						<input type="radio" name="limitTimeOptions" id="limitTimeOptions30" value="30"/>
-						<label for="limitTimeOptions30" data-l10n-id="settings-limit-time-option-30"></label>
-					</div>
-					<div class="radio">
-						<input type="radio" name="limitTimeOptions" id="limitTimeOptions60" value="60"/>
-						<label for="limitTimeOptions60" data-l10n-id="settings-limit-time-option-60"></label>
-					</div>
-					<div class="radio">
-						<input type="radio" name="limitTimeOptions" id="limitTimeOptionsNone" value="0"/>
-						<label for="limitTimeOptionsNone" data-l10n-id="settings-limit-time-option-none"></label>
+				<div id="hour-constraints-pane" class="time-constraints-pane">
+					<input id="hour-constraints-use-checkbox" name="hour-constraints-use" type="checkbox" value="use"></input>
+					<label for="hour-constraints-use-checkbox" data-l10n-id="settings-hour-constraints-use"></label>
+					<div id="hour-constraints-content">
+						<div id="hour-constraints-type" class="row" style="margin: 0;">
+							<h3 style="float: left; margin-right: 10px; margin-top: -2px;" data-l10n-id="settings-hour-constraints-type-title"></h3>
+							<input id="hour-constraints-overall-radio" name="hour-constraints-type-options" type="radio" value="overall"></input>
+							<label for="hour-constraints-overall-radio" style="margin-right: 10px;" data-l10n-id="settings-hour-constraints-type-option-overall"></label>
+							<input id="hour-constraints-categories-radio" name="hour-constraints-type-options" type="radio" value="categories"></input>
+							<label for="hour-constraints-categories-radio" data-l10n-id="settings-hour-constraints-type-option-categories"></label>
+						</div>
+						<div id="hour-constraints-overall-header">
+							<h3 data-l10n-id="settings-hour-constraints-overall-title"></h3>
+						</div>
+						<div id="hour-constraints-categories-header">
+							<div class="row" style="margin: 0;">
+								<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-hour-constraints-select"></h3>
+								<div class="col-sm-5" style="padding: 0; float: left;">
+									<select style="margin-bottom: 10px;"></select>
+								</div>
+							</div>
+							<div id="hour-constraints-no-category"><h4><span data-l10n-id="settings-hour-constraints-nothing"></span><br/><span data-l10n-id="settings-hour-constraints-advice"></span></h4></div>
+							<h3 id="hour-constraints-options-title" data-l10n-id="settings-hour-constraints-title"></h3>
+						</div>
+						<table id="hour-constraints-table" class="table table-bordered">
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="monday"></td>
+								<td>
+									<input id="hour-constraints-monday-morning-checkbox" type="checkbox" value="monday_morning"></input>
+									<label for="hour-constraints-monday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-monday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-monday-afternoon-checkbox" type="checkbox" value="monday_afternoon"></input>
+									<label for="hour-constraints-monday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-monday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="tuesday"></td>
+								<td>
+									<input id="hour-constraints-tuesday-morning-checkbox" type="checkbox" value="tuesday_morning"></input>
+									<label for="hour-constraints-tuesday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-tuesday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-tuesday-afternoon-checkbox" type="checkbox" value="tuesday_afternoon"></input>
+									<label for="hour-constraints-tuesday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-tuesday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="wednesday"></td>
+								<td>
+									<input id="hour-constraints-wednesday-morning-checkbox" type="checkbox" value="wednesday_morning"></input>
+									<label for="hour-constraints-wednesday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-wednesday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-wednesday-afternoon-checkbox" type="checkbox" value="wednesday_afternoon"></input>
+									<label for="hour-constraints-wednesday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-wednesday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="thursday"></td>
+								<td>
+									<input id="hour-constraints-thursday-morning-checkbox" type="checkbox" value="thursday_morning"></input>
+									<label for="hour-constraints-thursday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-thursday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-thursday-afternoon-checkbox" type="checkbox" value="thursday_afternoon"></input>
+									<label for="hour-constraints-thursday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-thursday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="Friday"></td>
+								<td>
+									<input id="hour-constraints-friday-morning-checkbox" type="checkbox" value="friday_morning"></input>
+									<label for="hour-constraints-friday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-friday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-friday-afternoon-checkbox" type="checkbox" value="friday_afternoon"></input>
+									<label for="hour-constraints-friday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-friday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="saturday"></td>
+								<td>
+									<input id="hour-constraints-saturday-morning-checkbox" type="checkbox" value="saturday_morning"></input>
+									<label for="hour-constraints-saturday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-saturday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-saturday-afternoon-checkbox" type="checkbox" value="saturday_afternoon"></input>
+									<label for="hour-constraints-saturday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-saturday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+							<tr>
+								<td rowspan="2" class="col-md-1" data-l10n-id="sunday"></td>
+								<td>
+									<input id="hour-constraints-sunday-morning-checkbox" type="checkbox" value="sunday_morning"></input>
+									<label for="hour-constraints-sunday-morning-checkbox" style="font-weight: normal;" data-l10n-id="morning"></label>
+								</td>
+								<td class="col-md-10"><div id="hour-constraints-sunday-morning-slider" class="slider slider-morning"></div></td>
+							</tr>
+							<tr>
+								<td>
+									<input id="hour-constraints-sunday-afternoon-checkbox" type="checkbox" value="sunday_afternoon"></input>
+									<label for="hour-constraints-sunday-afternoon-checkbox" style="font-weight: normal;" data-l10n-id="afternoon"></label>
+								</td>
+								<td><div id="hour-constraints-sunday-afternoon-slider" class="slider slider-afternoon"></div></td>
+							</tr>
+						</table>
 					</div>
 				</div>
 			</div>
