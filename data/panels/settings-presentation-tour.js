@@ -79,28 +79,28 @@ function nextTourStep() {
 		case 7:
 			displayDropdown('lists');
 			element = $('#default-blacklist');
-			showList('default-blacklist');
+			showSubTab('lists', 'default-blacklist');
 			content = self.options.step7;
 			placement = 'right';
 			break;
 		case 8:
 			displayDropdown('lists');
 			element = $('#custom-blacklist');
-			showList('custom-blacklist');
+			showSubTab('lists', 'custom-blacklist');
 			content = self.options.step8;
 			placement = 'right';
 			break;
 		case 9:
 			displayDropdown('lists');
 			element = $('#default-whitelist');
-			showList('default-whitelist');
+			showSubTab('lists', 'default-whitelist');
 			content = self.options.step9;
 			placement = 'right';
 			break;
 		case 10:
 			displayDropdown('lists');
 			element = $('#custom-whitelist');
-			showList('custom-whitelist');
+			showSubTab('lists', 'custom-whitelist');
 			content = self.options.step10;
 			placement = 'right';
 			break;
@@ -113,39 +113,43 @@ function nextTourStep() {
 		case 12:
 			displayDropdown('reports');
 			element = $('#login');
-			showReport('login');
+			showSubTab('reports', 'login');
 			content = self.options.step12;
 			placement = 'right';
 			break;
 		case 13:
 			displayDropdown('reports');
 			element = $('#history');
-			showReport('history');
+			showSubTab('reports', 'history');
 			content = self.options.step13;
 			placement = 'right';
 			break;
 		case 14:
 			displayDropdown('reports');
 			element = $('#time');
-			showReport('time');
+			showSubTab('reports', 'time');
 			content = self.options.step14;
 			placement = 'right';
 			break;
 		case 15:
 			$('#reports').removeClass('open').css('z-index', 'initial');
-			element = $('#limit_time');
-			clickElement = true;
+			displayDropdown('time-constraints');
+			element = $('#time-constraints');
 			content = self.options.step15;
 			break;
 		case 16:
-			element = $('#limit-time-overall-radio').next();
+			displayDropdown('time-constraints');
+			element = $('#limit-time');
+			showSubTab('time-constraints', 'limit-time');
 			content = self.options.step16;
-			placement = 'bottom';
+			placement = 'right';
 			break;
 		case 17:
-			element = $('#limit-time-categories-radio').next();
+			displayDropdown('time-constraints');
+			element = $('#hour-constraints');
+			showSubTab('time-constraints', 'hour-constraints');
 			content = self.options.step17;
-			placement = 'bottom';
+			placement = 'right';
 			buttonLabel = self.options.end;
 			break;
 		default:
