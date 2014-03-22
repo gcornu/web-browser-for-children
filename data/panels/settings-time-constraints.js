@@ -107,7 +107,7 @@ self.port.on('hour_constraints_type', function (value) {
 });
 
 self.port.on('hour_constraints_use_save_success', function () {
-	inform(self.options.hour_constraints_use_set, success, 3000);
+	inform(self.options.hour_constraints_use_set, 'success', 3000);
 });
 
 self.port.on('hour_constraints_type_save_success', function () {
