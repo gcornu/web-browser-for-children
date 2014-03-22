@@ -1,4 +1,5 @@
 $(function () {
+	var overallTimeLimit, timeLimits;
 	/**
 	 * Handle limit time type options clicks
 	 */
@@ -31,8 +32,8 @@ self.port.on('limit_time_type_save_success', function () {
 	inform(self.options.time_limit_type_set, 'success', 3000);
 });
 
-self.port.on('time_limit_initialized', function (categories) {
-	fillTimeLimitSelect(categories);
+self.port.on('time_limit_initialized', function (categories, overallTimeLimit) {
+	fillTimeLimitSelect(categories, overallTimeLimit);
 });
 
 self.port.on('time_limit_set', function () {
@@ -56,7 +57,9 @@ self.port.on('hour_constraints_type_save_success', function () {
  *
  * @param {array} categories to be added to the select element
  */
-function fillTimeLimitSelect (timeLimits) {
+function fillTimeLimitSelect (timeLimitsParam, overallTimeLimitParam) {
+	timeLimits = timeLimitsParam;
+	overallTimeLimit = overallTimeLimitParam;
 	var categories = Object.keys(timeLimits);
 	var select = $('#limit_time-pane select');
 	select.empty();
@@ -81,6 +84,14 @@ function fillTimeLimitSelect (timeLimits) {
 			$('#limit_time-pane input[name="limitTimeOptions"][value="' + timeLimits[category].limit + '"]').prop('checked', true);
 		}).change();
 
+		$('input:radio[name=limit-time-type-options]').click(function () {
+			if($(this).val() === 'overall') {
+				$('#limit_time-pane input[name="limitTimeOptions"][value="' + overallTimeLimit + '"]').prop('checked', true);
+			} else {
+				select.change();
+			}
+		});
+
 		select.selectpicker('refresh');
 	}
 }
@@ -94,14 +105,19 @@ function handleLimitTimeOptionClick(val) {
 	$('#limit-time-overall-header, #limit-time-categories-header').hide();
 	$('#limit-time-' + val + '-header').show();
 	if(val === 'categories') {
-		if($('#limit_time_tab select option').length === 0) {
+		if($('#limit_time-pane select option').length === 0) {
 			$('#limitTimeOptions').hide();
 		}
 	} else {
 		$('#limitTimeOptions').show();
 	}
 	$('input:radio[name=limitTimeOptions]').click(function () {
-		var category = $('#limit_time_tab select option:selected').val();
+		var category = $('#limit_time-pane select option:selected').val();
+		if($('input:radio[name=limit-time-type-options]:checked').val() === 'overall') {
+			overallTimeLimit = $(this).val();
+		} else {
+			timeLimits[category].limit = $(this).val();
+		}
 		self.port.emit('limit_time_choice', category, $(this).val());
 	});
 }
