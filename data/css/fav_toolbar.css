@@ -2,8 +2,8 @@
 	padding : 0px; 
 	padding-right:5px;
 	margin : 1%;
-	background-color:blue; 
-	width:98%; 
+	width:98%;
+	background-color:rgba(0,0,255,0.8); 
 	height:50px;
 	border-radius: 10px;
 }
