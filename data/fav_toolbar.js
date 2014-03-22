@@ -43,12 +43,10 @@ self.port.on('favorites_toolbar' , function(data_received){
 	
 	
 	
-	self.port.on('add_favorite_answer' , function(answer_image){
+	self.port.on('favorite_answer' , function(answer_image){
 		var answer_image_container=$('<img>');
 		$(answer_image_container).attr('src' , answer_image).addClass('answer_image');
 		$(fav_toolbar).append(answer_image_container);
-	
-	
 	});
 });
 
