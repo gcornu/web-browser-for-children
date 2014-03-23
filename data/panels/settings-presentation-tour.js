@@ -73,6 +73,7 @@ function nextTourStep() {
 			break;
 		case 6:
 			element = $('#lists');
+			$('#tour-filter').click(function () {displayDropdown('lists');});
 			displayDropdown('lists');
 			content = self.options.step6;
 			break;
@@ -106,6 +107,8 @@ function nextTourStep() {
 			break;
 		case 11:
 			$('#lists').removeClass('open').css('z-index', 'initial');
+			$('#tour-filter').unbind('click');
+			$('#tour-filter').click(function () {displayDropdown('reports');});
 			element = $('#reports');
 			displayDropdown('reports');
 			content = self.options.step11;
@@ -133,6 +136,8 @@ function nextTourStep() {
 			break;
 		case 15:
 			$('#reports').removeClass('open').css('z-index', 'initial');
+			$('#tour-filter').unbind('click');
+			$('#tour-filter').click(function () {displayDropdown('time-constraints');});
 			displayDropdown('time-constraints');
 			element = $('#time-constraints');
 			content = self.options.step15;
