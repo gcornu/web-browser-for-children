@@ -5,10 +5,33 @@ $(fav_toolbar).addClass('child_fav_toolbar');
 //The var which is going to contain the star-icon and event to add a favorite.
 var add_favorite_image=$('<img>');
 	
-
+//When going to a new page : this message is received to display the toolbar.
 self.port.on('favorites_toolbar' , function(data_received){
+
+	display_favorites(data_received);
 	
+	$('body').prepend(fav_toolbar);
+	
+	
+	
+});
+
+//When favorites.js removes/adds a favorite : generates this event, sending data star image and delete icon as favorites.
+self.port.on('favorite_answer' , function(data_received){
+		//var answer_image_container=$('<img>');
+		//$(answer_image_container).attr('src' , answer_image).addClass('answer_image');
+		//$(fav_toolbar).append(answer_image_container);
+		display_favorites(data_received);
+});
+
+
+//Filling favorites toolbar with 
+function display_favorites(data_received){
+	//first remove everything already in the toolbar
+	$(fav_toolbar).empty();
+
 	var favorites=data_received.favorites
+
 	//Adding the favorites to the toolbar with favicon images and url
 	$(favorites).each(function(index, favorite){
 		var link=$('<a>').attr('href' , favorite.uri);
@@ -36,19 +59,12 @@ self.port.on('favorites_toolbar' , function(data_received){
 	$(add_favorite_image).click(function(){
 		self.port.emit('add_favorite' , document.URL);
 	});
-	
-	
-	
-	$('body').prepend(fav_toolbar);
-	
-	
-	
-	self.port.on('favorite_answer' , function(answer_image){
-		var answer_image_container=$('<img>');
-		$(answer_image_container).attr('src' , answer_image).addClass('answer_image');
-		$(fav_toolbar).append(answer_image_container);
-	});
-});
+
+
+
+
+}
+
 
 
 
