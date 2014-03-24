@@ -36,6 +36,7 @@ $(function () {
 });
 
 function inform(message, alertClass, timeout) {
+	$('#message_container').empty();
 	$('#message_container').append($('<div>', {'id': 'inform', 'style': 'height: 30px; padding-top: 5px; padding-bottom: 5px;', 'class': 'alert alert-' + alertClass})
 									.append($('<small>', {'text': message})));
 

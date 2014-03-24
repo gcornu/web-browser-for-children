@@ -13,7 +13,7 @@ self.port.on('current_filter', function (value) {
 	if(!value) {
 		value = 'none';
 	}
-	$('#filtering_tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
+	$('#filtering-tab input[name="filteringOptions"][value="' + value + '"]').prop('checked', true);
 });
 
 self.port.on('filter_save_success', function () {
