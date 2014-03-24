@@ -221,8 +221,11 @@ function handleLimitTimeOptionClick(val) {
 	$('#limit-time-' + val + '-header').show();
 	if(val === 'categories') {
 		if($('#limit-time-pane select option').length === 0) {
-			$('#limit-time-options').hide();
+			$('#limit-time-options, #limit-time-options-title').hide();
+			$('#limit-time-no-category').show();
 		} else {
+			$('#limit-time-no-category').hide();
+			$('#limit-time-options, #limit-time-options-title').show();
 			$('#limit-time-pane select').change();
 		}
 	} else {
@@ -251,8 +254,11 @@ function handleHourConstraintsOptionClick(val) {
 	$('#hour-constraints-' + val + '-header').show();
 	if(val === 'categories') {
 		if($('#hour-constraints-pane select option').length === 0) {
-			$('#hour-constraints-table').hide();
+			$('#hour-constraints-table, #hour-constraints-options-title').hide();
+			$('#hour-constraints-no-category').show();
 		} else {
+			$('#hour-constraints-no-category').hide();
+			$('#hour-constraints-table, #hour-constraints-options-title').show();
 			$('#hour-constraints-pane select').change();
 		}
 	} else {
