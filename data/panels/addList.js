@@ -1,15 +1,15 @@
 $(function() {
-	$("#add").html('Add to ' + self.options.listType);
+	$("#add").html(self.options.addTo + ' ' + self.options.listName);
 
 	$('#new_category').click(function () {
-		var category = window.prompt('Name of the new category:');
+		var category = window.prompt(self.options.newCategoryPrompt);
 		if(category) {
 			var select = $('select');
 			if(select.find('option[value="' + category.replace(' ', '_') + '"]').length === 0) {
 				select.append(createOption(category).prop('selected', 'selected'));
 				select.prop('disabled', false);
 			} else {
-				inform('This category already exists', 'danger', 5000);
+				inform(self.options.alreadyExists, 'danger', 5000);
 			}
 		}
 	});
@@ -17,7 +17,7 @@ $(function() {
 	$("#add").click(function () {
 		var category = $('select option:selected').val();
 		if(!category) {
-			inform('Please select a category', 'danger', 5000);
+			inform(self.options.selectCategory, 'danger', 5000);
 		} else {
 			self.port.emit('add_' + self.options.listType, category);
 		}
