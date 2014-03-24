@@ -1,6 +1,31 @@
-[General]
-www.mozilla.org
-fr.wikipedia.org
-
-[Search engines]
-www.google.fr
+[Kids sites]
+www.nick.com
+www.coolmath-games.com
+pbskids.org
+www.girlsgogames.com
+www.nickjr.com
+www.stardoll.com
+www.cartoonnetwork.com
+www.clubpenguin.com
+www.primarygames.com
+www.poptropica.com
+www.animaljam.com
+www.moshimonsters.com
+www.funbrain.com
+www.neopets.com
+www.webkinz.com
+kids.nationalgeographic.com
+www.pottermore.com
+www.spatulatta.com
+www.kideos.com
+www.sikids.com
+www.nwf.org
+www.nanoogo.com
+www.jumpstart.com
+www.smartygames.com
+www.crayola.com
+www.looneytunes.kidswb.com
+www.arcademicskillbuilders.com
+www.kidrex.org
+kidsclick.org
+cybersleuth-kids.com
