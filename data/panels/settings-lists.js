@@ -1,4 +1,6 @@
 $(function () {
+	$('#custom-blacklist-categories select, #custom-whitelist-categories select').attr('title', self.options.no_category);
+
 	$('#default-blacklist-search-form').submit(function (e) {
 		e.preventDefault();
 		if($('#default-blacklist-search-term').val().length < 3) {

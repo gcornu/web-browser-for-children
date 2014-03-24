@@ -183,12 +183,12 @@
 					<form id="default-blacklist-search-form" class="col-sm-7" role="search" style="padding: 0;">
 						<h3 style="float: left; margin-right: 10px;" data-l10n-id="settings-lists-default-black-search"></h3>
 						<div class="input-group input-group-sm" style="float: left;">
-							<input type="search" class="form-control" placeholder="Search in default blacklist" id="default-blacklist-search-term"></input>
+							<input type="search" class="form-control" id="default-blacklist-search-term"></input>
 							<span class="input-group-btn">
 								<button id="default-blacklist-search-button" class="btn btn-default"><span id="search-icon" class="glyphicon glyphicon-search"></span><img id="search-loader" style="display: none;" src="../loader.gif"/></button>
 							</span>
 						</div>
-						<span class="help-block" style="visibility: hidden; margin-bottom: 0px;">Search term must contain more than 3 characters</span>
+						<span class="help-block" style="visibility: hidden; margin-bottom: 0px;" data-l10n-id="settings-lists-default-black-search-more-3"></span>
 					</form>
 					<div style="clear: both;"></div>
 					<div class="row" style="margin: 0;">
@@ -225,7 +225,7 @@
 					<div class="row" style="margin: 0;">
 						<div id="custom-blacklist-categories">
 							<h3 style="float: left; margin-right: 10px" data-l10n-id="settings-lists-custom-black-select"></h3>
-							<select class="pull-left" title="No category defined"></select>
+							<select class="pull-left"></select>
 							<button id="remove-custom-blacklist-category" class="btn pull-left" style="margin-left: 10px;" data-l10n-id="settings-lists-custom-black-remove-category"></button>
 							<button id="add-custom-blacklist-category" class="btn pull-left" style="margin-left: 10px;" data-l10n-id="settings-lists-custom-black-add-category"></button>
 						</div>
@@ -275,7 +275,7 @@
 					<div class="row" style="margin: 0;">
 						<div id="custom-whitelist-categories">
 							<h3 style="float: left; margin-right: 10px" data-l10n-id="settings-lists-custom-white-select"></h3>
-							<select class="pull-left" title="No category defined"></select>
+							<select class="pull-left"></select>
 							<button id="remove-custom-whitelist-category" class="btn pull-left" style="margin-left: 10px;" data-l10n-id="settings-lists-custom-white-remove-category"></button>
 							<button id="add-custom-whitelist-category" class="btn pull-left" style="margin-left: 10px;" data-l10n-id="settings-lists-custom-white-add-category"></button>
 						</div>

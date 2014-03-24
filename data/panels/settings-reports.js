@@ -24,6 +24,7 @@ var pagerOptions = {
 $(function () {
 	$('#table-history .pagesize').attr('title', self.options.page_size_title);
 	$('#table-history .pagenum').attr('title', self.options.page_num_title);
+	$('#default-blacklist-search-term').attr('placeholder', self.options.search_blacklist);
 
 	$('#clear_login_log, #clear_history_log, #clear_time_log').click(function () {
 		var localThis = this;

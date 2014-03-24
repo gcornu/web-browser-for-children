@@ -17,7 +17,7 @@ $(function () {
 	 */
 	$('#save').click(function () {
 		if(isActivated) {
-			window.alert('You need to reactivate the extension to use the latest settings');
+			window.alert(self.options.close_reactivate);
 		}
 		self.port.emit('save_settings');
 	});
