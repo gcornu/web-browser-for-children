@@ -1,6 +1,6 @@
 //The fav_toolbar which is going to be displayed at the top of all pages
 var fav_toolbar=$('<div>');
-$(fav_toolbar).addClass('child_fav_toolbar');
+$(fav_toolbar).addClass('child_fav_toolbar').css('z-index', 10000);
 	
 //The var which is going to contain the star-icon and event to add a favorite.
 var add_favorite_image=$('<img>');
