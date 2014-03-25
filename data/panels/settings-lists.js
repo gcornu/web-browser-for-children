@@ -88,7 +88,8 @@ self.port.on('default_blacklist_search_response', function (matches, removedMatc
 	$('#default-blacklist-search-button #search-icon').show();
 
 	if(Object.keys(matches).length === 0) {
-		$('#default-blacklist-inner').append($('<h4>', {'text': self.options.no_match}));
+		$('#default-blacklist-categories select').empty().prop('disabled', 'disabled').change().selectpicker('refresh');
+		$('#default-blacklist-inner').empty().append($('<h4>', {'text': self.options.no_match}));
 	} else {
 		fillListDivs(matches, removedMatchesElements, 'blacklist', 'default');
 	}
