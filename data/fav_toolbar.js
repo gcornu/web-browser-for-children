@@ -11,6 +11,7 @@ self.port.on('favorites_toolbar' , function(data_received){
 	display_favorites(data_received);
 	
 	$('body').prepend(fav_toolbar);
+	$(fav_toolbar).draggable();
 	
 	
 	
@@ -25,7 +26,7 @@ self.port.on('favorite_answer' , function(data_received){
 });
 
 
-//Filling favorites toolbar with 
+//Filling favorites toolbar with favorites, star icon and delete icons.
 function display_favorites(data_received){
 	//first remove everything already in the toolbar
 	$(fav_toolbar).empty();
