@@ -14,6 +14,8 @@
 
 .child_fav_toolbar img{
 	height : 40px;
+	width:auto;
+	display:inline;
 	margin-top : 5px;
 	border-radius : 10px;
 }
