@@ -240,11 +240,12 @@ function fillMenu(list, prefix, removedPrefix) {
 
 	if(prefix.indexOf('custom') !== -1) {
 		$('#' + prefix + '-categories select').change(function () {
-			console.log('select change event');
 			if($(this).find('option').length == 0) {
 				$(this).prop('disabled', true);
+				$('#remove-' + prefix + '-category').attr('disabled', 'disabled');
 			} else {
 				$(this).prop('disabled', false);
+				$('#remove-' + prefix + '-category').removeAttr('disabled');
 			}
 			if($(this).find('option:selected').length == 0) {
 				$('#add-' + prefix).attr('disabled', 'disabled');

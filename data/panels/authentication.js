@@ -101,7 +101,7 @@ self.port.on('private_question_set', function (question) {
 
 //clean everything
 function clean() {
-	$("#input-safe, #input-lock, #input-options").attr("id","input");
+	$("#input-safe, #input-lock, #input-options, #input-addBlacklist, #input-addWhitelist").attr("id","input");
 	$('#inform').remove();
 	$('#pass-label').css('visibility', 'hidden');
 	$('#pass').parent().removeClass('has-error');
