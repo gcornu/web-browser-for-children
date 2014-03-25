@@ -8,6 +8,10 @@ self.port.on('allow', function () {
 self.port.on('deny', function () {
 	window.stop();
 	// replace page content and title
+	$('style, script').remove();
+
+	$('html').addClass('blacklisted');
+	
 	if($('body').length === 0) {
 		$('html').append($('<body>'));
 	}
