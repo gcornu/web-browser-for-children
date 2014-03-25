@@ -147,14 +147,14 @@ function nextTourStep() {
 			element = $('#limit-time');
 			showSubTab('time-constraints', 'limit-time');
 			content = self.options.step16;
-			placement = 'right';
+			placement = 'left';
 			break;
 		case 17:
 			displayDropdown('time-constraints');
 			element = $('#hour-constraints');
 			showSubTab('time-constraints', 'hour-constraints');
 			content = self.options.step17;
-			placement = 'right';
+			placement = 'left';
 			buttonLabel = self.options.end;
 			break;
 		default:
