@@ -5,7 +5,7 @@
 	"description": "Protect your children from the hazards of Internet",
 	"author": "Romain BIREMON, Florian CLERC, Gauthier CORNU, Lin LIANG, Baptiste VANNESSON",
 	"license": "MPL 2.0",
-	"version": "2.0",
+	"version": "2.1",
 	"unpack": true,
 	"dependencies": ["toolbar-button-complete", "addon-sdk"],
 	"homepage": "https://github.com/gcornu/web-browser-for-children",
