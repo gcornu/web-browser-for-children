@@ -1,6 +1,6 @@
 /*!
  * tablesorter pager plugin
- * updated 3/7/2014 (v2.15.6)
+ * updated 3/18/2014 (v2.15.11)
  */
 /*jshint browser:true, jquery:true, unused:false */
 ;(function($) {
@@ -542,6 +542,7 @@
 			$.data(table, 'pagerLastPage', p.page);
 			$.data(table, 'pagerLastSize', p.size);
 			p.totalPages = Math.ceil( p.totalRows / p.size );
+			p.filteredPages = Math.ceil( p.filteredRows / p.size );
 			moveToPage(table, p);
 		},
 
