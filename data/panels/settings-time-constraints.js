@@ -265,6 +265,10 @@ function handleHourConstraintsOptionClick(val) {
 		fillHourConstraintsTable(overallTimeConstraints.hours);
 		$('#hour-constraints-table').show();
 	}
+	var sliders = $('#hour-constraints-pane .slider');
+	sliders.each(function (index, slider) {
+		triggerSlideEvent($(this));
+	});
 }
 
 /**
