@@ -10,7 +10,7 @@ self.port.on('favorites_toolbar', function (data_received){
 
 	display_favorites(data_received);
 	
-	if(!$('html').hasClass('blacklisted') && $('.child_fav_toolbar').length === 0) {
+	if($('.child_fav_toolbar').length === 0) {
 		$('body').prepend(fav_toolbar);
 		$(fav_toolbar).draggable();
 	}
