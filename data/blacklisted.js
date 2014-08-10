@@ -21,7 +21,7 @@ self.port.on('deny', function () {
 															  '-moz-background-clip: text;' + 
 															  'background-clip: text;' + 
 															  'color: rgba(0, 0, 0, 0.3);' +
-															  'text-shadow: rgba(255, 255, 255, 0.3) 3px 3px 1px;' +
+															  'text-shadow: rgba(255, 255, 255, 0.3) 1px 1px 0px;' +
 															  'width: 100%;' + 
 															  'height: 100%'}));
 
@@ -34,7 +34,7 @@ self.port.on('deny', function () {
 																												'font-size: 50px;' +
 																												'font-weight: bold;' +
 																												'text-align: center;'}));
-	document.title = 'Forbidden website';
+	document.title = self.options.not_allowed_title;
 
 	var link = document.createElement('link');
 	link.rel = 'stylesheet';
