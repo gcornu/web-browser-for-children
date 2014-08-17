@@ -31,7 +31,7 @@ $(function () {
 		showSubTab(tab, subTab);
 		if(tab === 'lists') {
 			// center glyphicons in buttons
-			$('#lists_tab #' + list_choice + '-buttons span.glyphicon').css('margin-top', ($('#lists_tab #' + list_choice + '-buttons button').height() - $('#lists_tab #' + list_choice + '-buttons span.glyphicon').height()) / 2);
+			$('#lists_tab #' + subTab + '-buttons span.glyphicon').css('margin-top', ($('#lists_tab #' + subTab + '-buttons button').height() - $('#lists_tab #' + subTab + '-buttons span.glyphicon').height()) / 2);
 		}
 	});
 });
