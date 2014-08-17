@@ -49,6 +49,4 @@ self.port.on('deny', function () {
 	link.rel = 'shortcut icon';
 	link.href = '';
 	document.getElementsByTagName('head')[0].appendChild(link);
-
-	
 });
