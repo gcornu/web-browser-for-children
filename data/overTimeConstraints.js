@@ -1,15 +1,32 @@
 // stop loading of the page
 window.stop();
 
-// replace page content and title
-if($('body').length === 0) {
-	$('html').append($('<body>'));
-}
-$('body').empty();
-$('body').append($('<div>', {'class': 'container', 'style': 'margin-top:20%'})
-			.append($('<div>', {'class': 'jumbotron'})
-				.append($('<h1>', {'text': String.fromCharCode('9785') + ' ' + self.options.message}))));
+var fav_toolbar = $('.child_fav_toolbar');
 
+// replace page content and title
+$('style, script, body').remove();
+
+$('html').addClass('blacklisted');
+
+$('html').append($('<body>', {'style': 'font-family: Helvetica;' + 
+														  'background-color: #282828;' + 
+													 	  '-webkit-background-clip: text;' + 
+														  '-moz-background-clip: text;' + 
+														  'background-clip: text;' + 
+														  'color: rgba(0, 0, 0, 0.3);' +
+														  'text-shadow: rgba(255, 255, 255, 0.3) 1px 1px 0px;' +
+														  'width: 100%;' + 
+														  'height: 100%'}));
+
+$('body').append(fav_toolbar);
+$('body').append($('<div>', {'text': String.fromCharCode('9785') + ' ' + self.options.message, 'style': 'position: absolute;' +
+																											'top: 50%;' +
+																											'left: 50%;' +
+																											'margin-left: -50%;' +
+																											'width: 100%;' +
+																											'font-size: 50px;' +
+																											'font-weight: bold;' +
+																											'text-align: center;'}));
 document.title = self.options.title;
 
 // set favicon to null
