@@ -1,2 +1,2 @@
 <em:optionsURL>resource://jid1-asvp94viakaipa-at-jetpack/web-browser-for-children/data/panels/settings.html</em:optionsURL>
-<em:optionsType>3</em:optionsType>
+	<em:optionsType>3</em:optionsType>
