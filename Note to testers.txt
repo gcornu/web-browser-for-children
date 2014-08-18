@@ -1,0 +1,56 @@
+Here is my test protocol for the extension:
+
+Install the extension on a new profile.
+
+Input password. Check that same password is mandatory.
+Secret question: not mandatory.
+
+In options:
+ - Change password (1st tab)
+ - Set list type to blacklist (2nd tab)
+ - Go to default blacklist (3rd tab)
+ - Search for 'hsbc'
+ - Remove 'hsbc.fr'
+
+Activate extension (from extension toolbar button). Then:
+ - Go to 'hsbc.com': page should be blacklisted
+ - Go to 'hsbc.fr': page should as usual
+ - Go to 'disney.co.uk': page should be as usual
+
+Deactivate extension. Open options:
+ - Go to custon blacklist
+ - Add a new category. Use whatever name.
+ - Add 'disney.co.uk'
+ 
+Activate extension:
+ - Go to disney.co.uk: should be blacklisted.
+  
+Deactivate extension. Open option:
+ - Use whitelist
+ - Go to default whitelist
+ - Remove 'kidrex.org'
+ - Go to custom whitelist
+ - Add a new catgory. Use whatever name.
+ - Add 'mozilla.org'
+
+Activate extension
+ - Go to 'kidrex.org'. Should be blacklisted.
+ - Go to 'kideos.com'. Should be as usual.
+ - Go to 'mozilla.org'. Should be as usual.
+ - Go to 'google.com'. Should be blacklisted.
+
+Deactivate the extension with a wrong password first.
+Open options, go to reports tab (4th tab):
+ - First tab: fail login attempt should be listed.
+ - Go to visit report: all visited websites should be listed.
+ - Go to time report: some time should be displayed for added whitelist category.
+
+Go to time constraints tab (5th tab):
+ - Set an hour constraint for the current time
+
+Activate the extension. Got to any website: should be forbidden.
+
+Keep in mind this protocol does not test every feature of the extension.
+
+bootstrap.min.js can be downloaded here: http://blog.getbootstrap.com/2013/12/05/bootstrap-3-0-3-released/
+jquery.flip.min.js can be downloaded here: http://lab.smashup.it/flip/
