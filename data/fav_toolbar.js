@@ -7,13 +7,14 @@ var add_favorite_image = $('<img>');
 	
 //When going to a new page : this message is received to display the toolbar.
 self.port.on('favorites_toolbar', function (data_received){
-
-	display_favorites(data_received);
-	
-	if(!$('html').hasClass('blacklisted') && $('.child_fav_toolbar').length === 0) {
-		$('body').prepend(fav_toolbar);
-		$(fav_toolbar).draggable();
-	}
+	$(document).ready(function () {
+		display_favorites(data_received);
+		
+		if($('.child_fav_toolbar').length === 0) {
+			$('body').prepend(fav_toolbar);
+			$(fav_toolbar).draggable();
+		}
+	});
 });
 
 //When favorites.js removes/adds a favorite : generates this event, sending data star image and delete icon as favorites.

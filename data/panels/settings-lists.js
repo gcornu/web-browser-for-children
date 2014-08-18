@@ -124,7 +124,7 @@ self.port.on('malformed_url', function() {
 });
 
 self.port.on('host_already_added', function() {
-	inform(sefl.options.already_present_url, 'error', 5000);
+	inform(self.options.already_present_url, 'error', 5000);
 });
 
 /**

@@ -7,7 +7,7 @@
 	"license": "MPL 2.0",
 	"version": "2.1",
 	"unpack": true,
-	"dependencies": ["toolbar-button-complete", "addon-sdk"],
+	"dependencies": ["toolbarbutton", "addon-sdk"],
 	"homepage": "https://github.com/gcornu/web-browser-for-children",
 	"icon": "./data/logo-on.png",
 	"icon64": "./data/logo_64.png"
