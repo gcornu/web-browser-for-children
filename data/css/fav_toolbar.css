@@ -2,10 +2,9 @@
 	padding : 0px; 
 	padding-right:5px;
 	margin : 1%;
-	width:98%;
-	background-color:rgba(0,0,255,0.8); 
-	height:50px;
-	border-radius: 10px;
+	/*width: 98%;*/
+	background-color: rgba(80,80,80,0.8); 
+	height: 51px;
 }
 
 .child_fav_toolbar:first-child {
@@ -21,13 +20,13 @@
 }
 
 .child_fav_toolbar .favorite{
-	border : solid 1px green;
+	border : solid 1px black;
 	margin-right:1px;
 }
 
 .child_fav_toolbar .favorite:hover{
     margin-top:3px;
-    border: 1px dashed black;
+    border: 1px solid white;
 }
 
 .child_fav_toolbar .delete_button{
